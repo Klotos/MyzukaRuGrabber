@@ -81,6 +81,7 @@
             this.gb_MainHeader = new System.Windows.Forms.GroupBox();
             this.lbl_ImageInfo = new System.Windows.Forms.Label();
             this.btn_About = new System.Windows.Forms.Button();
+            this.prbr_Processing = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).BeginInit();
             this.gb_Album_Header.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_List)).BeginInit();
@@ -106,13 +107,13 @@
             this.lbl_InputFailed.ForeColor = System.Drawing.Color.Red;
             this.lbl_InputFailed.Location = new System.Drawing.Point(170, 8);
             this.lbl_InputFailed.Name = "lbl_InputFailed";
-            this.lbl_InputFailed.Size = new System.Drawing.Size(635, 22);
+            this.lbl_InputFailed.Size = new System.Drawing.Size(516, 22);
             this.lbl_InputFailed.TabIndex = 7;
             // 
             // btn_Grab
             // 
             this.btn_Grab.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_Grab.Location = new System.Drawing.Point(811, 9);
+            this.btn_Grab.Location = new System.Drawing.Point(711, 8);
             this.btn_Grab.Name = "btn_Grab";
             this.btn_Grab.Size = new System.Drawing.Size(61, 45);
             this.btn_Grab.TabIndex = 6;
@@ -124,7 +125,7 @@
             // 
             this.tb_InputURI.Location = new System.Drawing.Point(9, 34);
             this.tb_InputURI.Name = "tb_InputURI";
-            this.tb_InputURI.Size = new System.Drawing.Size(796, 20);
+            this.tb_InputURI.Size = new System.Drawing.Size(677, 20);
             this.tb_InputURI.TabIndex = 5;
             // 
             // btn_SaveImage
@@ -251,7 +252,7 @@
             this.gb_Album_Header.Controls.Add(this.label5);
             this.gb_Album_Header.Controls.Add(this.label4);
             this.gb_Album_Header.Controls.Add(this.tb_RO_Date_Album);
-            this.gb_Album_Header.Location = new System.Drawing.Point(332, 171);
+            this.gb_Album_Header.Location = new System.Drawing.Point(232, 173);
             this.gb_Album_Header.Name = "gb_Album_Header";
             this.gb_Album_Header.Size = new System.Drawing.Size(540, 145);
             this.gb_Album_Header.TabIndex = 47;
@@ -353,9 +354,9 @@
             this.col_Size,
             this.col_Bitrate,
             this.col_Download});
-            this.dgv_List.Location = new System.Drawing.Point(9, 410);
+            this.dgv_List.Location = new System.Drawing.Point(9, 421);
             this.dgv_List.Name = "dgv_List";
-            this.dgv_List.Size = new System.Drawing.Size(863, 167);
+            this.dgv_List.Size = new System.Drawing.Size(763, 177);
             this.dgv_List.TabIndex = 48;
             // 
             // col_Number
@@ -418,9 +419,9 @@
             this.gb_FooterButtons.Controls.Add(this.btn_SelectAll);
             this.gb_FooterButtons.Controls.Add(this.btn_DeselectAll);
             this.gb_FooterButtons.Controls.Add(this.btn_InverseSelected);
-            this.gb_FooterButtons.Location = new System.Drawing.Point(9, 678);
+            this.gb_FooterButtons.Location = new System.Drawing.Point(9, 684);
             this.gb_FooterButtons.Name = "gb_FooterButtons";
-            this.gb_FooterButtons.Size = new System.Drawing.Size(516, 43);
+            this.gb_FooterButtons.Size = new System.Drawing.Size(478, 45);
             this.gb_FooterButtons.TabIndex = 49;
             this.gb_FooterButtons.TabStop = false;
             // 
@@ -438,7 +439,7 @@
             // 
             // btn_SelectAll
             // 
-            this.btn_SelectAll.Location = new System.Drawing.Point(203, 14);
+            this.btn_SelectAll.Location = new System.Drawing.Point(194, 14);
             this.btn_SelectAll.Name = "btn_SelectAll";
             this.btn_SelectAll.Size = new System.Drawing.Size(75, 23);
             this.btn_SelectAll.TabIndex = 26;
@@ -448,7 +449,7 @@
             // 
             // btn_DeselectAll
             // 
-            this.btn_DeselectAll.Location = new System.Drawing.Point(301, 14);
+            this.btn_DeselectAll.Location = new System.Drawing.Point(275, 14);
             this.btn_DeselectAll.Name = "btn_DeselectAll";
             this.btn_DeselectAll.Size = new System.Drawing.Size(75, 23);
             this.btn_DeselectAll.TabIndex = 27;
@@ -458,7 +459,7 @@
             // 
             // btn_InverseSelected
             // 
-            this.btn_InverseSelected.Location = new System.Drawing.Point(396, 14);
+            this.btn_InverseSelected.Location = new System.Drawing.Point(356, 14);
             this.btn_InverseSelected.Name = "btn_InverseSelected";
             this.btn_InverseSelected.Size = new System.Drawing.Size(110, 23);
             this.btn_InverseSelected.TabIndex = 28;
@@ -468,7 +469,7 @@
             // 
             // btn_Options
             // 
-            this.btn_Options.Location = new System.Drawing.Point(707, 692);
+            this.btn_Options.Location = new System.Drawing.Point(603, 698);
             this.btn_Options.Name = "btn_Options";
             this.btn_Options.Size = new System.Drawing.Size(61, 23);
             this.btn_Options.TabIndex = 51;
@@ -479,7 +480,7 @@
             // btn_Exit
             // 
             this.btn_Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_Exit.Location = new System.Drawing.Point(797, 692);
+            this.btn_Exit.Location = new System.Drawing.Point(697, 698);
             this.btn_Exit.Name = "btn_Exit";
             this.btn_Exit.Size = new System.Drawing.Size(75, 23);
             this.btn_Exit.TabIndex = 50;
@@ -491,17 +492,17 @@
             // 
             this.lb_Log.FormattingEnabled = true;
             this.lb_Log.HorizontalScrollbar = true;
-            this.lb_Log.Location = new System.Drawing.Point(9, 583);
+            this.lb_Log.Location = new System.Drawing.Point(9, 604);
             this.lb_Log.Name = "lb_Log";
-            this.lb_Log.Size = new System.Drawing.Size(863, 95);
+            this.lb_Log.Size = new System.Drawing.Size(763, 82);
             this.lb_Log.TabIndex = 52;
             // 
             // rtb_DownloadFailed
             // 
-            this.rtb_DownloadFailed.Location = new System.Drawing.Point(337, 327);
+            this.rtb_DownloadFailed.Location = new System.Drawing.Point(232, 360);
             this.rtb_DownloadFailed.Name = "rtb_DownloadFailed";
             this.rtb_DownloadFailed.ReadOnly = true;
-            this.rtb_DownloadFailed.Size = new System.Drawing.Size(535, 59);
+            this.rtb_DownloadFailed.Size = new System.Drawing.Size(540, 55);
             this.rtb_DownloadFailed.TabIndex = 53;
             this.rtb_DownloadFailed.Text = "";
             // 
@@ -510,9 +511,9 @@
             this.gb_SongHeader.Controls.Add(this.btn_GoToAlbumPage);
             this.gb_SongHeader.Controls.Add(this.label2);
             this.gb_SongHeader.Controls.Add(this.tb_RO_AlbumURI);
-            this.gb_SongHeader.Location = new System.Drawing.Point(900, 171);
+            this.gb_SongHeader.Location = new System.Drawing.Point(232, 173);
             this.gb_SongHeader.Name = "gb_SongHeader";
-            this.gb_SongHeader.Size = new System.Drawing.Size(535, 101);
+            this.gb_SongHeader.Size = new System.Drawing.Size(540, 101);
             this.gb_SongHeader.TabIndex = 54;
             this.gb_SongHeader.TabStop = false;
             this.gb_SongHeader.Visible = false;
@@ -548,7 +549,7 @@
             // 
             // pb_ProcStatusImage
             // 
-            this.pb_ProcStatusImage.Location = new System.Drawing.Point(215, 60);
+            this.pb_ProcStatusImage.Location = new System.Drawing.Point(9, 339);
             this.pb_ProcStatusImage.Name = "pb_ProcStatusImage";
             this.pb_ProcStatusImage.Size = new System.Drawing.Size(76, 76);
             this.pb_ProcStatusImage.TabIndex = 55;
@@ -556,20 +557,21 @@
             // 
             // lbl_ProcStatusText
             // 
-            this.lbl_ProcStatusText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lbl_ProcStatusText.Location = new System.Drawing.Point(215, 149);
+            this.lbl_ProcStatusText.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbl_ProcStatusText.Location = new System.Drawing.Point(91, 339);
             this.lbl_ProcStatusText.Name = "lbl_ProcStatusText";
-            this.lbl_ProcStatusText.Size = new System.Drawing.Size(92, 76);
+            this.lbl_ProcStatusText.Size = new System.Drawing.Size(118, 34);
             this.lbl_ProcStatusText.TabIndex = 56;
-            this.lbl_ProcStatusText.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lbl_ProcStatusText.Text = "Some errors";
+            this.lbl_ProcStatusText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btn_StopProcess
             // 
             this.btn_StopProcess.Enabled = false;
             this.btn_StopProcess.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_StopProcess.Location = new System.Drawing.Point(219, 231);
+            this.btn_StopProcess.Location = new System.Drawing.Point(131, 380);
             this.btn_StopProcess.Name = "btn_StopProcess";
-            this.btn_StopProcess.Size = new System.Drawing.Size(78, 39);
+            this.btn_StopProcess.Size = new System.Drawing.Size(78, 35);
             this.btn_StopProcess.TabIndex = 57;
             this.btn_StopProcess.Text = "STOP";
             this.btn_StopProcess.UseVisualStyleBackColor = true;
@@ -587,7 +589,7 @@
             this.gb_MainHeader.Controls.Add(this.lbl_D_Format);
             this.gb_MainHeader.Controls.Add(this.tb_RO_Genre);
             this.gb_MainHeader.Controls.Add(this.tb_RO_Format);
-            this.gb_MainHeader.Location = new System.Drawing.Point(332, 60);
+            this.gb_MainHeader.Location = new System.Drawing.Point(232, 60);
             this.gb_MainHeader.Name = "gb_MainHeader";
             this.gb_MainHeader.Size = new System.Drawing.Size(540, 105);
             this.gb_MainHeader.TabIndex = 58;
@@ -603,7 +605,7 @@
             // 
             // btn_About
             // 
-            this.btn_About.Location = new System.Drawing.Point(607, 692);
+            this.btn_About.Location = new System.Drawing.Point(507, 698);
             this.btn_About.Name = "btn_About";
             this.btn_About.Size = new System.Drawing.Size(75, 23);
             this.btn_About.TabIndex = 60;
@@ -611,11 +613,19 @@
             this.btn_About.UseVisualStyleBackColor = true;
             this.btn_About.Click += new System.EventHandler(this.btn_About_Click);
             // 
+            // prbr_Processing
+            // 
+            this.prbr_Processing.Location = new System.Drawing.Point(232, 322);
+            this.prbr_Processing.Name = "prbr_Processing";
+            this.prbr_Processing.Size = new System.Drawing.Size(540, 23);
+            this.prbr_Processing.TabIndex = 61;
+            // 
             // frm_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 730);
+            this.ClientSize = new System.Drawing.Size(784, 730);
+            this.Controls.Add(this.prbr_Processing);
             this.Controls.Add(this.btn_About);
             this.Controls.Add(this.lbl_ImageInfo);
             this.Controls.Add(this.gb_MainHeader);
@@ -640,7 +650,7 @@
             this.MaximizeBox = false;
             this.Name = "frm_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Myzuka.ru Grabber ver.1.0";
+            this.Text = "Myzuka.ru Grabber ver.2.0";
             this.Load += new System.EventHandler(this.frm_Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).EndInit();
             this.gb_Album_Header.ResumeLayout(false);
@@ -712,6 +722,7 @@
         private System.Windows.Forms.GroupBox gb_MainHeader;
         private System.Windows.Forms.Label lbl_ImageInfo;
         private System.Windows.Forms.Button btn_About;
+        private System.Windows.Forms.ProgressBar prbr_Processing;
     }
 }
 

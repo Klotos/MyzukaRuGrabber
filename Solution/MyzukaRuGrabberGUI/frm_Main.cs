@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace MyzukaRuGrabberGUI
     /// </summary>
     public partial class frm_Main : Form
     {
-        #region Maintenance
+        
         /// <summary>
         /// Конструктор основной формы без параметров, со стандартным телом
         /// </summary>
@@ -174,7 +175,20 @@ namespace MyzukaRuGrabberGUI
                 this.lb_Log.Invoke(deleg, Message);
             }
         }
-        #endregion
+
+        private void ResetProgressBar()
+        {
+            if (this.prbr_Processing.InvokeRequired == false)
+            {
+                this.prbr_Processing.Minimum = 0;
+                this.prbr_Processing.Value = 0;
+                this.prbr_Processing.Enabled = false;
+            }
+            else
+            {
+                this.prbr_Processing.Invoke((Action) this.ResetProgressBar);
+            }
+        }
 
         #region Selection
         private void btn_InverseSelected_Click(object sender, EventArgs e)
@@ -224,6 +238,7 @@ namespace MyzukaRuGrabberGUI
         private async void btn_Grab_Click(object sender, EventArgs e)
         {
             this.SetOrAppendMessage(true, null);
+            this.ResetProgressBar();
             String error_message;
             Uri input_URI = Core.TryParseURI(this.tb_InputURI.Text, out error_message);
             if (input_URI == null)
@@ -275,8 +290,8 @@ namespace MyzukaRuGrabberGUI
             this._cancelGrabbingPage = null;
             if (this._parsedItem.IsNull() == true)
             {
+                this.CleanLayout();
                 this.UpdateStatus(4);
-                this.AddToLog("Невозможно распознать страницу по введённой URI как корректную страницу альбома или песни");
             }
             else if (this._parsedItem is ParsedAlbum)
             {
@@ -299,6 +314,7 @@ namespace MyzukaRuGrabberGUI
             this.AddToLog("Задание по скачиванию и парсингу страницы было отменено");
             this.SetOrAppendMessage(true, "Процесс скачивания и парсинга страницы был успешно отменён");
             this.UpdateStatus(6);
+            this.LockOrUnlockFooterButtons(true);
             data.Dispose();
             data = null;
         }
@@ -330,7 +346,7 @@ namespace MyzukaRuGrabberGUI
         private void OnFailed(Exception ex)
         {
             this.AddToLog(ex.TotalMessage());
-            this.SetOrAppendMessage(true, ex.TotalMessage());
+            this.SetOrAppendMessage(true, "Произошла ошибка при скачивании или парсинге страницы: " + ex.TotalMessage());
         }
         #endregion
 
@@ -349,6 +365,33 @@ namespace MyzukaRuGrabberGUI
             else
             {
                 this.Invoke((Action<Boolean>)LockOrUnlockInterface, Lock);
+            }
+        }
+
+        /// <summary>
+        /// true - lock; false - unlock; null - negate
+        /// </summary>
+        /// <param name="Lock"></param>
+        private void LockOrUnlockFooterButtons(Nullable<Boolean> Lock)
+        {
+            if (this.gb_FooterButtons.InvokeRequired == false)
+            {
+                switch (Lock)
+                {
+                    case true:
+                        this.gb_FooterButtons.Enabled = false;
+                        break;
+                    case false:
+                        this.gb_FooterButtons.Enabled = true;
+                        break;
+                    case null:
+                        this.gb_FooterButtons.Enabled = !this.gb_FooterButtons.Enabled;
+                        break;
+                }
+            }
+            else
+            {
+                this.gb_FooterButtons.Invoke((Action<Nullable<Boolean>>) this.LockOrUnlockFooterButtons, Lock);
             }
         }
 
@@ -376,14 +419,52 @@ namespace MyzukaRuGrabberGUI
                 this.rtb_DownloadFailed.Invoke((Action<Boolean, String>) this.SetOrAppendMessage, SetOrAppend, Message);
             }
         }
-        
+
+        private void CleanLayout()
+        {
+            const String empty = "";
+            if (this.InvokeRequired == false)
+            {
+                this.pb_ItemImage.Image = null;
+                this.btn_SaveImage.Enabled = false;
+                this.lbl_ImageInfo.Text = empty;
+
+                this.tb_RO_Title.Text = empty;
+                this.tb_RO_Artist.Text = empty;
+                this.tb_RO_Genre.Text = empty;
+                this.tb_RO_Uploader.Text = empty;
+                this.tb_RO_Format.Text = empty;
+
+                this.gb_SongHeader.Visible = false;
+                this.btn_GoToAlbumPage.Enabled = false;
+                this.tb_RO_AlbumURI.Text = empty;
+
+                this.gb_Album_Header.Visible = false;
+                this.tb_RO_Count_Album.Text = empty;
+                this.tb_RO_Type_Album.Text = empty;
+                this.tb_RO_Updater_Album.Text = empty;
+                this.tb_RO_Date_Album.Text = empty;
+                this.tb_RO_Description_Album.Text = empty;
+
+                this.dgv_List.Rows.Clear();
+
+                this.SwitchStopButtonStatus(false);
+
+                this.LockOrUnlockFooterButtons(true);
+
+                this.ResetProgressBar();
+            }
+            else
+            {
+                this.Invoke((Action)this.CleanLayout);
+            }
+        }
+
         private void RenderAlbum(ParsedAlbum album)
         {
             if (this.InvokeRequired == false)
             {
                 this.gb_SongHeader.Visible = false;
-                this.gb_SongHeader.Location = new Point(900, 171);
-                this.gb_Album_Header.Location = new Point(332, 171);
                 this.gb_Album_Header.Visible = true;
                 
                 this.tb_RO_Title.Text = album.Header.Title;
@@ -447,8 +528,6 @@ namespace MyzukaRuGrabberGUI
             if (this.InvokeRequired == false)
             {
                 this.gb_Album_Header.Visible = false;
-                this.gb_Album_Header.Location = new Point(900, 171);
-                this.gb_SongHeader.Location = new Point(332, 171);
                 this.gb_SongHeader.Visible = true;
                 this.btn_GoToAlbumPage.Enabled = true;
 
@@ -528,7 +607,7 @@ namespace MyzukaRuGrabberGUI
                 new_filename = this._parsedItem.CoverFile.Filename;
             }
             Task<String> result = Core.TrySaveDownloadedFileToDiskAsync
-                (this._parsedItem.CoverFile, this.GetSavePath(), new_filename);
+                (this._parsedItem.CoverFile, ProgramSettings.PrepareSavePath(this._parsedItem.Album), new_filename);
             result.ContinueWith(
                 (Task<String> a) =>
                 {
@@ -547,35 +626,16 @@ namespace MyzukaRuGrabberGUI
             );
         }
 
-        private String GetSavePath()
-        {
-            String save_path;
-            if (ProgramSettings.Instance.UseDistinctFolder == true)
-            {
-                String new_folder;
-                FilePathTools.TryCleanFilename(this._parsedItem.Album, out new_folder);
-                save_path = Path.Combine(ProgramSettings.Instance.SavedFilesPath, new_folder);
-            }
-            else
-            {
-                save_path = ProgramSettings.Instance.SavedFilesPath;
-            }
-            if (Directory.Exists(save_path) == false)
-            {
-                Directory.CreateDirectory(save_path);
-            }
-            return save_path;
-        }
-
         private void btn_DownloadSelected_Click(object sender, EventArgs e)
         {
             if(this._parsedItem == null) { return; }
-            String save_path = this.GetSavePath();
+            String save_path = ProgramSettings.PrepareSavePath(this._parsedItem.Album);
             
             this.LockOrUnlockInterface(true);
 
             if (this._parsedItem is ParsedSong)
             {
+                this.SwitchStopButtonStatus(false);
                 ParsedSong song = (ParsedSong)this._parsedItem;
                 Object raw = this.dgv_List.Rows[0].Cells[6].Value;
                 if (raw.IsNull() == true || (Boolean) raw == false)
@@ -588,6 +648,7 @@ namespace MyzukaRuGrabberGUI
                 }
 
                 this.UpdateStatus(2);
+                this.AddToLog("Выполнение задания по скачиванию и сохранению песни '"+song.Header.Name+"' началось");
                 Task<DownloadedFile> task_song_file = Core.DownloadOneSongAsync(song, ProgramSettings.Instance.UserAgent);
                 task_song_file.ContinueWith(
                     (Task<DownloadedFile> already_downloaded) =>
@@ -665,7 +726,7 @@ namespace MyzukaRuGrabberGUI
                 }
                 this.UpdateStatus(2);
                 this.SwitchStopButtonStatus(true);
-                this.DownloadAndSave(selected_for_download);
+                this.DownloadAndSave2(selected_for_download);
                 return;
             }
         }
@@ -676,7 +737,7 @@ namespace MyzukaRuGrabberGUI
             this._cancelSongsDownload = new CancellationTokenSource();
             Task<IDictionary<OneSongHeader, Exception>> res_task = Core.TryDownloadAndSaveAllSongsAsync
                 (Songs, ProgramSettings.Instance.UserAgent,
-                this.GetSavePath(), !ProgramSettings.Instance.UseServerFilenames,
+                ProgramSettings.PrepareSavePath(this._parsedItem.Album), !ProgramSettings.Instance.UseServerFilenames,
                 this._cancelSongsDownload.Token, ProgramSettings.Instance.MaxDownloadThreads);
             res_task.ContinueWith(
                 (Task<IDictionary<OneSongHeader, Exception>> r) =>
@@ -719,8 +780,101 @@ namespace MyzukaRuGrabberGUI
                     String message = "Отмена операции скачивания и сохранения успешно завершена";
                     this.AddToLog(message);
                     this.SetOrAppendMessage(true, message);
-                },
-                TaskContinuationOptions.OnlyOnCanceled);
+                }, TaskContinuationOptions.OnlyOnCanceled);
+        }
+
+        private void DownloadAndSave2(List<OneSongHeader> SongsForDownload)
+        {
+            SongsForDownload.ThrowIfNullOrEmpty();
+            this._cancelSongsDownload = new CancellationTokenSource();
+
+            this.AddToLog("Выполнение задания по скачиванию и сохранению "+SongsForDownload.Count+" песен началось");
+            this.prbr_Processing.Enabled = true;
+            this.prbr_Processing.Minimum = 0;
+            this.prbr_Processing.Maximum = SongsForDownload.Count;
+            this.prbr_Processing.Value = 0;
+            this.prbr_Processing.Step = 1;
+
+            ReactiveDownloader rd = ReactiveDownloader.CreateTask
+                (SongsForDownload, ProgramSettings.Instance.UserAgent, 
+                ProgramSettings.PrepareSavePath(this._parsedItem.Album), !ProgramSettings.Instance.UseServerFilenames);
+
+            rd.OnCancellation += delegate(Int32 i, Int32 j)
+            {
+                this.AddToLog("Результат запроса на отмену скачивания: успело скачаться "+i +" песен из "+j+" запрошенных");
+            };
+            rd.OnComplete+= delegate(IDictionary<OneSongHeader, Exception> res)
+            {
+                this.AddToLog("Скачивание всех "+res.Count+" песен успешно завершено");
+            };
+            rd.OnNext+= delegate(OneSongHeader header, Exception exception)
+            {
+                this.AddToLog(String.Format("Получен результат песни '{0}.{1}' - {2}", 
+                    header.Number, header.Name, exception == null ? "Ok" : exception.TotalMessage()));
+                Action a = () => this.prbr_Processing.PerformStep();
+                if (this.prbr_Processing.InvokeRequired == false)
+                {
+                    a.Invoke();
+                }
+                else
+                {
+                    this.prbr_Processing.Invoke(a);
+                }
+            };
+
+            Task<IDictionary<OneSongHeader, Exception>> res_task = rd.StartAsync
+                (this._cancelSongsDownload.Token, ProgramSettings.Instance.MaxDownloadThreads);
+            res_task.ContinueWith(
+                (Task<IDictionary<OneSongHeader, Exception>> r) =>
+                {
+                    IDictionary<OneSongHeader, Exception> result = r.Result;
+                    Dictionary<OneSongHeader, Exception> failed =
+                        result.Where(kvp => kvp.Value != null).ConvertToDictionary();
+                    String message;
+                    if (failed.IsNullOrEmpty() == true)
+                    {
+                        message = String.Format("Скачивание и сохранение на диск всех {0} песен успешно завершено",
+                            result.Count);
+                        this.UpdateStatus(3);
+                    }
+                    else if (failed.Count == result.Count)
+                    {
+                        message = String.Format(
+                            "Не удалось скачать или сохранить на диск ни одну из {0} песен. Список ошибок: \r\n{1}",
+                            result.Count,
+                            failed.ConcatToString
+                                (key => "'" + key.Number.ToString() + ". " + key.Name + "'",
+                                    value => value.TotalMessage(), " --> ", ";\r\n "));
+                        this.UpdateStatus(4);
+                    }
+                    else
+                    {
+                        message = String.Format(
+                            "Из {0} выбранных песен не удалось скачать {1}. Список ошибок: \r\n{2}",
+                            result.Count, failed.Count, failed.ConcatToString
+                                (key => "'" + key.Number + ". " + key.Name + "'",
+                                    value => value.TotalMessage(), " --> ", ";\r\n "));
+                        this.UpdateStatus(5);
+                    }
+                    this.AddToLog(message);
+                    this.SetOrAppendMessage(true, message);
+                    this.LockOrUnlockInterface(false);
+                    this.SwitchStopButtonStatus(false);
+                    this._cancelSongsDownload.Dispose();
+                    this._cancelSongsDownload = null;
+                }, TaskContinuationOptions.NotOnCanceled);
+
+            res_task.ContinueWith(
+                (Task<IDictionary<OneSongHeader, Exception>> r) =>
+                {
+                    this.LockOrUnlockInterface(false);
+                    this.SwitchStopButtonStatus(false);
+                    this.UpdateStatus(6);
+                    String message = "Отмена операции скачивания и сохранения успешно завершена";
+                    this.AddToLog(message);
+                    this.SetOrAppendMessage(true, message);
+                }, TaskContinuationOptions.OnlyOnCanceled);
+            
         }
 
         private void btn_GoToAlbumPage_Click(object sender, EventArgs e)
@@ -731,7 +885,6 @@ namespace MyzukaRuGrabberGUI
                 this.tb_InputURI.Text = song.AlbumLink.ToString();
                 this.btn_GoToAlbumPage.Enabled = false;
                 this.UpdateStatus(1);
-                this.SetOrAppendMessage(true, null);
                 this.btn_Grab_Click(null, EventArgs.Empty);
             }
         }
@@ -760,17 +913,37 @@ namespace MyzukaRuGrabberGUI
 
         private void btn_About_Click(object sender, EventArgs e)
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var buildDateTime = new DateTime(2000, 1, 1).Add(new TimeSpan(
-                TimeSpan.TicksPerDay * version.Build + TimeSpan.TicksPerSecond * 2 * version.Revision)
-                );
-            String about_text = String.Format("Myzuka.ru Grabber ver.1.0\r\nCopyright © Klotos\r\nBuild date: {0} EET\r\n" +
+            DateTime threshold = new DateTime(2010, 01, 01);
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            IEnumerable<String> ass_info = from Assembly ass in assemblies
+                let ver = ass.GetName().Version
+                let name = ass.GetName().Name
+                let bdt = 
+                    new DateTime(2000, 1, 1).Add(new TimeSpan(
+                    TimeSpan.TicksPerDay * ver.Build + TimeSpan.TicksPerSecond * 2 * ver.Revision)
+                    )
+                let bdt_string = (bdt < threshold ? "unknown" : bdt.ToString("yyyy-MM-dd HH.mm.ss") + " EET")
+                let gac = (ass.GlobalAssemblyCache == true ? " from GAC, " : " from file, ")
+                where name.IsIn(StringComparison.Ordinal, "HtmlAgilityPack", "KlotosLib") || 
+                    name.StartsWith("MyzukaRuGrabber", StringComparison.OrdinalIgnoreCase)
+                orderby name ascending 
+                select ass.GetName().Name + gac + "Compiled with .NET " + ass.ImageRuntimeVersion + "\r\nBuild date: " + bdt_string;
+            
+            Int32 i = 0;
+            string ass_info_final = ass_info.ConcatToString((String x) => { i++; return i + ". " + x; }, "", "", "\r\n", true);
+            
+            String about_text = String.Format("Myzuka.ru Grabber ver.2.0\r\nCopyright © Klotos\r\n" +
                 "Created with C# 5.0, .NET Framework 4.5, VS 2012\r\n\r\nEnvironment information\r\n"+
-                "Logical processors count: {1} \r\nMachine name: {2}\r\nRunning as 64-bit application: {3}\r\nCurrent folder: {4}",
-                buildDateTime.ToString("yyyy-MM-dd HH.mm.ss"),
-                Environment.ProcessorCount, Environment.MachineName, Environment.Is64BitProcess == true ? "Yes" : "No",
-                ProgramSettings.Default.SavedFilesPath);
+                "Logical processors count: {0} \r\nMachine name: {1}\r\nOperating system: {2}"+
+                "\r\nRunning as 64-bit application: {3}\r\nCurrent folder: {4}\r\n\r\nAssemblies info:\r\n{5}",
+                Environment.ProcessorCount, Environment.MachineName,
+                Environment.OSVersion.ToString()+" "+(Environment.Is64BitOperatingSystem == true ? "64-bit" : "32-bit"), 
+                Environment.Is64BitProcess == true ? "Yes" : "No", ProgramSettings.Default.SavedFilesPath,
+                ass_info_final);
+
             MessageBox.Show(about_text, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
         }
     }
 }

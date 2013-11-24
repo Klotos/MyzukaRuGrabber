@@ -15,6 +15,7 @@ namespace MyzukaRuGrabberGUI
     /// </summary>
     internal class ProgramSettings
     {
+        #region Constructors
         static ProgramSettings(){}
 
         /// <summary>
@@ -42,16 +43,48 @@ namespace MyzukaRuGrabberGUI
             this._savedFilesPath = SavedFilesPath;
             this._userAgent = UserAgent;
         }
+        #endregion
+
+        private static readonly ProgramSettings _default = new ProgramSettings(true);
 
         private static ProgramSettings _instance = new ProgramSettings(true);
 
         internal static ProgramSettings Instance { get { return ProgramSettings._instance; }}
 
-        internal static ProgramSettings Default { get {return new ProgramSettings(true);}}
+        internal static ProgramSettings Default { get {return ProgramSettings._default;}}
 
-        internal static void SetDefault()
+        internal static Boolean SetDefault()
         {
-            ProgramSettings._instance = new ProgramSettings(true);
+            if (ProgramSettings._default.IsDefault == true) { return false; }
+            ProgramSettings._instance = ProgramSettings._default;
+            return true;
+        }
+        
+        /// <summary>
+        /// Подготавливает и возвращает путь для сохранения файлов
+        /// </summary>
+        /// <param name="AlbumName"></param>
+        /// <returns></returns>
+        internal static String PrepareSavePath(String AlbumName)
+        {
+            String save_path;
+            if (ProgramSettings.Instance.UseDistinctFolder == true)
+            {
+                String new_folder;
+                Boolean success = FilePathTools.TryCleanFilename(AlbumName, out new_folder);
+                if (success == false)
+                { throw new ArgumentException("Невозможно исправить указанное название альбома '"+AlbumName+"'", "AlbumName"); }
+                save_path = Path.Combine(ProgramSettings.Instance.SavedFilesPath, new_folder);
+            }
+            else
+            {
+                save_path = ProgramSettings.Instance.SavedFilesPath;
+            }
+            if (Directory.Exists(save_path) == false)
+            {
+                Directory.CreateDirectory(save_path);
+            }
+            return save_path;
         }
 
         internal static Dictionary<String, String> TransactionalApply(Boolean UseDistinctFolder, Boolean UseServerFilenames,
@@ -86,7 +119,6 @@ namespace MyzukaRuGrabberGUI
         }
 
         #region Instance fields
-
         private readonly Boolean _useDistinctFolder;
         /// <summary>
         /// Определяет, необходимо ли при сохранении песен альбома помещать их в отдельную папку (true) 
@@ -118,12 +150,20 @@ namespace MyzukaRuGrabberGUI
         /// User-Agent, который будет использоваться для запросов к сайту
         /// </summary>
         internal String UserAgent { get { return this._userAgent; } }
-
-        
-
-        
-
-        
         #endregion
+
+        internal Boolean IsDefault
+        {
+            get
+            {
+                Boolean result =
+                    _instance.UseDistinctFolder == _default.UseDistinctFolder &&
+                    _instance.UseServerFilenames == _default.UseServerFilenames &&
+                    _instance.MaxDownloadThreads == _default.MaxDownloadThreads &&
+                    _instance.UserAgent.Equals(_default.UserAgent, StringComparison.Ordinal) &&
+                    _instance.SavedFilesPath.Equals(_default.SavedFilesPath, StringComparison.Ordinal);
+                return result;
+            }
+        }
     }
 }

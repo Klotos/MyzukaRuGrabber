@@ -684,14 +684,22 @@ namespace MyzukaRuGrabberCore
                     String content_type = response.Headers["Content-Type"];
                     String raw_content_length = response.Headers["Content-Length"];
                     Int32 content_length = raw_content_length.TryParseNumber<Int32>(NumberStyles.Integer, null, -10);
+                    if (content_disposition.HasAlphaNumericChars() == false
+                        || content_type.HasAlphaNumericChars() == false
+                        || raw_content_length.HasAlphaNumericChars() == false
+                        || raw_content_length.Equals("0", StringComparison.InvariantCultureIgnoreCase) == true)
+                    {
+                        return null;
+                    }
                     if (content_length == -10)
                     {
                         return null;
                     }
-                    if (content_type.Equals("application/octet-stream", StringComparison.OrdinalIgnoreCase) == false)
-                    {
-                        return null;
-                    }
+                    ////application/mp3
+                    //if (content_type.Equals("application/octet-stream", StringComparison.OrdinalIgnoreCase) == false)
+                    //{
+                    //    return null;
+                    //}
                     if (content_disposition.Contains("attachment", StringComparison.OrdinalIgnoreCase) == false ||
                         content_disposition.Contains("filename", StringComparison.OrdinalIgnoreCase) == false)
                     {

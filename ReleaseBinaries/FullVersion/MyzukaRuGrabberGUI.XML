@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyzukaRuGrabberGUI</name>
+    </assembly>
+    <members>
+        <member name="T:MyzukaRuGrabberGUI.frm_Main">
+            <summary>
+            Основная форма программы
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.#ctor">
+            <summary>
+            Конструктор основной формы без параметров, со стандартным телом
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.UpdateStatus(System.Byte)">
+            <summary>
+            1 - ready; 2 - processing; 3 - completed/success; 4 - failed; 5 - some errors; 6 - stopped/interrupted; 7 - cancelling
+            </summary>
+            <param name="StatusCode"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.SwitchStopButtonStatus(System.Nullable{System.Boolean})">
+            <summary>
+            true - enable; false - disable; null - negate status
+            </summary>
+            <param name="NewStatus"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.AddToLog(System.String)">
+            <summary>
+            Добавляет новую запись в лог. Потоконезависим.
+            </summary>
+            <param name="Message"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.LockOrUnlockInterface(System.Boolean)">
+            <summary>
+            true - lock interface; false - unlock interface
+            </summary>
+            <param name="Lock"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.LockOrUnlockFooterButtons(System.Nullable{System.Boolean})">
+            <summary>
+            true - lock; false - unlock; null - negate
+            </summary>
+            <param name="Lock"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.SetOrAppendMessage(System.Boolean,System.String)">
+            <summary>
+            Устанавливает новое или дополняет существующее текстовое сообщение о выполнении процесса
+            </summary>
+            <param name="SetOrAppend">true - set; false - append</param>
+            <param name="Message"></param>
+        </member>
+        <member name="F:MyzukaRuGrabberGUI.frm_Main.components">
+            <summary>
+            Требуется переменная конструктора.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.Dispose(System.Boolean)">
+            <summary>
+            Освободить все используемые ресурсы.
+            </summary>
+            <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Main.InitializeComponent">
+            <summary>
+            Обязательный метод для поддержки конструктора - не изменяйте
+            содержимое данного метода при помощи редактора кода.
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberGUI.frm_Options">
+            <summary>
+            Форма для меню настроек
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Options.#ctor">
+            <summary>
+            Инициализирует содержимое формы
+            </summary>
+        </member>
+        <member name="F:MyzukaRuGrabberGUI.frm_Options.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Options.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.frm_Options.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.Program.Main">
+            <summary>
+            Главная точка входа для приложения.
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberGUI.ProgramSettings">
+            <summary>
+            Инкапсулирует все настройки программы. Синглтон.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.ProgramSettings.#ctor(System.Boolean)">
+            <summary>
+            true - default, false - empty
+            </summary>
+            <param name="Default"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberGUI.ProgramSettings.PrepareSavePath(System.String)">
+            <summary>
+            Подготавливает и возвращает путь для сохранения файлов
+            </summary>
+            <param name="AlbumName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.ProgramSettings.UseDistinctFolder">
+            <summary>
+            Определяет, необходимо ли при сохранении песен альбома помещать их в отдельную папку (true) 
+            или же помещать в общую папку (false)
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.ProgramSettings.UseServerFilenames">
+            <summary>
+            Определяет, использовать ли поставляемые сервером (true) или собственно сгенерированные (false) имена 
+            файлов песен и обложек при их сохранении
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.ProgramSettings.MaxDownloadThreads">
+            <summary>
+            Определяет количество потоков, в которых одновременно будут выполняться запросы на скачивание песен с сервера. 0 - неограничено.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.ProgramSettings.SavedFilesPath">
+            <summary>
+            Путь, по которому будут сохраняться файлы
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.ProgramSettings.UserAgent">
+            <summary>
+            User-Agent, который будет использоваться для запросов к сайту
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberGUI.Properties.Resources">
+            <summary>
+              Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ResourceManager">
+            <summary>
+              Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.Culture">
+            <summary>
+              Перезаписывает свойство CurrentUICulture текущего потока для всех
+              обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageFailed">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageFinished">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageReady">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageSomeErrors">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageSpinnerCancelling">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageSpinnerProcessing">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberGUI.Properties.Resources.ImageStopped">
+            <summary>
+              Поиск локализованного ресурса типа System.Drawing.Bitmap.
+            </summary>
+        </member>
+    </members>
+</doc>

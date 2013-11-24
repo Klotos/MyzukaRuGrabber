@@ -492,8 +492,9 @@ namespace MyzukaRuGrabberCore
                 using (FileStream fs = new FileStream(new_filename, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     song_file.FileBody.Position = 0;
-                    song_file.FileBody.CopyTo(fs, 1024 * 8);
+                    song_file.FileBody.CopyTo(fs, 1024*8);
                 }
+                return new KeyValuePair<OneSongHeader, Exception>(Song, null);
             }
             catch (Exception ex)
             {
@@ -501,7 +502,11 @@ namespace MyzukaRuGrabberCore
                     "Невозможно сохранить файл песни '{0}.{1}' (альбом {2}) на диск с полным именем файла '{3}' на итерации {4}",
                     Song.Number, Song.Name, Song.Album, new_filename, IterationNumber), ex));
             }
-            return new KeyValuePair<OneSongHeader, Exception>(Song, null);
+            finally
+            {
+                song_file.Dispose();
+                song_file = null;
+            }
         }
 
         /// <summary>

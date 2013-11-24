@@ -1,0 +1,826 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyzukaRuGrabberCore</name>
+    </assembly>
+    <members>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryGrabPage(System.Uri,System.String,System.String@)">
+            <summary>
+            Пытается сделать запрос по указанному URI, скачать страницу и преобразовать её в HTML-документ
+            </summary>
+            <param name="PageURI"></param>
+            <param name="UserAgent"></param>
+            <param name="ErrorMessage">Сообщение об ошибке, если она произошла</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.DetectItemType(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Определяет, является ли указанная страница представлением альбома (true) или одной песни (false). 
+            Если распознавание невозможно, возвращает NULL.
+            </summary>
+            <param name="HTMLPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryGrabImageUri(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Пытается извлечь и вернуть URI изображения, работает как со страницами альбомов, так и песен
+            </summary>
+            <param name="HTMLPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractAlbumUri(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Возвращает URI альбома, HTML-код страницы которого подан на вход
+            </summary>
+            <param name="HTMLPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryGrabCaption(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Возвращает название элемента как для песни, так и для альбома
+            </summary>
+            <param name="InputHTML"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractDownloadSongURI(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Извлекает из страницы песни и возвращает URI на скачку файла песни
+            </summary>
+            <param name="HTMLPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractFromSongAlbumURI(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Извлекает из страницы песни и возвращает URI на страницу альбома, к которому относится данная песня
+            </summary>
+            <param name="HTMLPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryFixReturnURI(System.String,System.String@)">
+            <summary>
+            Пытается очистить от шелухи и возвратить URI
+            </summary>
+            <param name="Input"></param>
+            <param name="ErrorMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractFromHTML(System.String)">
+            <summary>
+            Возвращает исполнителя песни, вычленяя его из части HTML-кода
+            </summary>
+            <param name="Input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ParseOneSongHeader(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Извлекает и возвращает всю информацию по одной песне из страницы песни
+            </summary>
+            <param name="HTMLPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryDownloadFile(System.Uri,System.Uri,System.String,System.String@)">
+            <summary>
+            Пытается скачать и вернуть один файл по указанной ссылке с указанными параметрами. 
+            В случае ошибки возвращает NULL и сообщение об ошибке в ввыводном параметре.
+            </summary>
+            <param name="DownloadURI">Ссылка на скачивание файла</param>
+            <param name="Referer">Referer - ссылка на страницу, с которой якобы осуществлён запрос на скачивание файла</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запроса</param>
+            <param name="ErrorMessage">выводной параметр, содержащий сообщение об ошибке, если она произошла, 
+            или NULL в случае успеха</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryDownloadFileAsync(System.Uri,System.Uri,System.String)">
+            <summary>
+            Пытается асинхронно, не блокируя текущий поток, скачать и вернуть один файл по указанной ссылке 
+            с указанными параметрами. В случае ошибки возвращает NULL.
+            </summary>
+            <param name="DownloadURI">Ссылка на скачивание файла</param>
+            <param name="Referer">Referer - ссылка на страницу, с которой якобы осуществлён запрос на скачивание файла</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запроса</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryConvertFileToImage(MyzukaRuGrabberCore.DataModels.DownloadedFile)">
+            <summary>
+            Пытатся преобразовать указанный файл <paramref name="ReceivedFile"/> в битовую карту и в случае успеха вернуть её
+            </summary>
+            <param name="ReceivedFile"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.ACommonData">
+            <summary>
+            Инкапсулирует общие данные для распарсенных альбома и песни
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.ACommonData.GenerateExternalCoverFilename">
+            <summary>
+            Генерирует имя файла, содержащего обложку изображения, на основании метаданных
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.ACommonData.Dispose">
+            <summary>
+            Освобождает ресурсы, занятые обложкой
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Title">
+            <summary>
+            Общее, составное название альбома либо песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Artist">
+            <summary>
+            Исполнитель альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Album">
+            <summary>
+            Название альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Genre">
+            <summary>
+            Жанр альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.ItemLink">
+            <summary>
+            Ссылка на страницу данного альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Uploader">
+            <summary>
+            Пользователь, загрузивший на сайт данный альбом или песню
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.CoverURI">
+            <summary>
+            Ссылка на изображение обложки альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.CoverFile">
+            <summary>
+            Скачанное изображение обложки альбома или песни, или же NULL, если скачивание не требуется или не удалось
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.CoverImage">
+            <summary>
+            Преобразованное в точечный рисунок изображение обложки альбома или песни, 
+            или же NULL, если скачивание не требуется или не удалось, или же не удалось преобразовать
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.AlbumHeader">
+            <summary>
+            Модель данных распарсенного хидера альбома, без песен. Неизменяемый класс.
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.ICommonHeader">
+            <summary>
+            Интерфейс, описывающий некоторые общие члены для хидеров альбома и песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ICommonHeader.Title">
+            <summary>
+            Название альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ICommonHeader.Artist">
+            <summary>
+            Имя исполнителя альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ICommonHeader.Genre">
+            <summary>
+            Название жанра альбома или песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ICommonHeader.Uploader">
+            <summary>
+            Имя пользователя, загрузившего на сайт данный альбом или песню
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ICommonHeader.PageURI">
+            <summary>
+            URI страницы, на которой расположен данный альбом или песня
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ICommonHeader.CoverImageURI">
+            <summary>
+            URI изображения, представляющего обложку данного альбома или песни
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.AlbumHeader.#ctor(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Byte},System.String,System.String,System.String,System.String,System.Uri,System.Uri)">
+            <summary>
+            Конструктор, заполняет экземпляр хидера альбома всеми необходимыми полными данными
+            </summary>
+            <param name="Title"></param>
+            <param name="Genre"></param>
+            <param name="Artist"></param>
+            <param name="ReleaseDate"></param>
+            <param name="Type"></param>
+            <param name="SongsCount"></param>
+            <param name="Format"></param>
+            <param name="Uploader"></param>
+            <param name="Updater"></param>
+            <param name="Description"></param>
+            <param name="AlbumImageURI"></param>
+            <param name="AlbumPageURI"></param>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Title">
+            <summary>
+            Название альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Genre">
+            <summary>
+            Название жанра альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Artist">
+            <summary>
+            Название исполнителя альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.ReleaseDate">
+            <summary>
+            Дата выпуска
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Type">
+            <summary>
+            Тип альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.SongsCount">
+            <summary>
+            Количество песен
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Format">
+            <summary>
+            Формат альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Uploader">
+            <summary>
+            Изначальный загрузчик альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Updater">
+            <summary>
+            Последний, кто обновлял альбом
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Description">
+            <summary>
+            Пользовательское описание
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.AlbumImageURI">
+            <summary>
+            URI на изображение (обложку) текущего альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.CoverImageURI">
+            <summary>
+            URI на изображение (обложку) текущего альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.AlbumPageURI">
+            <summary>
+            URI на HTML-страницу текущего альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.PageURI">
+            <summary>
+            URI на HTML-страницу текущего альбома
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.Core">
+            <summary>
+            Инкапсулирует все операции по парсингу страниц сайта myzuka.ru
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TryParseURI(System.String,System.String@)">
+            <summary>
+            Парсит и преобразовывает указанную строку, представляющую URI, 
+            и возвращает результат операции через выводной параметр
+            </summary>
+            <param name="Input"></param>
+            <param name="ErrorMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TryGrabAndParsePage(System.Uri,System.String,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Пытается скачать и распарсить страницу альбома или песни по указаннному URI, после чего возвратить результат
+            </summary>
+            <param name="PageURI">URI страницы, по которой должен выполняться запрос</param>
+            <param name="UserAgent">User-Agent, с которым будет исполнен запрос</param>
+            <param name="DownloadCover">Определяет, необходимо ли загружать обложку альбома или песни</param>
+            <param name="InvokeEvents">Определяет, необходимо ли вызывать события в процессе выполнения</param>
+            <param name="CancToken"></param>
+            <returns>Модель, соответсующая альбому или песни, или же NULL в случае провала парсинга</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TryGrabAndParsePageAsync(System.Uri,System.String,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Пытается асинхронно, не блокируя основной поток выполнения, скачать и распарсить страницу альбома или песни по указаннному URI, после чего возвратить результат, инкапсулированный в Task. Поддерживает токен отмены.
+            </summary>
+            <param name="PageURI">URI страницы, по которой должен выполняться запрос</param>
+            <param name="UserAgent">User-Agent, с которым будет исполнен запрос</param>
+            <param name="DownloadCover">Определяет, необходимо ли загружать обложку альбома или песни</param>
+            <param name="InvokeEvents">Определяет, необходимо ли вызывать события в процессе выполнения</param>
+            <param name="CancToken">Токен отмены</param>
+            <returns>Модель, соответсующая альбому или песни, или же NULL в случае провала парсинга</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.DownloadAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.Boolean,System.Collections.Generic.List{System.String}@)">
+            <summary>
+            Скачивает все песни, указанные в наборе, выполняя параллельные запросы к серверу
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запросов</param>
+            <param name="FillFailedWithNull">Определяет, необходимо ли при возникновении ошибки скачивания песни 
+            добавлять в выходной словарь хидер песни с NULL-значением (true), или же не вообще добавлять в словарь (false).</param>
+            <param name="ErrorsList">Выводной параметр, содержащий список всех ошибок, 
+            которые возникли в процессе выполнения задачи, или NULL, если не тпроизошло ни одной ошибки.</param>
+            <returns>Словарь, где ключ - это полученный хидер песни, а значение - успешно скачанный файл этой песни</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.Int32)">
+            <summary>
+            Скачивает и сохраняет на диск по указанному пути все песни, указанные в наборе, 
+            выполняя запросы к серверу с указанной степенью паралеллизма
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запросов</param>
+            <param name="FolderPath">Существующий путь на диске, по которому будут сохранены песни. 
+            Если NULL, некорректный или не существует, будет выброшено исключение.</param>
+            <param name="GenerateNewFilenames">Определяет, следует ли генерировать новое имя файла на основании тэгов песни (true), 
+            или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
+            получившееся имя будет некорректным, метод попытается его исправить. 
+            Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
+            Если меньше 1, ограничение на количество потоков будет снято.</param>
+            <returns>Словарь ключей и значений, где ключ - это поданный на вход хидер песни, а значение - возможное исключение, 
+            которое возникло в процессе скачивания и сохранения песни, или же NULL, если песня была успешно скачана и сохранена.</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.Threading.CancellationToken,System.Int32)">
+            <summary>
+            Скачивает и сохраняет на диск по указанному пути все песни, указанные в наборе, 
+            выполняя запросы к серверу с указанной степенью паралеллизма и с указанным токеном отмены операции
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запросов</param>
+            <param name="FolderPath">Существующий путь на диске, по которому будут сохранены песни. 
+            Если NULL, некорректный или не существует, будет выброшено исключение.</param>
+            <param name="GenerateNewFilenames">Определяет, следует ли генерировать новое имя файла на основании тэгов песни (true), 
+            или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
+            получившееся имя будет некорректным, метод попытается его исправить. 
+            Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="CancToken">Токен отмены операции</param>
+            <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
+            Если меньше 1, ограничение на количество потоков будет снято.</param>
+            <returns>Словарь ключей и значений, где ключ - это поданный на вход хидер песни, а значение - возможное исключение, 
+            которое возникло в процессе скачивания и сохранения песни, или же NULL, если песня была успешно скачана и сохранена.</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongsAsync(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.Threading.CancellationToken,System.Int32)">
+            <summary>
+            Асинхронно, без задержки вызывающего потока, скачивает и сохраняет на диск по указанному пути все песни, указанные в наборе, 
+            выполняя запросы к серверу с указанной степенью паралеллизма и с указанным токеном отмены операции
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запросов</param>
+            <param name="FolderPath">Существующий путь на диске, по которому будут сохранены песни. 
+            Если NULL, некорректный или не существует, будет выброшено исключение.</param>
+            <param name="GenerateNewFilenames">Определяет, следует ли генерировать новое имя файла на основании тэгов песни (true), 
+            или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
+            получившееся имя будет некорректным, метод попытается его исправить. 
+            Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="CancToken">Токен отмены операции</param>
+            <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
+            Если меньше 1, ограничение на количество потоков будет снято.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.DownloadAllSongsAsync(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String)">
+            <summary>
+            Пытается асинхронно, не блокируя основной поток выполнения, скачать все песни, указанные в наборе, 
+            и возвращает их в виде задачи, инкапсулирующей словарь скачанных файлов
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запросов</param>
+            <returns>Задача, инкапсулирующая конкурентный словарь, 
+            где ключ - это полученный хидер песни, а значение - успешно скачанный файл этой песни. 
+            Если значение NULL - при попытке скачивания песни произошла ошибка.</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.DownloadAllSongsAsync(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Пытается асинхронно, не блокируя основной поток выполнения, скачать все песни, указанные в наборе, 
+            и возвращает их в виде задачи, инкапсулирующей словарь скачанных файлов. 
+            Принимает токен отмены, позволяющий отменить выполнение операции на любом этапе.
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть</param>
+            <param name="UserAgent">UserAgent, который будет использоваться при выполнении запросов</param>
+            <param name="CancToken"></param>
+            <returns>Задача, инкапсулирующая конкурентный словарь, 
+            где ключ - это полученный хидер песни, а значение - успешно скачанный файл этой песни. 
+            Если значение NULL - при попытке скачивания песни произошла ошибка.</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.DownloadOneSongAsync(MyzukaRuGrabberCore.DataModels.ParsedSong,System.String)">
+            <summary>
+            Пытается асинхронно, не блокируя основной поток выполнения, скачать одну указанную песню, 
+            информация о которой получена в процессе парсинга страницы песни. В случае ошибки возвращает NULL.
+            </summary>
+            <param name="Song"></param>
+            <param name="UserAgent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TrySaveDownloadedFileToDisk(MyzukaRuGrabberCore.DataModels.DownloadedFile,System.String,System.String)">
+            <summary>
+            Сохраняет указанный файл в указанную папку с опционально указанным именем
+            </summary>
+            <param name="ReceivedFile"></param>
+            <param name="FolderPath"></param>
+            <param name="NewFilename">Необязательное новое имя файла. Если не указано или некорректно, будет использовано то имя файла, которое было получено с сервера</param>
+            <returns>Сообщение об ошибке, если она произошла, или NULL, если всё успешно</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TrySaveDownloadedFileToDiskAsync(MyzukaRuGrabberCore.DataModels.DownloadedFile,System.String,System.String)">
+            <summary>
+            Пытается асинхронно, не блокируя основной поток выполнения, 
+            сохранить указанный файл в указанную папку с опционально указанным именем файла
+            </summary>
+            <param name="ReceivedFile"></param>
+            <param name="FolderPath"></param>
+            <param name="NewFilename">Необязательное новое имя файла. Если не указано или некорректно, будет использовано то имя файла, которое было получено с сервера</param>
+            <returns>Сообщение об ошибке, если она произошла, или NULL, если всё успешно</returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.Core.TrySaveSongsToDiskAsync(System.Collections.Generic.IDictionary{MyzukaRuGrabberCore.DataModels.OneSongHeader,MyzukaRuGrabberCore.DataModels.DownloadedFile},System.String,System.Boolean)">
+            <summary>
+            Пытается асинхронно, не блокируя основной поток выполнения, сохранить все указанные файлы на диск в указанной папке
+             с серверными или самостоятельно сгенерированными именами файлов
+            </summary>
+            <param name="Songs"></param>
+            <param name="FolderPath"></param>
+            <param name="GenerateNewFilenames">Определяет, следует ли генерировать новое имя файла на основании тэгов песни (true), 
+            или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
+            получившееся имя будет некорректным, метод попытается его исправить. 
+            Если же исправить не получится, будет использовано имя с сервера.</param>
+            <returns></returns>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.Core.PageWasDownloaded">
+            <summary>
+            Возникает при завершении успешного скачивания страницы и преобразования её в валидный HTML-документ; 
+            возвращает этот HTML-документ.
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.Core.ItemWasDetected">
+            <summary>
+            Возникает при определении принадлежности страницы; возвращает идентифицированный тип страницы
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.Core.HeaderWasParsed">
+            <summary>
+            Возникает при успешном парсинге хидера альбома или песни; возвращает этот хидер
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.Core.CoverWasAcquired">
+            <summary>
+            Возникает при успешном нахождении, скачивании и преобразовании в битовую карту обложки альбома или песни; 
+            возвращает обложку в виде скачанного файла и битовой карты
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.Core.WorkIsDone">
+            <summary>
+            Возникает при успешном завершении всех работ, непосредственно перед возвращением результата из метода. 
+            В единественном параметре возвращается собственно результат.
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.Core.OnException">
+            <summary>
+            Возникает при выбрасывании исключения во время работы метода; возвращает появившееся исключение.
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.DownloadedFile">
+            <summary>
+            Представляет один скачанный файл. Неизменяемый класс.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.DownloadedFile.#ctor(System.String,System.Int32,System.IO.MemoryStream)">
+            <summary>
+            Конструктор, заполняет экземпляр скачанного файла всеми необходимыми полными данными
+            </summary>
+            <param name="Filename"></param>
+            <param name="Contentlength"></param>
+            <param name="FileBody"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.DownloadedFile.Dispose">
+            <summary>
+            Закрывает байтовый поток в памяти, представляющий данный файл
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.Filename">
+            <summary>
+            Название файла, полученное с сервера
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.Contentlength">
+            <summary>
+            Байтовая длина файла, полученная с сервера
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.FileBody">
+            <summary>
+            Тело файла
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.ParsedAlbum">
+            <summary>
+            Представляет все данные, полученные из распарсенной страницы альбома. Неизменяемый класс.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.ParsedAlbum.#ctor(MyzukaRuGrabberCore.DataModels.AlbumHeader,System.Collections.Generic.List{MyzukaRuGrabberCore.DataModels.OneSongHeader},MyzukaRuGrabberCore.DataModels.DownloadedFile,System.Drawing.Bitmap)">
+            <summary>
+            Конструктор, заполняет экземпляр модели распарсенного альбома всеми необходимыми полными данными
+            </summary>
+            <param name="Header"></param>
+            <param name="Songs"></param>
+            <param name="CoverFile"></param>
+            <param name="CoverImage"></param>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedAlbum.Header">
+            <summary>
+            Метаинформация по альбому
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedAlbum.Songs">
+            <summary>
+            Список всех песен в альбоме
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedAlbum.CoverFile">
+            <summary>
+            Файл обложки альбома или NULL, 
+            если его не требуется скачать или не удалось скачать
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedAlbum.CoverImage">
+            <summary>
+            Изображение обложки альбома или NULL, 
+            если его не требуется скачать, не удалось скачать или не удалось преобразовать в изображение
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.ParsedItemType">
+            <summary>
+            Представляет результат идентификации типа HTML-страницы
+            </summary>
+        </member>
+        <member name="F:MyzukaRuGrabberCore.DataModels.ParsedItemType.Unknown">
+            <summary>
+            Тип страницы неизвестен, продолжение парсинга невозможно = 0
+            </summary>
+        </member>
+        <member name="F:MyzukaRuGrabberCore.DataModels.ParsedItemType.Album">
+            <summary>
+            Страница альбома = 1
+            </summary>
+        </member>
+        <member name="F:MyzukaRuGrabberCore.DataModels.ParsedItemType.Song">
+            <summary>
+            Страница отдельной песни = 2
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.ParsedSong">
+            <summary>
+            Представляет все данные, полученные из распарсенной страницы одной песни. Неизменяемый класс.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.ParsedSong.#ctor(MyzukaRuGrabberCore.DataModels.OneSongHeader,System.Uri,System.Uri,MyzukaRuGrabberCore.DataModels.DownloadedFile,System.Drawing.Bitmap)">
+            <summary>
+            Заполняет экземпляр всеми необходимыми данными
+            </summary>
+            <param name="Header"></param>
+            <param name="DownloadLink"></param>
+            <param name="AlbumLink"></param>
+            <param name="CoverFile"></param>
+            <param name="CoverImage"></param>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.Header">
+            <summary>
+            Метаинформация по песне
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.DownloadLink">
+            <summary>
+            Ссылка на скачивание песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.AlbumLink">
+            <summary>
+            Ссылка на альбом, к которому относится данная песня
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.CoverFile">
+            <summary>
+            Файл обложки песни или NULL, 
+            если его не требуется скачать или не удалось скачать
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.CoverImage">
+            <summary>
+            Изображение обложки песни или NULL, 
+            если его не требуется скачать, не удалось скачать или не удалось преобразовать в изображение
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.CoverURI">
+            <summary>
+            URI на обложку песни, дублирует соответствующее свойство из хидера
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.OneSongHeader">
+            <summary>
+            Модель данных одной распарсенной песни. Неизменяемый класс.
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.#ctor(System.Byte,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Uri,System.Uri,System.Boolean)">
+            <summary>
+            Конструктор, заполняющий экземпляр всеми необходимыми данными
+            </summary>
+            <param name="Number"></param>
+            <param name="Title"></param>
+            <param name="Name"></param>
+            <param name="Artist"></param>
+            <param name="Album"></param>
+            <param name="Genre"></param>
+            <param name="Duration"></param>
+            <param name="Size"></param>
+            <param name="Bitrate"></param>
+            <param name="Format"></param>
+            <param name="Uploader"></param>
+            <param name="SongImageURI"></param>
+            <param name="SongPageUri"></param>
+            <param name="IsAvailableForDownload">Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице</param>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String)">
+            <summary>
+            Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни
+            </summary>
+            <param name="OrigFilename">Оригинальное название песни, полученное из скачанного файла; 
+            из него извлекается расширение имени файла.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Equals(MyzukaRuGrabberCore.DataModels.OneSongHeader)">
+            <summary>
+            Определяет равенство текущего экземпляра с указанным
+            </summary>
+            <param name="Other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Equals(System.Object)">
+            <summary>
+            Определяет равенство текущего экземпляра с указанным неопределённого типа
+            </summary>
+            <param name="Other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GetHashCode">
+            <summary>
+            Возвращает хэш-код для данного экземпляра, сгенерированный на основании всей его полей
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Number">
+            <summary>
+            Номер песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Title">
+            <summary>
+            Название песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Name">
+            <summary>
+            Название песни без исполнителя
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Artist">
+            <summary>
+            Имя исполнителя песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Album">
+            <summary>
+            Альбом, к которому относится песня
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Genre">
+            <summary>
+            Название жанра песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Duration">
+            <summary>
+            Длительность песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Size">
+            <summary>
+            Байтовый размер песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Bitrate">
+            <summary>
+            Битрейт песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Format">
+            <summary>
+            Формат песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Uploader">
+            <summary>
+            Загрузчик песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.SongImageURI">
+            <summary>
+            URI на изображение (обложку) текущей песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.CoverImageURI">
+            <summary>
+            URI на изображение (обложку) текущей песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.SongPageURI">
+            <summary>
+            URI на страницу, представляющую (содержащую) данную песню
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.PageURI">
+            <summary>
+            URI на страницу, представляющую (содержащую) данную песню
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.IsAvailableForDownload">
+            <summary>
+            Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.ReactiveDownloader">
+            <summary>
+            Утилитарный класс, осуществляющий скачивание и сохранение на диск песен и взвращающий результаты реактивным способом
+            </summary>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.ReactiveDownloader.CreateTask(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean)">
+            <summary>
+            Создаёт и возвращает новое задание по скачиванию указанных песен и последующему сохранению их на диск по указанному пути
+            </summary>
+            <param name="Songs">Список всех хидеров песен, файлы песен для которых следует скачать и вернуть. 
+            Не может быть NULL или пустым.</param>
+            <param name="UserAgent">User-Agent, который будет использоваться при выполнении запросов</param>
+            <param name="FolderPath">Существующий путь на диске, по которому будут сохранены песни. 
+            Если NULL, некорректный или не существует, будет выброшено исключение.</param>
+            <param name="GenerateNewFilenames">Определяет, следует ли генерировать новое имя файла на основании тэгов песни (true), 
+            или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
+            получившееся имя будет некорректным, метод попытается его исправить. 
+            Если же исправить не получится, будет использовано имя с сервера.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.ReactiveDownloader.Start(System.Threading.CancellationToken,System.Int32)">
+            <summary>
+            Запускает на выполнение задачу по скачиванию песен и возвращает результат
+            </summary>
+            <param name="CancToken">Токен отмены операции</param>
+            <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
+            Если меньше 1, ограничение на количество потоков будет снято.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.ReactiveDownloader.StartAsync(System.Threading.CancellationToken,System.Int32)">
+            <summary>
+            Запускает на выполнение асинхронную задачу по скачиванию песен и возвращает результат в обёртке типа Task
+            </summary>
+            <param name="CancToken">Токен отмены операции</param>
+            <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
+            Если меньше 1, ограничение на количество потоков будет снято.</param>
+            <returns></returns>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.ReactiveDownloader.OnNext">
+            <summary>
+            Возникает при завершении обработки (скачивания и сохранения) одной песни вне зависимости от того, 
+            успешна ли была обработка или нет. Первый аргумент возвращает метаданные песни, а второй - исключение, 
+            если при обработке возникла ошибка, или NULL, если всё успешно.
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.ReactiveDownloader.OnComplete">
+            <summary>
+            Возникает при завершении обработки (скачивания и сохранения) всех песен, но не в случае, 
+            если выполнение было прервано токеном отмены.
+            </summary>
+        </member>
+        <member name="E:MyzukaRuGrabberCore.ReactiveDownloader.OnCancellation">
+            <summary>
+            Возникает при прерывании обработки при помощи токена отмены. Возвращает в первом параметре количество песен, 
+            которые уже успели обработаться, а во втором - количество всех запрошенных ко скачиванию песен.
+            </summary>
+        </member>
+    </members>
+</doc>

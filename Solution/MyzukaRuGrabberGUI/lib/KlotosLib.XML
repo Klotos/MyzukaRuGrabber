@@ -1313,9 +1313,9 @@
         </member>
         <member name="M:KlotosLib.StringTools.SubstringHelpers.ShrinkSpaces(System.String)">
             <summary>
-            Уплотняет пробелы в указанной строка, сокращая множественные подряд идущие пробелы до одного
+            Уплотняет пробелы в указанной строке, сокращая множественные идущие подряд пробелы до одного
             </summary>
-            <param name="Input"></param>
+            <param name="Input">Строка, которую следует уплотнить. Если NULL или пустая - будет возвращена без изменений.</param>
             <returns></returns>
         </member>
         <member name="T:KlotosLib.StringTools.ValidatorHelpers">
@@ -1936,10 +1936,32 @@
         </member>
         <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
-            Генерирует исключение 'ArgumentException', если входная последовательность NULL или пустая
+            Генерирует и выбрасывает исключение 'ArgumentException', если входная последовательность NULL или пустая
             </summary>
             <typeparam name="T"></typeparam>
             <param name="Source"></param>
+        </member>
+        <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String)">
+            <summary>
+            Генерирует и выбрасывает исключение 'ArgumentException' с указанным названием параметра и сообщениями об ошибках, 
+            если входная последовательность NULL или пустая
+            </summary>
+            <param name="Source"></param>
+            <param name="MessageIfNull"></param>
+            <param name="MessageIfEmpty"></param>
+            <param name="ParamName"></param>
+            <typeparam name="T"></typeparam>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            Генерирует и выбрасывает исключение 'ArgumentException' с указанным сообщением об ошибке, 
+            если входная последовательность NULL или пустая
+            </summary>
+            <param name="Source"></param>
+            <param name="Message"></param>
+            <typeparam name="T"></typeparam>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:KlotosLib.ExceptionTools.ThrowIfNullEmptyWS(System.String)">
             <summary>

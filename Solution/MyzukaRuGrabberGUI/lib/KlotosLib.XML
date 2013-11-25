@@ -1941,6 +1941,16 @@
             <typeparam name="T"></typeparam>
             <param name="Source"></param>
         </member>
+        <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            Генерирует и выбрасывает исключение 'ArgumentException' с указанным сообщением об ошибке, 
+            если входная последовательность NULL или пустая
+            </summary>
+            <param name="Source"></param>
+            <param name="Message"></param>
+            <typeparam name="T"></typeparam>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
         <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String)">
             <summary>
             Генерирует и выбрасывает исключение 'ArgumentException' с указанным названием параметра и сообщениями об ошибках, 
@@ -1953,15 +1963,17 @@
             <typeparam name="T"></typeparam>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+        <member name="M:KlotosLib.ExceptionTools.ThrowIfNullOrEmptyAll``1(System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String,System.String)">
             <summary>
-            Генерирует и выбрасывает исключение 'ArgumentException' с указанным сообщением об ошибке, 
-            если входная последовательность NULL или пустая
+            Генерирует и выбрасывает исключение 'ArgumentException' с указанным названием параметра и сообщениями об ошибках, 
+            если входная последовательность NULL или пустая, или же все без исключения элементы входной последовательности являются NULL
             </summary>
-            <param name="Source"></param>
-            <param name="Message"></param>
             <typeparam name="T"></typeparam>
-            <exception cref="T:System.ArgumentException"></exception>
+            <param name="Source"></param>
+            <param name="MessageIfNull"></param>
+            <param name="MessageIfEmpty"></param>
+            <param name="AllElementsNull"></param>
+            <param name="ParamName"></param>
         </member>
         <member name="M:KlotosLib.ExceptionTools.ThrowIfNullEmptyWS(System.String)">
             <summary>
@@ -2327,6 +2339,14 @@
             <summary>
             Удаляет из входной строки все одинарные и парные HTML-тэги с их атрибутами, оставляя их содержимое. Если входная строка не содержит HTML-тэгов, метод возвращает её без изменений. 
             Удаляются также некорректно расположенные HTML-тэги (неоткрытые, незакрытые и перехлестывающиеся).
+            </summary>
+            <param name="InputHTML">Входная HTML-содержащая строка</param>
+            <returns>Копия входной строки, не содержащая никаких HTML-тегов</returns>
+        </member>
+        <member name="M:KlotosLib.HtmlTools.IntelliRemoveHTMLTags(System.String)">
+            <summary>
+            Удаляет из входной строки все одинарные и парные HTML-тэги с их атрибутами, оставляя их содержимое. Если входная строка не содержит HTML-тэгов, метод возвращает её без изменений. 
+            Удаляются также некорректно расположенные HTML-тэги (неоткрытые, незакрытые и перехлестывающиеся). Заменяет все HTML-пробелы и переносы строк на их символьные аналоги.
             </summary>
             <param name="InputHTML">Входная HTML-содержащая строка</param>
             <returns>Копия входной строки, не содержащая никаких HTML-тегов</returns>

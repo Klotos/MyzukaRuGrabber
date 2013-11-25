@@ -82,6 +82,8 @@
             this.lbl_ImageInfo = new System.Windows.Forms.Label();
             this.btn_About = new System.Windows.Forms.Button();
             this.prbr_Processing = new System.Windows.Forms.ProgressBar();
+            this.lbl_SelectedCount = new System.Windows.Forms.Label();
+            this.lbl_ProcessedCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).BeginInit();
             this.gb_Album_Header.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_List)).BeginInit();
@@ -615,16 +617,34 @@
             // 
             // prbr_Processing
             // 
-            this.prbr_Processing.Location = new System.Drawing.Point(232, 322);
+            this.prbr_Processing.Location = new System.Drawing.Point(301, 322);
             this.prbr_Processing.Name = "prbr_Processing";
-            this.prbr_Processing.Size = new System.Drawing.Size(540, 23);
+            this.prbr_Processing.Size = new System.Drawing.Size(471, 23);
             this.prbr_Processing.TabIndex = 61;
+            // 
+            // lbl_SelectedCount
+            // 
+            this.lbl_SelectedCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbl_SelectedCount.Location = new System.Drawing.Point(261, 322);
+            this.lbl_SelectedCount.Name = "lbl_SelectedCount";
+            this.lbl_SelectedCount.Size = new System.Drawing.Size(39, 23);
+            this.lbl_SelectedCount.TabIndex = 62;
+            // 
+            // lbl_ProcessedCount
+            // 
+            this.lbl_ProcessedCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbl_ProcessedCount.Location = new System.Drawing.Point(233, 322);
+            this.lbl_ProcessedCount.Name = "lbl_ProcessedCount";
+            this.lbl_ProcessedCount.Size = new System.Drawing.Size(32, 23);
+            this.lbl_ProcessedCount.TabIndex = 63;
             // 
             // frm_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 730);
+            this.Controls.Add(this.lbl_ProcessedCount);
+            this.Controls.Add(this.lbl_SelectedCount);
             this.Controls.Add(this.prbr_Processing);
             this.Controls.Add(this.btn_About);
             this.Controls.Add(this.lbl_ImageInfo);
@@ -650,7 +670,6 @@
             this.MaximizeBox = false;
             this.Name = "frm_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Myzuka.ru Grabber ver.2.0";
             this.Load += new System.EventHandler(this.frm_Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).EndInit();
             this.gb_Album_Header.ResumeLayout(false);
@@ -723,6 +742,8 @@
         private System.Windows.Forms.Label lbl_ImageInfo;
         private System.Windows.Forms.Button btn_About;
         private System.Windows.Forms.ProgressBar prbr_Processing;
+        private System.Windows.Forms.Label lbl_SelectedCount;
+        private System.Windows.Forms.Label lbl_ProcessedCount;
     }
 }
 

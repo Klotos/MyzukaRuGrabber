@@ -165,8 +165,8 @@ namespace MyzukaRuGrabberCore
                 album_symptom++;
             }
             HtmlNode album_subnode = node2.SelectSingleNode("//td[2]/b/a[@id='A1' and @href='/GetVipAccount']");
-            if (album_subnode != null &&
-                album_subnode.InnerText.Trim().Equals("Скачать альбом целиком", StringComparison.OrdinalIgnoreCase) == true)
+            if (album_subnode != null && 
+                album_subnode.InnerText.Contains("Скачать альбом", StringComparison.OrdinalIgnoreCase) == true)
             {
                 album_symptom++;
             }
@@ -332,8 +332,7 @@ namespace MyzukaRuGrabberCore
             if(Input.HasAlphaNumericChars()==false) 
             {throw new ArgumentException("Входная строка не содержит цифробуквенных символов", "Input");}
             String temp = Input.CleanString().Trim();
-            temp = KlotosLib.HtmlTools.RemoveHTMLTags(temp);
-            temp = HttpUtility.HtmlDecode(temp);
+            temp = KlotosLib.HtmlTools.IntelliRemoveHTMLTags(temp);
             temp = StringTools.SubstringHelpers.ShrinkSpaces(temp).Trim();
             return temp;
         }
@@ -398,9 +397,8 @@ namespace MyzukaRuGrabberCore
             }
 
             String description = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (main_body_html, "Описание: <br>", "<br><br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input)
-                .Trim().Replace("<br>", "\r\n");
-            description = HttpUtility.HtmlDecode(description);
+                (main_body_html, "Описание: <br>", "GetVipAccount", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input);
+            description = CoreInternal.ExtractFromHTML(description);
 
             if (caption.StartsWith(artist, StringComparison.OrdinalIgnoreCase) == true)
             {

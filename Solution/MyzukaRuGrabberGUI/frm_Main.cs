@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -46,6 +47,8 @@ namespace MyzukaRuGrabberGUI
             Core.WorkIsDone += this.Event5;
             Core.OnException += OnFailed;
             this.gb_FooterButtons.Enabled = false;
+
+            this.Text = this.GetProgramName();
         }
 
         /// <summary>
@@ -176,17 +179,39 @@ namespace MyzukaRuGrabberGUI
             }
         }
 
-        private void ResetProgressBar()
+        private void ResetProgressBarAndCounter()
         {
-            if (this.prbr_Processing.InvokeRequired == false)
+            if (this.InvokeRequired == false)
             {
                 this.prbr_Processing.Minimum = 0;
                 this.prbr_Processing.Value = 0;
                 this.prbr_Processing.Enabled = false;
+
+                this.lbl_ProcessedCount.Text = empty;
+                this.lbl_SelectedCount.Text = empty;
             }
             else
             {
-                this.prbr_Processing.Invoke((Action) this.ResetProgressBar);
+                this.Invoke((Action) this.ResetProgressBarAndCounter);
+            }
+        }
+
+        private void IncrementProgressBarAndCounter()
+        {
+            if (this.InvokeRequired == false)
+            {
+                this.prbr_Processing.PerformStep();
+                Byte current_count = this.lbl_ProcessedCount.Text.TryParseNumber<Byte>(NumberStyles.None, null, 255);
+                if (current_count == 255)
+                {
+                    throw new InvalidOperationException("Произошла внутренняя ошибка - невозможно получить из Label'а "+
+                        "текущее количество обработанных песен '" + this.lbl_ProcessedCount.Text+"'");
+                }
+                this.lbl_ProcessedCount.Text = (current_count + 1).ToString(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                this.Invoke((Action) this.IncrementProgressBarAndCounter);
             }
         }
 
@@ -233,12 +258,14 @@ namespace MyzukaRuGrabberGUI
         private CancellationTokenSource _cancelGrabbingPage;
 
         private CancellationTokenSource _cancelSongsDownload;
+
+        private const String empty = "";
         #endregion
 
         private async void btn_Grab_Click(object sender, EventArgs e)
         {
             this.SetOrAppendMessage(true, null);
-            this.ResetProgressBar();
+            this.ResetProgressBarAndCounter();
             String error_message;
             Uri input_URI = Core.TryParseURI(this.tb_InputURI.Text, out error_message);
             if (input_URI == null)
@@ -422,7 +449,6 @@ namespace MyzukaRuGrabberGUI
 
         private void CleanLayout()
         {
-            const String empty = "";
             if (this.InvokeRequired == false)
             {
                 this.pb_ItemImage.Image = null;
@@ -452,7 +478,7 @@ namespace MyzukaRuGrabberGUI
 
                 this.LockOrUnlockFooterButtons(true);
 
-                this.ResetProgressBar();
+                this.ResetProgressBarAndCounter();
             }
             else
             {
@@ -731,58 +757,6 @@ namespace MyzukaRuGrabberGUI
             }
         }
 
-        private void DownloadAndSave(List<OneSongHeader> Songs)
-        {
-            Songs.ThrowIfNullOrEmpty();
-            this._cancelSongsDownload = new CancellationTokenSource();
-            Task<IDictionary<OneSongHeader, Exception>> res_task = Core.TryDownloadAndSaveAllSongsAsync
-                (Songs, ProgramSettings.Instance.UserAgent,
-                ProgramSettings.PrepareSavePath(this._parsedItem.Album), !ProgramSettings.Instance.UseServerFilenames,
-                this._cancelSongsDownload.Token, ProgramSettings.Instance.MaxDownloadThreads);
-            res_task.ContinueWith(
-                (Task<IDictionary<OneSongHeader, Exception>> r) =>
-                {
-                    this.LockOrUnlockInterface(false);
-                    IDictionary<OneSongHeader, Exception> result = r.Result;
-                    Dictionary<OneSongHeader, Exception> failed = result.Where(kvp => kvp.Value != null).ConvertToDictionary();
-                    String message;
-                    if (failed.IsNullOrEmpty() == true)
-                    {
-                        message = String.Format("Скачивание и сохранение на диск всех {0} песен успешно завершено", result.Count);
-                        this.UpdateStatus(3);
-                    }
-                    else if (failed.Count == result.Count)
-                    {
-                        message = String.Format(
-                            "Не удалось скачать или сохранить на диск ни одну из {0} песен. Список ошибок: \r\n{1}", result.Count, 
-                            failed.ConcatToString
-                            (key => "'"+key.Number.ToString() + ". " + key.Name + "'", value => value.TotalMessage(), " --> ", ";\r\n "));
-                        this.UpdateStatus(4);
-                    }
-                    else
-                    {
-                        message = String.Format(
-                            "Из {0} выбранных песен не удалось скачать {1}. Список ошибок: \r\n{2}",
-                            result.Count, failed.Count, failed.ConcatToString
-                            (key => "'" + key.Number.ToString() + ". " + key.Name + "'", value => value.TotalMessage(), " --> ", ";\r\n "));
-                        this.UpdateStatus(5);
-                    }
-                    this.AddToLog(message);
-                    this.SetOrAppendMessage(true, message);
-                    this._cancelSongsDownload.Dispose();
-                    this._cancelSongsDownload = null;
-                }, TaskContinuationOptions.NotOnCanceled);
-            res_task.ContinueWith(
-                (Task<IDictionary<OneSongHeader, Exception>> r) =>
-                {
-                    this.LockOrUnlockInterface(false);
-                    this.UpdateStatus(6);
-                    String message = "Отмена операции скачивания и сохранения успешно завершена";
-                    this.AddToLog(message);
-                    this.SetOrAppendMessage(true, message);
-                }, TaskContinuationOptions.OnlyOnCanceled);
-        }
-
         private void DownloadAndSave2(List<OneSongHeader> SongsForDownload)
         {
             SongsForDownload.ThrowIfNullOrEmpty();
@@ -794,6 +768,8 @@ namespace MyzukaRuGrabberGUI
             this.prbr_Processing.Maximum = SongsForDownload.Count;
             this.prbr_Processing.Value = 0;
             this.prbr_Processing.Step = 1;
+            this.lbl_SelectedCount.Text = "/" + SongsForDownload.Count;
+            this.lbl_ProcessedCount.Text = "0";
 
             ReactiveDownloader rd = ReactiveDownloader.CreateTask
                 (SongsForDownload, ProgramSettings.Instance.UserAgent, 
@@ -811,15 +787,7 @@ namespace MyzukaRuGrabberGUI
             {
                 this.AddToLog(String.Format("Получен результат песни '{0}.{1}' - {2}", 
                     header.Number, header.Name, exception == null ? "Ok" : exception.TotalMessage()));
-                Action a = () => this.prbr_Processing.PerformStep();
-                if (this.prbr_Processing.InvokeRequired == false)
-                {
-                    a.Invoke();
-                }
-                else
-                {
-                    this.prbr_Processing.Invoke(a);
-                }
+                this.IncrementProgressBarAndCounter();
             };
 
             Task<IDictionary<OneSongHeader, Exception>> res_task = rd.StartAsync
@@ -933,7 +901,7 @@ namespace MyzukaRuGrabberGUI
             Int32 i = 0;
             string ass_info_final = ass_info.ConcatToString((String x) => { i++; return i + ". " + x; }, "", "", "\r\n", true);
             
-            String about_text = String.Format("Myzuka.ru Grabber ver.2.0\r\nCopyright © Klotos\r\n" +
+            String about_text = String.Format(this.GetProgramName()+"\r\nCopyright © Klotos\r\n" +
                 "Created with C# 5.0, .NET Framework 4.5, VS 2012\r\n\r\nEnvironment information\r\n"+
                 "Logical processors count: {0} \r\nMachine name: {1}\r\nOperating system: {2}"+
                 "\r\nRunning as 64-bit application: {3}\r\nCurrent folder: {4}\r\n\r\nAssemblies info:\r\n{5}",
@@ -944,6 +912,12 @@ namespace MyzukaRuGrabberGUI
 
             MessageBox.Show(about_text, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
             
+        }
+
+        private String GetProgramName()
+        {
+            return String.Format("Myzuka.ru Grabber ver.{0}.{1}",
+                this.GetType().Assembly.GetName().Version.Major, this.GetType().Assembly.GetName().Version.Minor);
         }
     }
 }

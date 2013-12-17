@@ -22,16 +22,19 @@ namespace MyzukaRuGrabberCore
         private readonly String _folderPath;
 
         private readonly Boolean _generateNewFilenames;
+
+        private readonly String _filenameTemplate;
         #endregion
 
         private ReactiveDownloader
-            (IList<OneSongHeader> Songs, String UserAgent, String FolderPath,Boolean GenerateNewFilenames)
+            (IList<OneSongHeader> Songs, String UserAgent, String FolderPath, Boolean GenerateNewFilenames, String FilenameTemplate)
         {
             this._songs = new OneSongHeader[Songs.Count];
             Songs.CopyTo(this._songs, 0);
             this._userAgent = UserAgent;
             this._folderPath = FolderPath;
             this._generateNewFilenames = GenerateNewFilenames;
+            this._filenameTemplate = FilenameTemplate;
         }
 
         /// <summary>
@@ -46,9 +49,10 @@ namespace MyzukaRuGrabberCore
         /// или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
         /// получившееся имя будет некорректным, метод попытается его исправить. 
         /// Если же исправить не получится, будет использовано имя с сервера.</param>
+        /// <param name="FilenameTemplate">Шаблон имени файла песни</param>
         /// <returns></returns>
         public static ReactiveDownloader CreateTask
-            (IList<OneSongHeader> Songs, String UserAgent, String FolderPath, Boolean GenerateNewFilenames)
+            (IList<OneSongHeader> Songs, String UserAgent, String FolderPath, Boolean GenerateNewFilenames, String FilenameTemplate)
         {
             if (UserAgent.HasAlphaNumericChars() == false) { throw new ArgumentException("User-Agent не может быть пустым", "UserAgent"); }
             if (FilePathTools.IsValidFilePath(FolderPath) == false)
@@ -58,7 +62,9 @@ namespace MyzukaRuGrabberCore
             }
             if(Songs == null) {throw new ArgumentNullException("Songs");}
             if(Songs.Any()==false) {throw new ArgumentException("Список песен для обработки не может быть пустым", "Songs");}
-            return new ReactiveDownloader(Songs, UserAgent, FolderPath, GenerateNewFilenames);
+            if(GenerateNewFilenames == true && FilenameTemplate.HasAlphaNumericChars()==false)
+            {throw new ArgumentException("Шаблон имени файла не может быть пуст, если требуется клиентская генерация имён файлов");}
+            return new ReactiveDownloader(Songs, UserAgent, FolderPath, GenerateNewFilenames, FilenameTemplate);
         }
 
         /// <summary>
@@ -87,7 +93,8 @@ namespace MyzukaRuGrabberCore
                         pls.Stop();
                     }
                     KeyValuePair<OneSongHeader, Exception> res =
-                        Core.DownloadAndSaveOneSong(song, this._userAgent, this._generateNewFilenames, this._folderPath, (Int32)i + 1);
+                        Core.DownloadAndSaveOneSong
+                        (song, this._userAgent, this._generateNewFilenames, this._filenameTemplate, this._folderPath, (Int32)i + 1);
                     this.OnNext.Invoke(res.Key, res.Value);
                     intermediate.TryAdd(res.Key, res.Value);
                 }

@@ -165,6 +165,24 @@ namespace MyzukaRuGrabberCore.DataModels
             return output;
         }
 
+        /// <summary>
+        /// Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни и по указанному шаблону
+        /// </summary>
+        /// <param name="OrigFilename"></param>
+        /// <param name="FilenameTemplate"></param>
+        /// <returns></returns>
+        public String GenerateSongFilename(String OrigFilename, String FilenameTemplate)
+        {
+            String ext = OrigFilename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+            String output = FilenameTemplate
+                .Replace("%number%", this.Number.ToString(CultureInfo.InvariantCulture))
+                .Replace("%title%", this.Name)
+                .Replace("%artist%", this.Artist)
+                .Replace("%album%", this.Album)
+                + ((ext.HasAlphaNumericChars() == true) ? "." + ext : ".mp3");
+            return output;
+        }
+
         #region Equatable and hashcode
         /// <summary>
         /// Определяет равенство текущего экземпляра с указанным

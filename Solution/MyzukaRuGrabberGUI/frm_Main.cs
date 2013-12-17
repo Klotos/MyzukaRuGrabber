@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -312,6 +313,8 @@ namespace MyzukaRuGrabberGUI
             this._parsedItem = data.Result;
             data.Dispose();
             data = null;
+            Action a = () => { this.tb_InputURI.Text = this._parsedItem.ItemLink.ToString(); };
+            this.tb_InputURI.Invoke(a);
             this.LockOrUnlockInterface(false);
             this._cancelGrabbingPage.Dispose();
             this._cancelGrabbingPage = null;
@@ -689,10 +692,11 @@ namespace MyzukaRuGrabberGUI
                             this.UpdateStatus(4);
                             return;
                         }
-                        this.AddToLog(String.Format("Файл песни {0} размером {1} скачан", file.Filename, file.Contentlength));
+                        this.AddToLog(String.Format("Файл песни {0} размером {1} скачан", file.Filename, 
+                            ByteQuantity.FromBytes(file.Contentlength).ToStringWithBinaryPrefix(3, false)));
                         String song_filename = ProgramSettings.Instance.UseServerFilenames == true
                             ? file.Filename
-                            : song.Header.GenerateSongFilename(file.Filename);
+                            : song.Header.GenerateSongFilename(file.Filename, ProgramSettings.Instance.FilenameTemplate);
                         Task<String> res = Core.TrySaveDownloadedFileToDiskAsync(file, save_path, song_filename);
                         res.ContinueWith(
                             (Task<String> res2) =>
@@ -752,12 +756,12 @@ namespace MyzukaRuGrabberGUI
                 }
                 this.UpdateStatus(2);
                 this.SwitchStopButtonStatus(true);
-                this.DownloadAndSave2(selected_for_download);
+                this.DownloadAndSave(selected_for_download);
                 return;
             }
         }
 
-        private void DownloadAndSave2(List<OneSongHeader> SongsForDownload)
+        private void DownloadAndSave(List<OneSongHeader> SongsForDownload)
         {
             SongsForDownload.ThrowIfNullOrEmpty();
             this._cancelSongsDownload = new CancellationTokenSource();
@@ -772,8 +776,8 @@ namespace MyzukaRuGrabberGUI
             this.lbl_ProcessedCount.Text = "0";
 
             ReactiveDownloader rd = ReactiveDownloader.CreateTask
-                (SongsForDownload, ProgramSettings.Instance.UserAgent, 
-                ProgramSettings.PrepareSavePath(this._parsedItem.Album), !ProgramSettings.Instance.UseServerFilenames);
+                (SongsForDownload, ProgramSettings.Instance.UserAgent, ProgramSettings.PrepareSavePath(this._parsedItem.Album), 
+                !ProgramSettings.Instance.UseServerFilenames, ProgramSettings.Instance.FilenameTemplate);
 
             rd.OnCancellation += delegate(Int32 i, Int32 j)
             {
@@ -892,11 +896,12 @@ namespace MyzukaRuGrabberGUI
                     TimeSpan.TicksPerDay * ver.Build + TimeSpan.TicksPerSecond * 2 * ver.Revision)
                     )
                 let bdt_string = (bdt < threshold ? "unknown" : bdt.ToString("yyyy-MM-dd HH.mm.ss") + " EET")
+                let b2 = GetBuildDateTime(ass).ToString("yyyy-MM-dd HH.mm.ss") + " EET"
                 let gac = (ass.GlobalAssemblyCache == true ? " from GAC, " : " from file, ")
                 where name.IsIn(StringComparison.Ordinal, "HtmlAgilityPack", "KlotosLib") || 
                     name.StartsWith("MyzukaRuGrabber", StringComparison.OrdinalIgnoreCase)
                 orderby name ascending 
-                select ass.GetName().Name + gac + "Compiled with .NET " + ass.ImageRuntimeVersion + "\r\nBuild date: " + bdt_string;
+                select ass.GetName().Name + gac + "Compiled with .NET " + ass.ImageRuntimeVersion + "\r\nVersion: "+ ver.ToString() + ". Build date: " + b2;
             
             Int32 i = 0;
             string ass_info_final = ass_info.ConcatToString((String x) => { i++; return i + ". " + x; }, "", "", "\r\n", true);
@@ -911,7 +916,6 @@ namespace MyzukaRuGrabberGUI
                 ass_info_final);
 
             MessageBox.Show(about_text, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            
         }
 
         private String GetProgramName()
@@ -919,5 +923,52 @@ namespace MyzukaRuGrabberGUI
             return String.Format("Myzuka.ru Grabber ver.{0}.{1}",
                 this.GetType().Assembly.GetName().Version.Major, this.GetType().Assembly.GetName().Version.Minor);
         }
+
+        #region Gets the build date and time (by reading the COFF header)
+
+        // http://msdn.microsoft.com/en-us/library/ms680313
+
+        struct _IMAGE_FILE_HEADER
+        {
+            public ushort Machine;
+            public ushort NumberOfSections;
+            public uint TimeDateStamp;
+            public uint PointerToSymbolTable;
+            public uint NumberOfSymbols;
+            public ushort SizeOfOptionalHeader;
+            public ushort Characteristics;
+        };
+
+        static DateTime GetBuildDateTime(Assembly assembly)
+        {
+            if (File.Exists(assembly.Location))
+            {
+                var buffer = new byte[Math.Max(Marshal.SizeOf(typeof(_IMAGE_FILE_HEADER)), 4)];
+                using (var fileStream = new FileStream(assembly.Location, FileMode.Open, FileAccess.Read))
+                {
+                    fileStream.Position = 0x3C;
+                    fileStream.Read(buffer, 0, 4);
+                    fileStream.Position = BitConverter.ToUInt32(buffer, 0); // COFF header offset
+                    fileStream.Read(buffer, 0, 4); // "PE\0\0"
+                    fileStream.Read(buffer, 0, buffer.Length);
+                }
+                var pinnedBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                try
+                {
+                    var coffHeader = (_IMAGE_FILE_HEADER)Marshal.PtrToStructure
+                        (pinnedBuffer.AddrOfPinnedObject(), typeof(_IMAGE_FILE_HEADER));
+
+                    return TimeZone.CurrentTimeZone.ToLocalTime
+                        (new DateTime(1970, 1, 1) + new TimeSpan(coffHeader.TimeDateStamp * TimeSpan.TicksPerSecond));
+                }
+                finally
+                {
+                    pinnedBuffer.Free();
+                }
+            }
+            return new DateTime();
+        }
+
+        #endregion
     }
 }

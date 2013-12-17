@@ -344,7 +344,7 @@
             которые возникли в процессе выполнения задачи, или NULL, если не тпроизошло ни одной ошибки.</param>
             <returns>Словарь, где ключ - это полученный хидер песни, а значение - успешно скачанный файл этой песни</returns>
         </member>
-        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.Int32)">
+        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.String,System.Int32)">
             <summary>
             Скачивает и сохраняет на диск по указанному пути все песни, указанные в наборе, 
             выполняя запросы к серверу с указанной степенью паралеллизма
@@ -357,12 +357,13 @@
             или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
             получившееся имя будет некорректным, метод попытается его исправить. 
             Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="FilenameTemplate"></param>
             <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
             Если меньше 1, ограничение на количество потоков будет снято.</param>
             <returns>Словарь ключей и значений, где ключ - это поданный на вход хидер песни, а значение - возможное исключение, 
             которое возникло в процессе скачивания и сохранения песни, или же NULL, если песня была успешно скачана и сохранена.</returns>
         </member>
-        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.Threading.CancellationToken,System.Int32)">
+        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongs(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.String,System.Threading.CancellationToken,System.Int32)">
             <summary>
             Скачивает и сохраняет на диск по указанному пути все песни, указанные в наборе, 
             выполняя запросы к серверу с указанной степенью паралеллизма и с указанным токеном отмены операции
@@ -375,13 +376,14 @@
             или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
             получившееся имя будет некорректным, метод попытается его исправить. 
             Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="FilenameTemplate"></param>
             <param name="CancToken">Токен отмены операции</param>
             <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
             Если меньше 1, ограничение на количество потоков будет снято.</param>
             <returns>Словарь ключей и значений, где ключ - это поданный на вход хидер песни, а значение - возможное исключение, 
             которое возникло в процессе скачивания и сохранения песни, или же NULL, если песня была успешно скачана и сохранена.</returns>
         </member>
-        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongsAsync(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.Threading.CancellationToken,System.Int32)">
+        <member name="M:MyzukaRuGrabberCore.Core.TryDownloadAndSaveAllSongsAsync(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.String,System.Threading.CancellationToken,System.Int32)">
             <summary>
             Асинхронно, без задержки вызывающего потока, скачивает и сохраняет на диск по указанному пути все песни, указанные в наборе, 
             выполняя запросы к серверу с указанной степенью паралеллизма и с указанным токеном отмены операции
@@ -394,6 +396,7 @@
             или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
             получившееся имя будет некорректным, метод попытается его исправить. 
             Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="FilenameTemplate"></param>
             <param name="CancToken">Токен отмены операции</param>
             <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
             Если меньше 1, ограничение на количество потоков будет снято.</param>
@@ -665,6 +668,14 @@
             из него извлекается расширение имени файла.</param>
             <returns></returns>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String,System.String)">
+            <summary>
+            Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни и по указанному шаблону
+            </summary>
+            <param name="OrigFilename"></param>
+            <param name="FilenameTemplate"></param>
+            <returns></returns>
+        </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Equals(MyzukaRuGrabberCore.DataModels.OneSongHeader)">
             <summary>
             Определяет равенство текущего экземпляра с указанным
@@ -770,7 +781,7 @@
             Утилитарный класс, осуществляющий скачивание и сохранение на диск песен и взвращающий результаты реактивным способом
             </summary>
         </member>
-        <member name="M:MyzukaRuGrabberCore.ReactiveDownloader.CreateTask(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean)">
+        <member name="M:MyzukaRuGrabberCore.ReactiveDownloader.CreateTask(System.Collections.Generic.IList{MyzukaRuGrabberCore.DataModels.OneSongHeader},System.String,System.String,System.Boolean,System.String)">
             <summary>
             Создаёт и возвращает новое задание по скачиванию указанных песен и последующему сохранению их на диск по указанному пути
             </summary>
@@ -783,6 +794,7 @@
             или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
             получившееся имя будет некорректным, метод попытается его исправить. 
             Если же исправить не получится, будет использовано имя с сервера.</param>
+            <param name="FilenameTemplate">Шаблон имени файла песни</param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.ReactiveDownloader.Start(System.Threading.CancellationToken,System.Int32)">

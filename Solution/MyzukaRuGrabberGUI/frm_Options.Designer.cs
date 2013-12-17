@@ -32,6 +32,9 @@
             this.rb_External = new System.Windows.Forms.RadioButton();
             this.rb_Internal = new System.Windows.Forms.RadioButton();
             this.gb_AdvancedSettings = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tb_MaxDownloadThreads = new System.Windows.Forms.TextBox();
+            this.lbl_MaxDownloadThreads = new System.Windows.Forms.Label();
             this.tb_UserAgent = new System.Windows.Forms.TextBox();
             this.lbl_UserAgent = new System.Windows.Forms.Label();
             this.btn_Apply = new System.Windows.Forms.Button();
@@ -45,9 +48,16 @@
             this.rb_DistinctFolder = new System.Windows.Forms.RadioButton();
             this.rb_CommonFolder = new System.Windows.Forms.RadioButton();
             this.btn_SetDefault = new System.Windows.Forms.Button();
-            this.lbl_MaxDownloadThreads = new System.Windows.Forms.Label();
-            this.tb_MaxDownloadThreads = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lbl_FilenameTemplate = new System.Windows.Forms.Label();
+            this.tb_FilenameTemplate = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox5 = new System.Windows.Forms.TextBox();
             this.gb_FilenamesSelector.SuspendLayout();
             this.gb_AdvancedSettings.SuspendLayout();
             this.gb_DistinctFolders.SuspendLayout();
@@ -88,6 +98,7 @@
             this.rb_Internal.TabStop = true;
             this.rb_Internal.Text = "Use server-delivered filenames";
             this.rb_Internal.UseVisualStyleBackColor = true;
+            this.rb_Internal.CheckedChanged += new System.EventHandler(this.rb_Internal_CheckedChanged);
             // 
             // gb_AdvancedSettings
             // 
@@ -96,12 +107,40 @@
             this.gb_AdvancedSettings.Controls.Add(this.lbl_MaxDownloadThreads);
             this.gb_AdvancedSettings.Controls.Add(this.tb_UserAgent);
             this.gb_AdvancedSettings.Controls.Add(this.lbl_UserAgent);
-            this.gb_AdvancedSettings.Location = new System.Drawing.Point(16, 148);
+            this.gb_AdvancedSettings.Location = new System.Drawing.Point(16, 206);
             this.gb_AdvancedSettings.Name = "gb_AdvancedSettings";
             this.gb_AdvancedSettings.Size = new System.Drawing.Size(649, 124);
             this.gb_AdvancedSettings.TabIndex = 17;
             this.gb_AdvancedSettings.TabStop = false;
             this.gb_AdvancedSettings.Text = "Advanced settings - use if you exactly understand what you are doing";
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(193, 62);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(391, 35);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Number of concurrent requests to server while downloading songs from album; \r\n0 -" +
+    " unlimited/unspecified threads; Max - 99";
+            // 
+            // tb_MaxDownloadThreads
+            // 
+            this.tb_MaxDownloadThreads.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_MaxDownloadThreads.Location = new System.Drawing.Point(605, 62);
+            this.tb_MaxDownloadThreads.MaxLength = 2;
+            this.tb_MaxDownloadThreads.Name = "tb_MaxDownloadThreads";
+            this.tb_MaxDownloadThreads.Size = new System.Drawing.Size(38, 26);
+            this.tb_MaxDownloadThreads.TabIndex = 9;
+            // 
+            // lbl_MaxDownloadThreads
+            // 
+            this.lbl_MaxDownloadThreads.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbl_MaxDownloadThreads.Location = new System.Drawing.Point(11, 65);
+            this.lbl_MaxDownloadThreads.Name = "lbl_MaxDownloadThreads";
+            this.lbl_MaxDownloadThreads.Size = new System.Drawing.Size(191, 23);
+            this.lbl_MaxDownloadThreads.TabIndex = 8;
+            this.lbl_MaxDownloadThreads.Text = "Max Download Threads";
             // 
             // tb_UserAgent
             // 
@@ -123,7 +162,7 @@
             // btn_Apply
             // 
             this.btn_Apply.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_Apply.Location = new System.Drawing.Point(593, 294);
+            this.btn_Apply.Location = new System.Drawing.Point(593, 352);
             this.btn_Apply.Name = "btn_Apply";
             this.btn_Apply.Size = new System.Drawing.Size(75, 28);
             this.btn_Apply.TabIndex = 16;
@@ -134,7 +173,7 @@
             // btn_Cancel
             // 
             this.btn_Cancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_Cancel.Location = new System.Drawing.Point(496, 294);
+            this.btn_Cancel.Location = new System.Drawing.Point(496, 352);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(75, 28);
             this.btn_Cancel.TabIndex = 15;
@@ -145,7 +184,7 @@
             // btn_OK
             // 
             this.btn_OK.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_OK.Location = new System.Drawing.Point(405, 294);
+            this.btn_OK.Location = new System.Drawing.Point(405, 352);
             this.btn_OK.Name = "btn_OK";
             this.btn_OK.Size = new System.Drawing.Size(75, 28);
             this.btn_OK.TabIndex = 14;
@@ -225,7 +264,7 @@
             // btn_SetDefault
             // 
             this.btn_SetDefault.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_SetDefault.Location = new System.Drawing.Point(269, 294);
+            this.btn_SetDefault.Location = new System.Drawing.Point(269, 352);
             this.btn_SetDefault.Name = "btn_SetDefault";
             this.btn_SetDefault.Size = new System.Drawing.Size(113, 28);
             this.btn_SetDefault.TabIndex = 20;
@@ -233,39 +272,114 @@
             this.btn_SetDefault.UseVisualStyleBackColor = true;
             this.btn_SetDefault.Click += new System.EventHandler(this.btn_SetDefault_Click);
             // 
-            // lbl_MaxDownloadThreads
+            // lbl_FilenameTemplate
             // 
-            this.lbl_MaxDownloadThreads.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lbl_MaxDownloadThreads.Location = new System.Drawing.Point(11, 65);
-            this.lbl_MaxDownloadThreads.Name = "lbl_MaxDownloadThreads";
-            this.lbl_MaxDownloadThreads.Size = new System.Drawing.Size(191, 23);
-            this.lbl_MaxDownloadThreads.TabIndex = 8;
-            this.lbl_MaxDownloadThreads.Text = "Max Download Threads";
+            this.lbl_FilenameTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbl_FilenameTemplate.Location = new System.Drawing.Point(16, 140);
+            this.lbl_FilenameTemplate.Name = "lbl_FilenameTemplate";
+            this.lbl_FilenameTemplate.Size = new System.Drawing.Size(145, 23);
+            this.lbl_FilenameTemplate.TabIndex = 21;
+            this.lbl_FilenameTemplate.Text = "Filename template";
             // 
-            // tb_MaxDownloadThreads
+            // tb_FilenameTemplate
             // 
-            this.tb_MaxDownloadThreads.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tb_MaxDownloadThreads.Location = new System.Drawing.Point(605, 62);
-            this.tb_MaxDownloadThreads.MaxLength = 2;
-            this.tb_MaxDownloadThreads.Name = "tb_MaxDownloadThreads";
-            this.tb_MaxDownloadThreads.Size = new System.Drawing.Size(38, 26);
-            this.tb_MaxDownloadThreads.TabIndex = 9;
+            this.tb_FilenameTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_FilenameTemplate.Location = new System.Drawing.Point(160, 137);
+            this.tb_FilenameTemplate.Name = "tb_FilenameTemplate";
+            this.tb_FilenameTemplate.Size = new System.Drawing.Size(505, 26);
+            this.tb_FilenameTemplate.TabIndex = 22;
             // 
-            // label1
+            // textBox2
             // 
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(193, 62);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(391, 35);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Number of concurrent requests to server while downloading songs from album; \r\n0 -" +
-    " unlimited/unspecified threads; Max - 99";
+            this.textBox2.Location = new System.Drawing.Point(16, 167);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(64, 20);
+            this.textBox2.TabIndex = 23;
+            this.textBox2.Text = "%number%";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(82, 168);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(92, 16);
+            this.label2.TabIndex = 24;
+            this.label2.Text = "- track number";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.Location = new System.Drawing.Point(236, 168);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 16);
+            this.label3.TabIndex = 26;
+            this.label3.Text = "- track title";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(183, 167);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.ReadOnly = true;
+            this.textBox3.Size = new System.Drawing.Size(52, 20);
+            this.textBox3.TabIndex = 25;
+            this.textBox3.Text = "%title%";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.Location = new System.Drawing.Point(368, 168);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 16);
+            this.label4.TabIndex = 28;
+            this.label4.Text = "- track artist";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(314, 167);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(52, 20);
+            this.textBox4.TabIndex = 27;
+            this.textBox4.Text = "%artist%";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(512, 168);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(89, 16);
+            this.label5.TabIndex = 30;
+            this.label5.Text = "- album name";
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(458, 167);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(52, 20);
+            this.textBox5.TabIndex = 29;
+            this.textBox5.Text = "%album%";
             // 
             // frm_Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 332);
+            this.ClientSize = new System.Drawing.Size(684, 400);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.tb_FilenameTemplate);
+            this.Controls.Add(this.lbl_FilenameTemplate);
             this.Controls.Add(this.btn_SetDefault);
             this.Controls.Add(this.gb_DistinctFolders);
             this.Controls.Add(this.gb_FilenamesSelector);
@@ -317,5 +431,15 @@
         private System.Windows.Forms.TextBox tb_MaxDownloadThreads;
         private System.Windows.Forms.Label lbl_MaxDownloadThreads;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbl_FilenameTemplate;
+        private System.Windows.Forms.TextBox tb_FilenameTemplate;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox5;
     }
 }

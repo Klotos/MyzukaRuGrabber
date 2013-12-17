@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -381,17 +380,17 @@ namespace MyzukaRuGrabberCore
         /// или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
         /// получившееся имя будет некорректным, метод попытается его исправить. 
         /// Если же исправить не получится, будет использовано имя с сервера.</param>
+        /// <param name="FilenameTemplate"></param>
         /// <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
         /// Если меньше 1, ограничение на количество потоков будет снято.</param>
         /// <returns>Словарь ключей и значений, где ключ - это поданный на вход хидер песни, а значение - возможное исключение, 
         /// которое возникло в процессе скачивания и сохранения песни, или же NULL, если песня была успешно скачана и сохранена.</returns>
         public static IDictionary<OneSongHeader, Exception> TryDownloadAndSaveAllSongs
-            (IList<OneSongHeader> Songs, String UserAgent,
-                String FolderPath, Boolean GenerateNewFilenames,
-                Int32 MaxDegreeOfParallelism)
+            (IList<OneSongHeader> Songs, String UserAgent, 
+            String FolderPath, Boolean GenerateNewFilenames, String FilenameTemplate, Int32 MaxDegreeOfParallelism)
         {
             return Core.TryDownloadAndSaveAllSongs
-                (Songs, UserAgent, FolderPath, GenerateNewFilenames, CancellationToken.None, MaxDegreeOfParallelism);
+                (Songs, UserAgent, FolderPath, GenerateNewFilenames, FilenameTemplate, CancellationToken.None, MaxDegreeOfParallelism);
         }
 
         /// <summary>
@@ -406,6 +405,7 @@ namespace MyzukaRuGrabberCore
         /// или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
         /// получившееся имя будет некорректным, метод попытается его исправить. 
         /// Если же исправить не получится, будет использовано имя с сервера.</param>
+        /// <param name="FilenameTemplate"></param>
         /// <param name="CancToken">Токен отмены операции</param>
         /// <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
         /// Если меньше 1, ограничение на количество потоков будет снято.</param>
@@ -413,7 +413,7 @@ namespace MyzukaRuGrabberCore
         /// которое возникло в процессе скачивания и сохранения песни, или же NULL, если песня была успешно скачана и сохранена.</returns>
         public static IDictionary<OneSongHeader, Exception> TryDownloadAndSaveAllSongs
             (IList<OneSongHeader> Songs, String UserAgent,
-            String FolderPath, Boolean GenerateNewFilenames,
+            String FolderPath, Boolean GenerateNewFilenames, String FilenameTemplate,
             CancellationToken CancToken, Int32 MaxDegreeOfParallelism)
         {
             Songs.ThrowIfNullOrEmpty();
@@ -431,8 +431,8 @@ namespace MyzukaRuGrabberCore
                 {
                     opt.CancellationToken.ThrowIfCancellationRequested();
                     if(pls.ShouldExitCurrentIteration){pls.Break();}
-                    KeyValuePair<OneSongHeader, Exception> res = 
-                        Core.DownloadAndSaveOneSong(song, UserAgent, GenerateNewFilenames, FolderPath, (Int32)i + 1);
+                    KeyValuePair<OneSongHeader, Exception> res =
+                        Core.DownloadAndSaveOneSong(song, UserAgent, GenerateNewFilenames, FilenameTemplate, FolderPath, (Int32)i + 1);
                     intermediate.TryAdd(res.Key, res.Value);
                 }
             );
@@ -441,7 +441,8 @@ namespace MyzukaRuGrabberCore
         }
 
         internal static KeyValuePair<OneSongHeader, Exception> DownloadAndSaveOneSong
-            (OneSongHeader Song, String UserAgent, Boolean GenerateNewFilenames, String FolderPath, Int32 IterationNumber)
+            (OneSongHeader Song, String UserAgent, Boolean GenerateNewFilenames, String FilenameTemplate, String FolderPath, 
+            Int32 IterationNumber)
         {
             // 1. запрос по УРЛ и перевести результат в ХТМЛдокумент
             String err_mess;
@@ -478,7 +479,7 @@ namespace MyzukaRuGrabberCore
             String new_filename = null;
             if (GenerateNewFilenames == true)
             {
-                new_filename = Song.GenerateSongFilename(song_file.Filename);
+                new_filename = Song.GenerateSongFilename(song_file.Filename, FilenameTemplate);
                 FilePathTools.TryCleanFilename(new_filename, out new_filename);
             }
             if (new_filename == null)
@@ -521,13 +522,14 @@ namespace MyzukaRuGrabberCore
         /// или же использовать то имя файла, которое "пришло" с сервера (false). Если будет указана генерация нового, однако 
         /// получившееся имя будет некорректным, метод попытается его исправить. 
         /// Если же исправить не получится, будет использовано имя с сервера.</param>
+        /// <param name="FilenameTemplate"></param>
         /// <param name="CancToken">Токен отмены операции</param>
         /// <param name="MaxDegreeOfParallelism">Максимальное количество потоков, которое будет использоваться для запросов к серверу. 
         /// Если меньше 1, ограничение на количество потоков будет снято.</param>
         /// <returns></returns>
         public static async Task<IDictionary<OneSongHeader, Exception>> TryDownloadAndSaveAllSongsAsync
             (IList<OneSongHeader> Songs, String UserAgent,
-                String FolderPath, Boolean GenerateNewFilenames,
+                String FolderPath, Boolean GenerateNewFilenames, String FilenameTemplate,
                 CancellationToken CancToken, Int32 MaxDegreeOfParallelism)
         {
             Songs.ThrowIfNullOrEmpty();
@@ -544,7 +546,7 @@ namespace MyzukaRuGrabberCore
                 MaxDegreeOfParallelism = -1;
             }
             return await Task.Factory.StartNew<IDictionary<OneSongHeader, Exception>>(
-                () => Core.TryDownloadAndSaveAllSongs(Songs, UserAgent, FolderPath, GenerateNewFilenames, CancToken, MaxDegreeOfParallelism), 
+                () => Core.TryDownloadAndSaveAllSongs(Songs, UserAgent, FolderPath, GenerateNewFilenames, FilenameTemplate, CancToken, MaxDegreeOfParallelism), 
                 CancToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 

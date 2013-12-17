@@ -199,6 +199,211 @@
             <param name="Expr"></param>
             <returns></returns>
         </member>
+        <member name="T:KlotosLib.Substring">
+            <summary>
+            Представляет подстроку, привязанную к одной конкретной базовой строке. Неизменяемый класс.
+            </summary>
+        </member>
+        <member name="M:KlotosLib.Substring.#ctor(KlotosLib.Substring)">
+            <summary>
+            Создаёт и возвращает глубокую копию подстроки на основании указанной
+            </summary>
+            <param name="Other">Если NULL - будет выброшено исключение</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:KlotosLib.Substring.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            Создаёт и возвращает подстроку, основанную на указанной базовой строке, имеющую указанные начальный индекс и длину
+            </summary>
+            <param name="BaseStr">Базовая строка. Если NULL или пустая - будет выброшено исключение.</param>
+            <param name="StartIndex">Начальный (включительный) индекс подстроки в базовой строке</param>
+            <param name="Length">Длина подстроки в базовой строке</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:KlotosLib.Substring.#ctor(System.String,System.Int32)">
+            <summary>
+            Создаёт и возвращает подстроку, основанную на указанной базовой строке, имеющую указанный начальный индекс, а длину вплоть до окончания базовой строки
+            </summary>
+            <param name="BaseStr">Базовая строка. Если NULL или пустая - будет выброшено исключение.</param>
+            <param name="StartIndex">Начальный (включительный) индекс подстроки в базовой строке</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:KlotosLib.Substring.CreateWithEndIndex(System.String,System.Int32,System.Int32)">
+            <summary>
+            Создаёт и возвращает новый экземпляр подстроки, которая основана на указанной базовой строке, 
+            имеет указанный начальный индекс и оканчивается указанным конечным индексом включительно
+            </summary>
+            <param name="BaseStr">Базовая строка. Если NULL или пустая - будет выброшено исключение.</param>
+            <param name="StartIndex">Начальный (включительный) индекс подстроки в базовой строке</param>
+            <param name="EndIndex">Конечный (включительный) индекс подстроки в базовой строке. 
+            Если превышает максимальный допустимый индекс в базовой строке, будет выброшено исключение.</param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.GetHashCode">
+            <summary>
+            Возвращает хэш-код данного экземпляра, который основывается на комбинации хэш-кодов базовой строки, а также начального индекса и длины подстроки
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.Equals(System.Object)">
+            <summary>
+            Определяет равенство данного экземпляра с указанным, предварительно пытаясь привести его к данному типу
+            </summary>
+            <param name="Other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.Equals(KlotosLib.Substring)">
+            <summary>
+            Определяет равенство данного экземпляра с указанным
+            </summary>
+            <param name="Other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.CompareTo(KlotosLib.Substring)">
+            <summary>
+            Сравнивает данный экземпляр с указанным и показывает, как они соотносятся в порядке сортировки
+            </summary>
+            <param name="Other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.AreEqual(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, равны ли два указанных экземпляра подстрок между собой. Если обе подстроки являются NULL, то считается, что они равны. 
+            Две не-NULL подстроки считаются равны тогда и только тогда, когда имеют одинаковые начальный индекс и длину, 
+            а также привязаны к одному и тому же экземпляру базовой строки.
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.AreEqual(KlotosLib.Substring[])">
+            <summary>
+            Определяет, все ли подстроке в указанном наборе равны между собой
+            </summary>
+            <param name="Substrings">Набор подстрок. Если NULL, пуст или содержит одну подстроку, будет выброшено исключение.</param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.HaveCommonBaseString(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяют, имеют ли два указанных экземпляра подстрок общую базовую строку. Если ссылки на экземпляры эквивалентны, 
+            или же базовая строка для обоих является общей, возвращается true, а во всех остальных случаях - false.
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.Compare(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Сравнивает два экземпляра подстрок между собой, показывая их связь (больше-меньше-равно) в порядке сортировки
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.op_Equality(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, равны ли два указанных экземпляра подстрок между собой
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.op_Inequality(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, не равны ли два указанных экземпляра подстрок между собой
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.op_GreaterThan(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, строго больше ли первый указанный экземпляр второго с точки зрения сортировки
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.op_LessThan(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, строго меньше ли первый указанный экземпляр второго с точки зрения сортировки
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.op_GreaterThanOrEqual(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, больше или равен первый указанный экземпляр по сравнению со вторым с точки зрения сортировки
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.op_LessThanOrEqual(KlotosLib.Substring,KlotosLib.Substring)">
+            <summary>
+            Определяет, меньше или равен первый указанный экземпляр по сравнению со вторым с точки зрения сортировки
+            </summary>
+            <param name="First"></param>
+            <param name="Second"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.ToString">
+            <summary>
+            Возвращает строковое представление данной подстроки
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.Substring.Clone">
+            <summary>
+            Возвращает глубокую копию текущего экземпляра
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:KlotosLib.Substring.StartIndex">
+            <summary>
+            Индекс первого символа данной подстроки в базовой строке (начальный индекс)
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.EndIndex">
+            <summary>
+            Индекс последнего символа данной подстроки в базовой строке (конечный индекс)
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.Length">
+            <summary>
+            Длина данной подстроки
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.IsBeginning">
+            <summary>
+            Определяет, является ли данная подстрока началом базовой строки (true) или нет (false)
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.IsEnding">
+            <summary>
+            Определяет, является ли данная подстрока концом базовой строки (true) или нет (false)
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.IsComplete">
+            <summary>
+            Определяет, представляет ли данная подстрока всю базовую строку (true) или нет (false)
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.Value">
+            <summary>
+            Строковое представление данной подстроки
+            </summary>
+        </member>
+        <member name="P:KlotosLib.Substring.BaseString">
+            <summary>
+            Базовая строка
+            </summary>
+        </member>
         <member name="T:KlotosLib.ByteQuantity">
             <summary>
             Инкапсулирует байтовую величину, предоставляя различные методы преобразования
@@ -1208,17 +1413,6 @@
             <param name="Position">Выводной параметр, содержащий позицию искомой подстроки. Если токенов не найдено, или выброшено исключение, содержит -1.</param>
             <returns>NULL - если не нашло</returns>
         </member>
-        <member name="M:KlotosLib.StringTools.SubstringHelpers.GetInnerStringsBetweenTokens(System.String,System.String,System.String,System.StringComparison)">
-            <summary>
-            Возвращает подстроку, которая находится в искомой строке между указанными начальным и конечным токеном. 
-            Возвращается столько подстрок, сколько в искомой строке встречается начальных и конечных токенов в прямом порядке.
-            </summary>
-            <param name="Input">Входная строка, содержащая токены, и внутри которой происходит поиск</param>
-            <param name="StartToken">Начальный токен</param>
-            <param name="EndToken">Конечный токен</param>
-            <param name="CompOpt"></param>
-            <returns>Список подстрок, находящихся между указанными токенами</returns>
-        </member>
         <member name="M:KlotosLib.StringTools.SubstringHelpers.GetInnerStringsBetweenTokens(System.String,System.String,System.String,System.Int32,System.StringComparison)">
             <summary>
             Возвращает все искомые подстроки вместе с их позициями из указанной строки, которые находятся между указанными начальными и конечными токенами. 
@@ -1228,9 +1422,11 @@
             <param name="Input">Входная строка, содержащая токены, и внутри которой происходит поиск. Входная строка не может быть NULL, пустой или состоящей из одних пробелов.</param>
             <param name="StartToken">Начальный токен, не может быть NULL или пустой строкой</param>
             <param name="EndToken">Конечный токен, не может быть NULL или пустой строкой</param>
-            <param name="Offset">Позиция исходной строки. Если 0 - поиск ведётся с начала. Если меньше 0 или больше длины исходной строки, выбрасывается исключение.</param>
-            <param name="ComparisionOptions">Опции сравнения строк между собой</param>
-            <returns>Словарь ключей и значений, где ключ - это позиция начала вхождения искомой строки в указанную, а значение - сама искомая строка. Если ничего не найдено, является пустым.</returns>
+            <param name="StartIndex">Позиция (включительная) начала поиска во входной строке. Если 0 - поиск ведётся с начала. 
+            Если меньше 0 или больше длины входной строки - выбрасывается исключение.</param>
+            <param name="CompOpt">Опции сравнения строк между собой</param>
+            <returns>Список подстрок. Если какая-либо из подстрок является пустой (т.е. между начальным и конечным токеном нет ни одного символа), 
+            в списке она будет представлена значением NULL.</returns>
         </member>
         <member name="M:KlotosLib.StringTools.SubstringHelpers.GetSubstringToToken(System.String,System.String,KlotosLib.StringTools.Direction,System.StringComparison)">
             <summary>
@@ -2330,6 +2526,24 @@
             <param name="Number"></param>
             <returns></returns>
         </member>
+        <member name="M:KlotosLib.NumericTools.AreEqual(System.Double,System.Double,System.Double)">
+            <summary>
+            Сравнивает два двоичных числа с плавающей запятой двойной точности с учётом указанного порогового значения
+            </summary>
+            <param name="Threshold">Пороговое значение для сравнения. Если отрицательное - будет взят модуль.</param>
+            <param name="First">Первое сравниваемое число</param>
+            <param name="Second">Второе сравниваемое число</param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.NumericTools.AreEqual(System.Single,System.Single,System.Single)">
+            <summary>
+            Сравнивает два двоичных числа с плавающей запятой одинарной точности с учётом указанного порогового значения
+            </summary>
+            <param name="Threshold">Пороговое значение для сравнения. Если отрицательное - будет взят модуль.</param>
+            <param name="First">Первое сравниваемое число</param>
+            <param name="Second">Второе сравниваемое число</param>
+            <returns></returns>
+        </member>
         <member name="T:KlotosLib.HtmlTools">
             <summary>
             Содержит статические чистые методы по работе с XML и HTML
@@ -3041,6 +3255,25 @@
             <param name="ItemsComparer">Компаратор сравнения на равенство для типа <typeparamref name="TItem"/>. Если null - будет использован компаратор по умолчанию для этого типа.</param>
             <returns>Если true - имеется минимум 2 одинаковых элемента в списке; если false - все элементы уникальны</returns>
         </member>
+        <member name="M:KlotosLib.CollectionTools.DistinctWithCount``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Возвращает различающиеся (уникальные) элементы списка вместе с количеством их появлений, используя указанный компаратор
+            </summary>
+            <typeparam name="TItem">Тип элемента входного списка, должен поддерживать сравнение со своим типом 
+            через реализацию интерфейса IEquatable&#60;TItem&#62;</typeparam>
+            <param name="Source">Входной список. Если NULL - будет выброшено исключение.</param>
+            <param name="EqualityComp">Компаратор проверки на равенство элементов типа <typeparamref name="TItem"/>. Если NULL - будет выброшено исключение.</param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.CollectionTools.DistinctWithCount``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Возвращает различающиеся (уникальные) элементы списка вместе с количеством их появлений, используя компаратор по умолчанию для типа элементов списка
+            </summary>
+            <typeparam name="TItem">Тип элемента входного списка, должен поддерживать сравнение со своим типом 
+            через реализацию интерфейса IEquatable&#60;TItem&#62;</typeparam>
+            <param name="Source">Входной список. Если NULL - будет выброшено исключение.</param>
+            <returns></returns>
+        </member>
         <member name="M:KlotosLib.CollectionTools.SwapValues``2(System.Collections.Generic.IDictionary{``0,``1},``0,``0)">
             <summary>
             Меняет местами между собой значения указанных двух ключей в указанном словаре, заменяя значением первого указанного ключа значение второго и наоборот. 
@@ -3266,6 +3499,16 @@
             <typeparam name="TItem">Тип элемента последовательности - без ограничений</typeparam>
             <param name="Source">Входная последовательность. Если null или пустая - будет выброшено исключение. Если содержит один элемент - он будет возвращён.</param>
             <param name="RandomInstance">Экземпляр ГПСЧ. Если null - будет выброшено исключение.</param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.CollectionTools.ItemFromEnd``1(System.Collections.Generic.IList{``0},System.Int32)">
+            <summary>
+            Возвращает один элемент из списка по его индексу, отсчитываемому с конца
+            </summary>
+            <typeparam name="TItem">Тип элемента списка - без ограничений</typeparam>
+            <param name="Source">Входной список. Если NULL или пустой - будет выброшено исключение.</param>
+            <param name="IndexFromEnd">Индекс элемента, который требуется возвратить, отсчитываемый с конца списка. Начинается с 0 включительно. 
+            Если превышает общее количество элементов списка - выбрасывается исключение.</param>
             <returns></returns>
         </member>
         <member name="T:KlotosLib.CollectionTools.SplitterDisposition">

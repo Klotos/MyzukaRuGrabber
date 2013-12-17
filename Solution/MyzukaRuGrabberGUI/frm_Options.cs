@@ -33,6 +33,8 @@ namespace MyzukaRuGrabberGUI
             this.rb_CommonFolder.Checked = !ProgramSettings.Instance.UseDistinctFolder;
             this.rb_DistinctFolder.Checked = ProgramSettings.Instance.UseDistinctFolder;
             this.tb_MaxDownloadThreads.Text = ProgramSettings.Instance.MaxDownloadThreads.ToString(CultureInfo.InvariantCulture);
+            this.tb_FilenameTemplate.Enabled = !ProgramSettings.Instance.UseServerFilenames;
+            this.tb_FilenameTemplate.Text = ProgramSettings.Instance.FilenameTemplate;
         }
         
         private void btn_BrowseFilePath_Click(object sender, EventArgs e)
@@ -49,7 +51,7 @@ namespace MyzukaRuGrabberGUI
         {
             Dictionary<String, String> err = ProgramSettings.TransactionalApply
                 (this.rb_DistinctFolder.Checked, this.rb_Internal.Checked, this.tb_MaxDownloadThreads.Text, 
-                this.tb_SaveFilePath.Text, this.tb_UserAgent.Text);
+                this.tb_SaveFilePath.Text, this.tb_UserAgent.Text, this.tb_FilenameTemplate.Text);
             if (err == null)
             {
                 return true;
@@ -88,11 +90,18 @@ namespace MyzukaRuGrabberGUI
             this.rb_Internal.Checked = ProgramSettings.Default.UseServerFilenames;
             this.rb_External.Checked = !ProgramSettings.Default.UseServerFilenames;
             this.tb_MaxDownloadThreads.Text = ProgramSettings.Default.MaxDownloadThreads.ToString(CultureInfo.InvariantCulture);
+            this.tb_FilenameTemplate.Enabled = !ProgramSettings.Default.UseServerFilenames;
+            this.tb_FilenameTemplate.Text = ProgramSettings.Default.FilenameTemplate;
         }
 
         private void frm_Options_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void rb_Internal_CheckedChanged(object sender, EventArgs e)
+        {
+            this.tb_FilenameTemplate.Enabled = !this.tb_FilenameTemplate.Enabled;
         }
     }
 }

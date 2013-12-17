@@ -15,6 +15,15 @@ namespace MyzukaRuGrabberGUI
     /// </summary>
     internal class ProgramSettings
     {
+        #region Constants
+        private const String _DEFAULT_USERAGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0";
+
+        private const String _NUMBER_TOKEN = "%number%";
+        private const String _TITLE_TOKEN = "%title%";
+        private const String _ARTIST_TOKEN = "%artist%";
+        private const String _ALBUM_TOKEN = "%album%";
+        #endregion
+
         #region Constructors
         static ProgramSettings(){}
 
@@ -30,18 +39,21 @@ namespace MyzukaRuGrabberGUI
                 this._useServerFilenames = true;
                 this._maxDownloadThreads = (Byte)Environment.ProcessorCount;
                 this._savedFilesPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                this._userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0";
+                this._userAgent = _DEFAULT_USERAGENT;
+                this._filenameTemplate = _NUMBER_TOKEN+". "+_ARTIST_TOKEN+" - "+_TITLE_TOKEN + " ["+_ALBUM_TOKEN+"]";
             }
         }
 
         private ProgramSettings
-            (Boolean UseDistinctFolder, Boolean UseServerFilenames, Byte MaxDownloadThreads, String SavedFilesPath, String UserAgent)
+            (Boolean UseDistinctFolder, Boolean UseServerFilenames, Byte MaxDownloadThreads, String SavedFilesPath, String UserAgent, 
+            String FilenameTemplate)
         {
             this._useDistinctFolder = UseDistinctFolder;
             this._useServerFilenames = UseServerFilenames;
             this._maxDownloadThreads = MaxDownloadThreads;
             this._savedFilesPath = SavedFilesPath;
             this._userAgent = UserAgent;
+            this._filenameTemplate = FilenameTemplate;
         }
         #endregion
 
@@ -88,7 +100,7 @@ namespace MyzukaRuGrabberGUI
         }
 
         internal static Dictionary<String, String> TransactionalApply(Boolean UseDistinctFolder, Boolean UseServerFilenames,
-            String MaxDownloadThreads, String SavedFilesPath, String UserAgent)
+            String MaxDownloadThreads, String SavedFilesPath, String UserAgent, String FilenameTemplate)
         {
             Dictionary<String, String> output = new Dictionary<string, string>();
             if (UserAgent.HasAlphaNumericChars() == false)
@@ -108,13 +120,26 @@ namespace MyzukaRuGrabberGUI
             {
                 output.Add(MaxDownloadThreads.MemberName(_ => MaxDownloadThreads), "Value '" + MaxDownloadThreads+"' is invalid");
             }
+            Char[] intersects = FilenameTemplate.ToCharArray().Intersect(Path.GetInvalidFileNameChars()).ToArray();
+            if (intersects.IsNullOrEmpty()==false)
+            {
+                output.Add(FilenameTemplate.MemberName(_ => FilenameTemplate)+"1", 
+                    "Filename template contains next invalid characters: "+intersects.ConcatToString(", ")+".");
+            }
+            if (FilenameTemplate.Contains(_TITLE_TOKEN, StringComparison.Ordinal) == false &&
+                FilenameTemplate.Contains(_NUMBER_TOKEN, StringComparison.Ordinal) == false)
+            {
+                output.Add(FilenameTemplate.MemberName(_ => FilenameTemplate)+"2", 
+                    "Filename template must contain "+_TITLE_TOKEN+" or "+_NUMBER_TOKEN+" token");
+            }
+
             if (output.Any() == true)
             {
                 return output;
             }
             Byte value = mdt.Value > (Byte)99 ? (Byte)99 : mdt.Value;
             ProgramSettings._instance = 
-                new ProgramSettings(UseDistinctFolder, UseServerFilenames, value, SavedFilesPath.Trim(), UserAgent.Trim());
+                new ProgramSettings(UseDistinctFolder, UseServerFilenames, value, SavedFilesPath.Trim(), UserAgent.Trim(), FilenameTemplate.Trim());
             return null;
         }
 
@@ -150,6 +175,12 @@ namespace MyzukaRuGrabberGUI
         /// User-Agent, который будет использоваться для запросов к сайту
         /// </summary>
         internal String UserAgent { get { return this._userAgent; } }
+
+        private readonly String _filenameTemplate;
+        /// <summary>
+        /// Шаблон имени сохраняемого файла песни
+        /// </summary>
+        public String FilenameTemplate {get { return this._filenameTemplate; }}
         #endregion
 
         internal Boolean IsDefault
@@ -161,7 +192,8 @@ namespace MyzukaRuGrabberGUI
                     _instance.UseServerFilenames == _default.UseServerFilenames &&
                     _instance.MaxDownloadThreads == _default.MaxDownloadThreads &&
                     _instance.UserAgent.Equals(_default.UserAgent, StringComparison.Ordinal) &&
-                    _instance.SavedFilesPath.Equals(_default.SavedFilesPath, StringComparison.Ordinal);
+                    _instance.SavedFilesPath.Equals(_default.SavedFilesPath, StringComparison.Ordinal) &&
+                    _instance.FilenameTemplate.Equals(_default.FilenameTemplate, StringComparison.Ordinal);
                 return result;
             }
         }

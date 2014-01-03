@@ -26,7 +26,7 @@ namespace MyzukaRuGrabberCore.DataModels
         /// <param name="Format"></param>
         /// <param name="Uploader"></param>
         /// <param name="SongImageURI"></param>
-        /// <param name="SongPageUri"></param>
+        /// <param name="SongPageUri">URI на страницу, представляющую (содержащую) данную песню</param>
         /// <param name="IsAvailableForDownload">Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице</param>
         public OneSongHeader
             (Byte Number, String Title, String Name, String Artist, String Album, String Genre,

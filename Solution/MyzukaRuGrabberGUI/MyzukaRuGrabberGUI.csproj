@@ -126,6 +126,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProgramSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools.cs" />
     <EmbeddedResource Include="frm_Main.resx">
       <DependentUpon>frm_Main.cs</DependentUpon>
     </EmbeddedResource>

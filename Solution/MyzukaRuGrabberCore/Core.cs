@@ -93,6 +93,14 @@ namespace MyzukaRuGrabberCore
             {
                 temp_task.Wait(CancToken);
             }
+            catch (InvalidOperationException ioex)
+            {
+                if (InvokeEvents == true)
+                {
+                    Core.OnException.Invoke(ioex.InnerException);
+                }
+                return null;
+            }
             catch (AggregateException aex)
             {
                 if (InvokeEvents == true)
@@ -172,7 +180,7 @@ namespace MyzukaRuGrabberCore
 
             DownloadedFile cover_file = null;
             Bitmap cover_image = null;
-            if (DownloadCover == true)
+            if (DownloadCover == true && header.CoverImageURI != null)
             {
                 String err_mess;
                 cover_file = CoreInternal.TryDownloadFile(header.CoverImageURI, header.PageURI, UserAgent, out err_mess);
@@ -229,7 +237,7 @@ namespace MyzukaRuGrabberCore
                 Uri album_URI;
                 try
                 {
-                    album_URI = CoreInternal.ExtractFromSongAlbumURI(HTML_doc);
+                    album_URI = CoreInternal.ExtractAlbumURIFromSongPage(HTML_doc);
                 }
                 catch (Exception ex)
                 {
@@ -293,7 +301,7 @@ namespace MyzukaRuGrabberCore
 
         /// <summary>
         /// Возникает при успешном завершении всех работ, непосредственно перед возвращением результата из метода. 
-        /// В единественном параметре возвращается собственно результат.
+        /// В единственном параметре возвращается собственно результат.
         /// </summary>
         public static event Action<ACommonData> WorkIsDone;
 

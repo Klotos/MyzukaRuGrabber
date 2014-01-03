@@ -23,7 +23,7 @@
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.TryGrabImageUri(HtmlAgilityPack.HtmlDocument)">
             <summary>
-            Пытается извлечь и вернуть URI изображения, работает как со страницами альбомов, так и песен
+            Пытается извлечь и вернуть URI изображения, работает как со страницами альбомов, так и песен. При неудаче возвращает NULL.
             </summary>
             <param name="HTMLPage"></param>
             <returns></returns>
@@ -37,7 +37,7 @@
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.TryGrabCaption(HtmlAgilityPack.HtmlDocument)">
             <summary>
-            Возвращает название элемента как для песни, так и для альбома
+            Возвращает название элемента как для песни, так и для альбома. При неудаче возвращает NULL.
             </summary>
             <param name="InputHTML"></param>
             <returns></returns>
@@ -49,7 +49,7 @@
             <param name="HTMLPage"></param>
             <returns></returns>
         </member>
-        <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractFromSongAlbumURI(HtmlAgilityPack.HtmlDocument)">
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractAlbumURIFromSongPage(HtmlAgilityPack.HtmlDocument)">
             <summary>
             Извлекает из страницы песни и возвращает URI на страницу альбома, к которому относится данная песня
             </summary>
@@ -66,9 +66,17 @@
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractFromHTML(System.String)">
             <summary>
-            Возвращает исполнителя песни, вычленяя его из части HTML-кода
+            Возвращает текстовые данные, вычленяя их из части HTML-кода
             </summary>
             <param name="Input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.ParseAllSongsInAlbum(HtmlAgilityPack.HtmlDocument,MyzukaRuGrabberCore.DataModels.AlbumHeader)">
+            <summary>
+            Парсит все песни на странице альбома и возвращает результат в виде списка моделей песен
+            </summary>
+            <param name="InputHTML">HTML-код страницы альбома в виде подготовленного HTML-документа</param>
+            <param name="AHeader">Распарсенный хидер альбома, информацию о песнях которого следует извлечь</param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.ParseOneSongHeader(HtmlAgilityPack.HtmlDocument)">
@@ -492,7 +500,7 @@
         <member name="E:MyzukaRuGrabberCore.Core.WorkIsDone">
             <summary>
             Возникает при успешном завершении всех работ, непосредственно перед возвращением результата из метода. 
-            В единественном параметре возвращается собственно результат.
+            В единственном параметре возвращается собственно результат.
             </summary>
         </member>
         <member name="E:MyzukaRuGrabberCore.Core.OnException">
@@ -657,7 +665,7 @@
             <param name="Format"></param>
             <param name="Uploader"></param>
             <param name="SongImageURI"></param>
-            <param name="SongPageUri"></param>
+            <param name="SongPageUri">URI на страницу, представляющую (содержащую) данную песню</param>
             <param name="IsAvailableForDownload">Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице</param>
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String)">

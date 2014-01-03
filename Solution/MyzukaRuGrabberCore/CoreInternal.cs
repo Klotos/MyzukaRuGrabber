@@ -111,10 +111,10 @@ namespace MyzukaRuGrabberCore
             if(HTMLPage == null) {throw new ArgumentNullException("HTMLPage");}
             Byte album_symptom = 0;
             Byte song_symptom = 0;
-            //Скачать альбом целиком
-            
+
+
             HtmlNode node1 = HTMLPage.DocumentNode.SelectSingleNode
-                ("//div[@class='centerblock gr']/div[@class='in2']/h1[@class]");
+                ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]//h1[@class = 'blue' or @class = 'green']");
             if (node1 == null) { return ParsedItemType.Unknown; }
             String node1_outerhtml = node1.OuterHtml;
             if (node1_outerhtml.Contains("blue", StringComparison.OrdinalIgnoreCase) == true)
@@ -131,13 +131,11 @@ namespace MyzukaRuGrabberCore
             }
 
             HtmlNode node2 = HTMLPage.DocumentNode.SelectSingleNode
-                ("//div[@class='centerblock gr']/div[@class='in2']/table/tr");
+                ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]//table[@style and @class]/tr");
             if (node2 == null) { return ParsedItemType.Unknown; }
             
-            //String node2_text = StringTools.SubstringHelpers.GetSubstringToToken
-            //    (node2.InnerText, "Описание", StringTools.Direction.FromStartToEnd, StringComparison.OrdinalIgnoreCase);
-            String node2_text = StringTools.SubstringHelpers.TruncateToClosestToken
-                (node2.InnerText, "Описание:", true, StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
+            String node2_text = StringTools.SubstringHelpers.GetSubstringToToken
+                (node2.InnerText, "Описание:", true, StringTools.Direction.FromStartToEnd, StringComparison.OrdinalIgnoreCase);
             
             if (node2_text.Contains("Альбом:", StringComparison.OrdinalIgnoreCase) == true)
             {
@@ -147,7 +145,7 @@ namespace MyzukaRuGrabberCore
             {
                 song_symptom++;
             }
-            if (node2_text.Contains("Битрейт:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text.Contains("Длительность:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 song_symptom++;
             }
@@ -185,21 +183,19 @@ namespace MyzukaRuGrabberCore
         }
         
         /// <summary>
-        /// Пытается извлечь и вернуть URI изображения, работает как со страницами альбомов, так и песен
+        /// Пытается извлечь и вернуть URI изображения, работает как со страницами альбомов, так и песен. При неудаче возвращает NULL.
         /// </summary>
         /// <param name="HTMLPage"></param>
         /// <returns></returns>
         private static Uri TryGrabImageUri(HtmlDocument HTMLPage)
         {
             HtmlNode node = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@class='centerblock gr']/div[@class='in2']/table[@width or @style]/tr[1]/td[1]/img[@src]");
+                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]//table[@style and @class]/tr[1]/td[1]/img[@src]");
             if (node == null) { return null; }
-            String raw_image_URI = node.OuterHtml;
-            Int32 out_pos;
-            String raw_image_URI2 = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (raw_image_URI, "src=", ">", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
+            String raw_image_URI = node.GetAttributeValue("src", "");
+            if (raw_image_URI.HasAlphaNumericChars() == false) {return null;}
             String err_mes;
-            Uri output = CoreInternal.TryFixReturnURI(raw_image_URI2, out err_mes);
+            Uri output = CoreInternal.TryFixReturnURI(raw_image_URI, out err_mes);
             return output;
         }
 
@@ -225,14 +221,14 @@ namespace MyzukaRuGrabberCore
         }
 
         /// <summary>
-        /// Возвращает название элемента как для песни, так и для альбома
+        /// Возвращает название элемента как для песни, так и для альбома. При неудаче возвращает NULL.
         /// </summary>
         /// <param name="InputHTML"></param>
         /// <returns></returns>
         private static String TryGrabCaption(HtmlDocument InputHTML)
         {
             HtmlNode caption_node = InputHTML.DocumentNode.SelectSingleNode
-                ("//div[@class='centerblock gr']/div[@class='in2']/h1[@class]");
+                ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]//h1[@class = 'blue' or @class = 'green']");
             if (caption_node == null) { return null; }
             return HttpUtility.HtmlDecode(caption_node.InnerText.Trim());
         }
@@ -244,21 +240,17 @@ namespace MyzukaRuGrabberCore
         /// <returns></returns>
         internal static Uri ExtractDownloadSongURI(HtmlDocument HTMLPage)
         {
-            Int32 out_pos;
+            HtmlNode link_node = HTMLPage.DocumentNode.SelectSingleNode
+                ("//div[@id]/table[@width='100%']/tr[starts-with(@id,'trSong_')]/td[4][@class='downloadSong']/a[@href]");
+            if(link_node==null) {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода со ссылкой на скачку песни");}
+            String raw_link_URI = link_node.GetAttributeValue("href", "");
             String err_mes;
-            String raw_download_URI = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@style]/table[@width='100%']/tr[starts-with(@id,'trSong_') and @style]/td[5]/a[@href and @style]"
-                ).OuterHtml;
-            String raw_download_URI2 = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (raw_download_URI, "href=\"", "\"", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
-            Uri download_URI = TryFixReturnURI(raw_download_URI2, out err_mes);
-            if (download_URI == null)
+            Uri link_URI = CoreInternal.TryFixReturnURI(raw_link_URI, out err_mes);
+            if (link_URI == null)
             {
-                throw new InvalidOperationException(String.Format(
-                  "Невозможно извлечь URI на скачку песни из строки '{0}': {1}",
-                  raw_download_URI, err_mes));
+                throw new InvalidOperationException("Невозможно извлечь URI текущей страницы песни: " + err_mes);
             }
-            return download_URI;
+            return link_URI;
         }
 
         /// <summary>
@@ -266,23 +258,32 @@ namespace MyzukaRuGrabberCore
         /// </summary>
         /// <param name="HTMLPage"></param>
         /// <returns></returns>
-        internal static Uri ExtractFromSongAlbumURI(HtmlDocument HTMLPage)
+        internal static Uri ExtractAlbumURIFromSongPage(HtmlDocument HTMLPage)
         {
             if (HTMLPage == null) { throw new ArgumentNullException("HTMLPage"); }
 
-            Int32 out_pos;
             String err_mes;
-            String raw_album_URI = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@style]/table[@width='100%']/tr[starts-with(@id,'trSong_') and @style]/td[4]/a[@href]"
-                ).OuterHtml;
-            String raw_album_URI2 = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (raw_album_URI, "href=\"", "\">", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
-            Uri album_URI = TryFixReturnURI(raw_album_URI2, out err_mes);
+            HtmlNode song_header_node = HTMLPage.DocumentNode.SelectSingleNode(
+                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/div/table[@style and @class]/tr/td[2][@class='infoSong']");
+            if(song_header_node==null) 
+            {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода с метаинформацией по песне");}
+
+            Int32 pos;
+            String raw_album_data = StringTools.SubstringHelpers.GetInnerStringBetweenTokens(song_header_node.InnerHtml,
+                "Альбом:", "Длительность:", 0, StringComparison.OrdinalIgnoreCase, out pos);
+            if (raw_album_data == null) 
+            {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода с данными по альбому, к которому принадлежит эта песня");}
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml("<root>"+raw_album_data+"</root>");
+            HtmlNode link_node = doc.DocumentNode.SelectSingleNode("/root/a[@href and @class]");
+            String raw_album_URI = link_node.GetAttributeValue("href", "");
+
+            Uri album_URI = TryFixReturnURI(raw_album_URI, out err_mes);
             if (album_URI == null)
             {
                 throw new InvalidOperationException(String.Format(
                   "Невозможно извлечь URI на страницу альбома из строки '{0}': {1}",
-                  raw_album_URI2, err_mes));
+                  raw_album_URI, err_mes));
             }
             return album_URI;
         }
@@ -323,7 +324,7 @@ namespace MyzukaRuGrabberCore
         }
 
         /// <summary>
-        /// Возвращает исполнителя песни, вычленяя его из части HTML-кода
+        /// Возвращает текстовые данные, вычленяя их из части HTML-кода
         /// </summary>
         /// <param name="Input"></param>
         /// <returns></returns>
@@ -331,7 +332,7 @@ namespace MyzukaRuGrabberCore
         {
             if(Input.HasAlphaNumericChars()==false) 
             {throw new ArgumentException("Входная строка не содержит цифробуквенных символов", "Input");}
-            String temp = Input.CleanString().Trim();
+            String temp = Input.MultiReplace(' ', new char[]{'\r', '\n', '\t'}).Trim();
             temp = KlotosLib.HtmlTools.IntelliRemoveHTMLTags(temp);
             temp = StringTools.SubstringHelpers.ShrinkSpaces(temp).Trim();
             return temp;
@@ -343,9 +344,23 @@ namespace MyzukaRuGrabberCore
             
             String caption = CoreInternal.TryGrabCaption(HTMLPage);
 
-            String main_body_html = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@class='centerblock gr']/div[@class='in2']/table[1]/tr/td[2]"
-                ).InnerHtml;
+            HtmlNode main_body = HTMLPage.DocumentNode.SelectSingleNode(
+                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/table[1]/tr/td[2]"
+                );
+            if(main_body==null) {throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с метаинформацией по альбому");}
+
+            HtmlNodeCollection uploader_and_updater = main_body.SelectNodes("//div[@class='loaderSong']/a[@class and @href]");
+            if (uploader_and_updater.IsNullOrEmpty()==true) 
+            { throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с данными о пользователях, загрузивших и обновивших альбом"); }
+
+            String uploader = uploader_and_updater[0].InnerText.Trim();
+            String updater = "";
+            if (uploader_and_updater.Count == 2)
+            {
+                updater = uploader_and_updater[1].InnerText.Trim();
+            }
+            
+            String main_body_html = main_body.InnerHtml;
             Int32 pos_input;
 
             String genre = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
@@ -356,16 +371,14 @@ namespace MyzukaRuGrabberCore
             }
             else
             {
-                genre = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                    (genre, ">", "</a>", 0, StringComparison.OrdinalIgnoreCase, out pos_input);
-                genre = HttpUtility.HtmlDecode(genre);
+                genre = HtmlTools.IntelliRemoveHTMLTags(genre).CleanString().Trim();
+                genre = StringTools.SubstringHelpers.ShrinkSpaces(genre);
             }
-
+            
             String artist = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (main_body_html, "Исполнитель:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-            artist = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (artist, ">", "</a>", 0, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-            artist = HttpUtility.HtmlDecode(artist);
+            artist = HtmlTools.IntelliRemoveHTMLTags(artist).CleanString().Trim();
+            artist = StringTools.SubstringHelpers.ShrinkSpaces(artist);
 
             String release_date = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (main_body_html, "Дата релиза:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input);
@@ -379,23 +392,7 @@ namespace MyzukaRuGrabberCore
 
             String format = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (main_body_html, "Формат:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-
-            String uploader = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (main_body_html, "Загрузил:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-            uploader = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (uploader, ">", "</a>", 0, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-
-            String updater = "";
-            if (main_body_html.Contains("обновил:", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                updater = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                    (main_body_html, "обновил:", "</a>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input)
-                    .Trim();
-                updater = StringTools.SubstringHelpers.GetSubstringToToken
-                    (updater, ">", StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
-                updater = HttpUtility.HtmlDecode(updater);
-            }
-
+            
             String description = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (main_body_html, "Описание: <br>", "GetVipAccount", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input);
             description = CoreInternal.ExtractFromHTML(description);
@@ -412,13 +409,23 @@ namespace MyzukaRuGrabberCore
             return output;
         }
 
+        /// <summary>
+        /// Парсит все песни на странице альбома и возвращает результат в виде списка моделей песен
+        /// </summary>
+        /// <param name="InputHTML">HTML-код страницы альбома в виде подготовленного HTML-документа</param>
+        /// <param name="AHeader">Распарсенный хидер альбома, информацию о песнях которого следует извлечь</param>
+        /// <returns></returns>
         internal static List<OneSongHeader> ParseAllSongsInAlbum(HtmlDocument InputHTML, AlbumHeader AHeader)
         {
+            if(InputHTML==null) {throw new ArgumentNullException("InputHTML");}
+            if(AHeader == null) {throw new ArgumentNullException("AHeader");}
+
             List<OneSongHeader> output = new List<OneSongHeader>();
 
             HtmlNodeCollection raw_songs_list = InputHTML.DocumentNode.SelectNodes(
                 "//table[normalize-space(@width)='100%' and normalize-space(@class)='rectable rectable_center']" +
                 "/tr[starts-with(@id,'trSong_')]");
+            if (raw_songs_list == null) {throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с метаинформацией по всем песням в альбоме");}
 
             foreach (HtmlNode one_raw_song in raw_songs_list)
             {
@@ -430,16 +437,15 @@ namespace MyzukaRuGrabberCore
 
                 String artist = inner_doc.DocumentNode.SelectSingleNode(
                     "/root/td[3]").InnerHtml;
-                Int32 pos;
                 artist = ExtractFromHTML(artist);
+                
+                HtmlNode raw_title_node = inner_doc.DocumentNode.SelectSingleNode("/root/td[4][@class]/div");
+                if(raw_title_node==null)
+                { throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с названием песни, которая имеет номер "+number); }
+                String raw_title_text = raw_title_node.InnerText.CleanString();
+                String title = HttpUtility.HtmlDecode(raw_title_text.TrimEnd("Файл утерян", StringComparison.OrdinalIgnoreCase, false));
 
-                String raw_title = inner_doc.DocumentNode.SelectSingleNode(
-                    "/root/td[4]").InnerHtml.CleanString().Trim();
-                String title = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                    (raw_title, ">", "</a>", 0, StringComparison.OrdinalIgnoreCase, out pos);
-                title = HttpUtility.HtmlDecode(title);
-
-                Boolean is_available = !raw_title.Contains("Файл утерян", StringComparison.InvariantCultureIgnoreCase);
+                Boolean is_available = !raw_title_text.Contains("Файл утерян", StringComparison.InvariantCultureIgnoreCase);
 
                 String duration = inner_doc.DocumentNode.SelectSingleNode(
                     "/root/td[5]").InnerHtml.CleanString().Trim();
@@ -449,13 +455,18 @@ namespace MyzukaRuGrabberCore
 
                 String bitrate = inner_doc.DocumentNode.SelectSingleNode(
                     "/root/td[7]").InnerHtml.CleanString().Trim();
+                
+                HtmlNode raw_URI_node = inner_doc.DocumentNode.SelectSingleNode(
+                    "/root/td[@class='downloadSong']/a[@href and @title]");
+                if (raw_URI_node == null)
+                { throw new InvalidOperationException(String.Format("Невозможно извлечь из страницы альбома блок HTML-кода со ссылкой на страницу песни '{0}-{1}'", 
+                    number, title)); }
 
-                String raw_URI = inner_doc.DocumentNode.SelectSingleNode(
-                    "/root/td/a[@href and contains(text(), 'Скачать')]").OuterHtml.CleanString().Trim();
-                String raw_URI2 = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                    (raw_URI, "href=", ">Скачать", 0, StringComparison.OrdinalIgnoreCase, out pos);
+                String raw_URI = raw_URI_node.GetAttributeValue("href", "");
+                if(raw_URI.IsStringNullOrEmpty()==true) { throw new InvalidOperationException(String.Format(
+                    "Невозможно извлечь ссылку на страницу песни '{0}-{1}' из HTML-кода '{2}'", number, title, raw_URI_node.OuterHtml)); }
                 String err_mes;
-                Uri song_link = TryFixReturnURI(raw_URI2, out err_mes);
+                Uri song_link = TryFixReturnURI(raw_URI, out err_mes);
                 if (song_link == null)
                 {
                     throw new InvalidOperationException(String.Format(
@@ -479,9 +490,11 @@ namespace MyzukaRuGrabberCore
         {
             String caption = CoreInternal.TryGrabCaption(HTMLPage);
 
-            String body = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@class='centerblock gr']/div[@class='in2']/table[@style]/tr/td[2]"
-                ).InnerHtml;
+            HtmlNode body_node = HTMLPage.DocumentNode.SelectSingleNode(
+                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/div/table[@style and @class]/tr/td[2][@class='infoSong']");
+            if (body_node == null) {throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с метаинформацией по песне");}
+            String body = body_node.InnerHtml;
+
             Int32 pos_input;
 
             String genre = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
@@ -503,45 +516,39 @@ namespace MyzukaRuGrabberCore
             
             String album = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (body, "Альбом:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-            album = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (album, ">", "</a>", 0, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-            album = HttpUtility.HtmlDecode(album);
+            album = CoreInternal.ExtractFromHTML(album);
 
             String duration = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (body, "Длительность:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
+            duration = CoreInternal.ExtractFromHTML(duration);
 
             String size = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (body, "Размер:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
+            size = CoreInternal.ExtractFromHTML(size);
 
             String format = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (body, "Формат", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim().
-                Split(new char[1] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Last();
+                (body, "<i class=\"format\">", "</i>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
 
             String bitrate = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (body, "Битрейт:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
+                (body, "<i class=\"bitrate\">", "</i>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
 
-            String uploader = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (body, "Загрузил:", "<br><br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
-            uploader = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (uploader, ">", "</a>", 0, StringComparison.OrdinalIgnoreCase, out pos_input);
+            HtmlNode uploader_node = body_node.ChildNodes.FindFirst("div");
+            String uploader = uploader_node.InnerText.TrimStart("Загрузил:", StringComparison.OrdinalIgnoreCase, false).Trim();
 
-            String name = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@style]/table[@width='100%']/tr[starts-with(@id,'trSong_') and @style]/td[3]/a[@href]"
-                ).InnerText.Trim();
-            name = HttpUtility.HtmlDecode(name);
+            HtmlNode name_node = HTMLPage.DocumentNode.SelectSingleNode("//div[@id]/table[@width='100%']/tr[starts-with(@id,'trSong_')]/td[2]/div");
+            if(name_node==null) {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода с названием песни");}
+            Boolean is_available = !name_node.InnerText.Contains("Файл утерян", StringComparison.InvariantCultureIgnoreCase);
+            String name = HttpUtility.HtmlDecode(name_node.ChildNodes.Single(
+                nd => nd.Name == "span" && nd.Attributes.Count > 0 && nd.Attributes.Contains("itemprop") && nd.Attributes["itemprop"].Value == "name"
+            ).InnerText.CleanString().Trim());
+            
+            HtmlNode link_node = body_node.SelectSingleNode
+                ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/div/table[@style and @class]/tr/td[2][@class='infoSong']/meta[@itemprop='url' and @content]");
+            if(link_node==null) {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода с URL на данную страницу");}
 
-            Boolean is_available = !HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@style]/table[@width='100%']/tr[starts-with(@id,'trSong_') and @style]/td[3]"
-                ).InnerText.Contains("Файл утерян", StringComparison.InvariantCultureIgnoreCase);
-
-            Int32 out_pos;
-            String raw_link_URI = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@style]/table[@width='100%']/tr[starts-with(@id,'trSong_') and @style]/td[3]/a[@href]"
-                ).OuterHtml;
-            String raw_link_URI2 = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (raw_link_URI, "href=", ">", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
+            String raw_link_URI = link_node.GetAttributeValue("content", "");
             String err_mes;
-            Uri link_URI = CoreInternal.TryFixReturnURI(raw_link_URI2, out err_mes);
+            Uri link_URI = CoreInternal.TryFixReturnURI(raw_link_URI, out err_mes);
             if (link_URI == null)
             {
                 throw new InvalidOperationException("Невозможно извлечь URI текущей страницы песни: " + err_mes);
@@ -553,8 +560,6 @@ namespace MyzukaRuGrabberCore
             return song;
         }
         
-        
-
         /// <summary>
         /// Пытается скачать и вернуть один файл по указанной ссылке с указанными параметрами. 
         /// В случае ошибки возвращает NULL и сообщение об ошибке в ввыводном параметре.
@@ -620,7 +625,7 @@ namespace MyzukaRuGrabberCore
                         return null;
                     }
                     String original_filename_without_ext = StringTools.SubstringHelpers.GetSubstringToToken(content_disposition,
-                        "filename=", StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
+                        "filename=", false, StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
                     Int32 out_pos;
                     String ext = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                         (response.ResponseUri.ToString(), "ex=", "&", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
@@ -704,7 +709,7 @@ namespace MyzukaRuGrabberCore
                         return null;
                     }
                     String original_filename_without_ext = StringTools.SubstringHelpers.GetSubstringToToken(content_disposition,
-                        "filename=", StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
+                        "filename=", false, StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
                     Int32 out_pos;
                     String ext = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                         (response.ResponseUri.ToString(), "ex=", "&", 0, StringComparison.OrdinalIgnoreCase, out out_pos);

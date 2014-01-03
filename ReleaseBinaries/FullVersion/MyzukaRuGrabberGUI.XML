@@ -150,6 +150,11 @@
             Шаблон имени сохраняемого файла песни
             </summary>
         </member>
+        <member name="T:MyzukaRuGrabberGUI.Tools._IMAGE_FILE_HEADER">
+            <summary>
+            http://msdn.microsoft.com/en-us/library/ms680313
+            </summary>
+        </member>
         <member name="T:MyzukaRuGrabberGUI.Properties.Resources">
             <summary>
               Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.

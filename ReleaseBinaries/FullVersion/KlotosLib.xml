@@ -931,17 +931,17 @@
         </member>
         <member name="T:KlotosLib.StringTools.Direction">
             <summary>
-            Определяет направление поиска подстроки в строке
+            Определяет направление поиска или выдачи подстроки в строке
             </summary>
         </member>
         <member name="F:KlotosLib.StringTools.Direction.FromStartToEnd">
             <summary>
-            Искать от начала до конца строки
+            Искать/выдавать в направлении от начала до конца строки
             </summary>
         </member>
         <member name="F:KlotosLib.StringTools.Direction.FromEndToStart">
             <summary>
-            Искать с конца в начало строки
+            Искать/выдавать в направлении с конца к началу строки
             </summary>
         </member>
         <member name="T:KlotosLib.StringTools.StringAnalyzers">
@@ -1428,12 +1428,13 @@
             <returns>Список подстрок. Если какая-либо из подстрок является пустой (т.е. между начальным и конечным токеном нет ни одного символа), 
             в списке она будет представлена значением NULL.</returns>
         </member>
-        <member name="M:KlotosLib.StringTools.SubstringHelpers.GetSubstringToToken(System.String,System.String,KlotosLib.StringTools.Direction,System.StringComparison)">
+        <member name="M:KlotosLib.StringTools.SubstringHelpers.GetSubstringToToken(System.String,System.String,System.Boolean,KlotosLib.StringTools.Direction,System.StringComparison)">
             <summary>
             Возвращает часть указанной входной строки, которая размещена от начала или от конца и до первого указанного токена
             </summary>
             <param name="Input">Входящая строка, из которой надо извлечь подстроку</param>
             <param name="Token">Токен, который определяет конец подстроки</param>
+            <param name="LeaveToken">Если "true" - ближайший токен будет оставлен. Если "false" - он тоже будет удалён.</param>
             <param name="Dir">Направление, с которого будет возвращена подстрока: из начала или из конца</param>
             <param name="CompareOptions">Опции сравнения строк между собой</param>
             <returns></returns>
@@ -1444,7 +1445,7 @@
             </summary>
             <param name="Input">Входящая строка, из которой надо извлечь подстроку</param>
             <param name="Token">Токен, который определяет точку обрезания и также обрезается</param>
-            <param name="LeaveToken">Если "true" - ближайший токен будет оставлен. Иначе он тоже будет удалён.</param>
+            <param name="LeaveToken">Если "true" - ближайший токен будет оставлен. Если "false" - он тоже будет удалён.</param>
             <param name="Dir">Направление, с которого будет обрезана подстрока: из начала или из конца</param>
             <param name="CompareOptions">Опции сравнения строк между собой</param>
             <returns></returns>
@@ -3012,9 +3013,17 @@
             <summary>
             Определяет, является ли последовательность NULL или пустой
             </summary>
-            <typeparam name="T"></typeparam>
+            <typeparam name="T">Тип элементов последовательности - без ограничений</typeparam>
             <param name="Source">Любая последовательность, реализующая обобщённый интерфейс IEnumerable&#60;T&#62;</param>
-            <returns>Если возвращает "true" — коллекция NULL или пустая. Если "false" — коллекция содержит минимум 1 элемент.</returns>
+            <returns>Если возвращает "true" — последовательность NULL или пустая. Если "false" — последовательность содержит минимум 1 элемент.</returns>
+        </member>
+        <member name="M:KlotosLib.CollectionTools.IsEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Определяет, является ли последовательность пустой
+            </summary>
+            <typeparam name="TItem">Тип элементов последовательности - без ограничений</typeparam>
+            <param name="Source">Любая последовательность, реализующая обобщённый интерфейс IEnumerable&#60;T&#62;</param>
+            <returns>Если возвращает "true" — пустая. Если "false" — последовательность является NULL или содержит минимум 1 элемент.</returns>
         </member>
         <member name="M:KlotosLib.CollectionTools.HasSingle``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>

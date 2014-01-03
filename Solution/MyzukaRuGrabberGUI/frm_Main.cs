@@ -25,7 +25,6 @@ namespace MyzukaRuGrabberGUI
     /// </summary>
     public partial class frm_Main : Form
     {
-        
         /// <summary>
         /// Конструктор основной формы без параметров, со стандартным телом
         /// </summary>
@@ -261,6 +260,8 @@ namespace MyzukaRuGrabberGUI
         private CancellationTokenSource _cancelSongsDownload;
 
         private const String empty = "";
+
+        private readonly Stack<Uri> _URI_history = new Stack<Uri>(); 
         #endregion
 
         private async void btn_Grab_Click(object sender, EventArgs e)
@@ -313,8 +314,7 @@ namespace MyzukaRuGrabberGUI
             this._parsedItem = data.Result;
             data.Dispose();
             data = null;
-            Action a = () => { this.tb_InputURI.Text = this._parsedItem.ItemLink.ToString(); };
-            this.tb_InputURI.Invoke(a);
+            
             this.LockOrUnlockInterface(false);
             this._cancelGrabbingPage.Dispose();
             this._cancelGrabbingPage = null;
@@ -322,6 +322,7 @@ namespace MyzukaRuGrabberGUI
             {
                 this.CleanLayout();
                 this.UpdateStatus(4);
+                return;
             }
             else if (this._parsedItem is ParsedAlbum)
             {
@@ -335,6 +336,18 @@ namespace MyzukaRuGrabberGUI
                 this.RenderSong((ParsedSong)this._parsedItem);
                 this.AddToLog("Данные песни загружены");
             }
+            Action a = () =>
+            {
+                this.tb_InputURI.Text = this._parsedItem.ItemLink.ToString();
+                if (this._URI_history.Count > 0)
+                {
+                    this.btn_Back.Enabled = true;
+                }
+
+            };
+            this.Invoke(a);
+            
+            this._URI_history.Push(this._parsedItem.ItemLink);
         }
 
         private void Cancelled(Task<ACommonData> data)
@@ -391,6 +404,14 @@ namespace MyzukaRuGrabberGUI
                 this.gb_FooterButtons.Enabled = !Lock;
                 this.btn_Grab.Enabled = !Lock;
                 this.tb_InputURI.ReadOnly = Lock;
+                if (Lock == true)
+                {
+                    this.btn_Back.Enabled = false;
+                }
+                else
+                {
+                    if (this._URI_history.Count > 1) {this.btn_Back.Enabled = true;}
+                }
             }
             else
             {
@@ -885,23 +906,8 @@ namespace MyzukaRuGrabberGUI
 
         private void btn_About_Click(object sender, EventArgs e)
         {
-            DateTime threshold = new DateTime(2010, 01, 01);
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            IEnumerable<String> ass_info = from Assembly ass in assemblies
-                let ver = ass.GetName().Version
-                let name = ass.GetName().Name
-                let bdt = 
-                    new DateTime(2000, 1, 1).Add(new TimeSpan(
-                    TimeSpan.TicksPerDay * ver.Build + TimeSpan.TicksPerSecond * 2 * ver.Revision)
-                    )
-                let bdt_string = (bdt < threshold ? "unknown" : bdt.ToString("yyyy-MM-dd HH.mm.ss") + " EET")
-                let b2 = GetBuildDateTime(ass).ToString("yyyy-MM-dd HH.mm.ss") + " EET"
-                let gac = (ass.GlobalAssemblyCache == true ? " from GAC, " : " from file, ")
-                where name.IsIn(StringComparison.Ordinal, "HtmlAgilityPack", "KlotosLib") || 
-                    name.StartsWith("MyzukaRuGrabber", StringComparison.OrdinalIgnoreCase)
-                orderby name ascending 
-                select ass.GetName().Name + gac + "Compiled with .NET " + ass.ImageRuntimeVersion + "\r\nVersion: "+ ver.ToString() + ". Build date: " + b2;
+            IEnumerable<String> ass_info = Tools.GetAssemblyDescription(assemblies);
             
             Int32 i = 0;
             string ass_info_final = ass_info.ConcatToString((String x) => { i++; return i + ". " + x; }, "", "", "\r\n", true);
@@ -923,52 +929,19 @@ namespace MyzukaRuGrabberGUI
             return String.Format("Myzuka.ru Grabber ver.{0}.{1}",
                 this.GetType().Assembly.GetName().Version.Major, this.GetType().Assembly.GetName().Version.Minor);
         }
-
-        #region Gets the build date and time (by reading the COFF header)
-
-        // http://msdn.microsoft.com/en-us/library/ms680313
-
-        struct _IMAGE_FILE_HEADER
+        
+        private void btn_Back_Click(object sender, EventArgs e)
         {
-            public ushort Machine;
-            public ushort NumberOfSections;
-            public uint TimeDateStamp;
-            public uint PointerToSymbolTable;
-            public uint NumberOfSymbols;
-            public ushort SizeOfOptionalHeader;
-            public ushort Characteristics;
-        };
-
-        static DateTime GetBuildDateTime(Assembly assembly)
-        {
-            if (File.Exists(assembly.Location))
+            if (this._URI_history.IsNullOrEmpty() == true || this._URI_history.HasSingle()==true)
             {
-                var buffer = new byte[Math.Max(Marshal.SizeOf(typeof(_IMAGE_FILE_HEADER)), 4)];
-                using (var fileStream = new FileStream(assembly.Location, FileMode.Open, FileAccess.Read))
-                {
-                    fileStream.Position = 0x3C;
-                    fileStream.Read(buffer, 0, 4);
-                    fileStream.Position = BitConverter.ToUInt32(buffer, 0); // COFF header offset
-                    fileStream.Read(buffer, 0, 4); // "PE\0\0"
-                    fileStream.Read(buffer, 0, buffer.Length);
-                }
-                var pinnedBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                try
-                {
-                    var coffHeader = (_IMAGE_FILE_HEADER)Marshal.PtrToStructure
-                        (pinnedBuffer.AddrOfPinnedObject(), typeof(_IMAGE_FILE_HEADER));
-
-                    return TimeZone.CurrentTimeZone.ToLocalTime
-                        (new DateTime(1970, 1, 1) + new TimeSpan(coffHeader.TimeDateStamp * TimeSpan.TicksPerSecond));
-                }
-                finally
-                {
-                    pinnedBuffer.Free();
-                }
+                this.btn_Back.Enabled = false;
             }
-            return new DateTime();
+            else
+            {
+                this._URI_history.Pop();
+                this.tb_InputURI.Text = this._URI_history.Pop().ToString();
+                this.btn_Grab_Click(null, EventArgs.Empty);
+            }
         }
-
-        #endregion
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frm_Main));
             this.lbl_InputURI = new System.Windows.Forms.Label();
             this.lbl_InputFailed = new System.Windows.Forms.Label();
             this.btn_Grab = new System.Windows.Forms.Button();
@@ -84,6 +85,7 @@
             this.prbr_Processing = new System.Windows.Forms.ProgressBar();
             this.lbl_SelectedCount = new System.Windows.Forms.Label();
             this.lbl_ProcessedCount = new System.Windows.Forms.Label();
+            this.btn_Back = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).BeginInit();
             this.gb_Album_Header.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_List)).BeginInit();
@@ -97,7 +99,7 @@
             // 
             this.lbl_InputURI.AutoSize = true;
             this.lbl_InputURI.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lbl_InputURI.Location = new System.Drawing.Point(6, 8);
+            this.lbl_InputURI.Location = new System.Drawing.Point(64, 8);
             this.lbl_InputURI.Name = "lbl_InputURI";
             this.lbl_InputURI.Size = new System.Drawing.Size(139, 16);
             this.lbl_InputURI.TabIndex = 8;
@@ -107,9 +109,9 @@
             // 
             this.lbl_InputFailed.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lbl_InputFailed.ForeColor = System.Drawing.Color.Red;
-            this.lbl_InputFailed.Location = new System.Drawing.Point(170, 8);
+            this.lbl_InputFailed.Location = new System.Drawing.Point(219, 8);
             this.lbl_InputFailed.Name = "lbl_InputFailed";
-            this.lbl_InputFailed.Size = new System.Drawing.Size(516, 22);
+            this.lbl_InputFailed.Size = new System.Drawing.Size(467, 22);
             this.lbl_InputFailed.TabIndex = 7;
             // 
             // btn_Grab
@@ -117,7 +119,7 @@
             this.btn_Grab.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btn_Grab.Location = new System.Drawing.Point(711, 8);
             this.btn_Grab.Name = "btn_Grab";
-            this.btn_Grab.Size = new System.Drawing.Size(61, 45);
+            this.btn_Grab.Size = new System.Drawing.Size(61, 46);
             this.btn_Grab.TabIndex = 6;
             this.btn_Grab.Text = "Grab";
             this.btn_Grab.UseVisualStyleBackColor = true;
@@ -125,9 +127,9 @@
             // 
             // tb_InputURI
             // 
-            this.tb_InputURI.Location = new System.Drawing.Point(9, 34);
+            this.tb_InputURI.Location = new System.Drawing.Point(64, 34);
             this.tb_InputURI.Name = "tb_InputURI";
-            this.tb_InputURI.Size = new System.Drawing.Size(677, 20);
+            this.tb_InputURI.Size = new System.Drawing.Size(622, 20);
             this.tb_InputURI.TabIndex = 5;
             // 
             // btn_SaveImage
@@ -638,11 +640,24 @@
             this.lbl_ProcessedCount.Size = new System.Drawing.Size(32, 23);
             this.lbl_ProcessedCount.TabIndex = 63;
             // 
+            // btn_Back
+            // 
+            this.btn_Back.Enabled = false;
+            this.btn_Back.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_Back.Location = new System.Drawing.Point(9, 8);
+            this.btn_Back.Name = "btn_Back";
+            this.btn_Back.Size = new System.Drawing.Size(49, 46);
+            this.btn_Back.TabIndex = 64;
+            this.btn_Back.Text = "Back";
+            this.btn_Back.UseVisualStyleBackColor = true;
+            this.btn_Back.Click += new System.EventHandler(this.btn_Back_Click);
+            // 
             // frm_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 730);
+            this.Controls.Add(this.btn_Back);
             this.Controls.Add(this.lbl_ProcessedCount);
             this.Controls.Add(this.lbl_SelectedCount);
             this.Controls.Add(this.prbr_Processing);
@@ -667,6 +682,7 @@
             this.Controls.Add(this.btn_Grab);
             this.Controls.Add(this.tb_InputURI);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "frm_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -744,6 +760,7 @@
         private System.Windows.Forms.ProgressBar prbr_Processing;
         private System.Windows.Forms.Label lbl_SelectedCount;
         private System.Windows.Forms.Label lbl_ProcessedCount;
+        private System.Windows.Forms.Button btn_Back;
     }
 }
 

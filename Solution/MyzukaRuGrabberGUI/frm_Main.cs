@@ -369,7 +369,7 @@ namespace MyzukaRuGrabberGUI
         }
         private void Event2(ParsedItemType type)
         {
-            this.AddToLog("Этап 1: Определён тип страницы — " + type.ToString());
+            this.AddToLog("Этап 2: Определён тип страницы — " + type.ToString());
         }
         private void Event3(ICommonHeader header)
         {

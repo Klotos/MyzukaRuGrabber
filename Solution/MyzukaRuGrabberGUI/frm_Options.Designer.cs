@@ -112,7 +112,7 @@
             this.gb_AdvancedSettings.Size = new System.Drawing.Size(649, 124);
             this.gb_AdvancedSettings.TabIndex = 17;
             this.gb_AdvancedSettings.TabStop = false;
-            this.gb_AdvancedSettings.Text = "Advanced settings - use if you exactly understand what you are doing";
+            this.gb_AdvancedSettings.Text = "Advanced settings - use them if you exactly understand what you are doing";
             // 
             // label1
             // 
@@ -122,7 +122,7 @@
             this.label1.Size = new System.Drawing.Size(391, 35);
             this.label1.TabIndex = 10;
             this.label1.Text = "Number of concurrent requests to server while downloading songs from album; \r\n0 -" +
-    " unlimited/unspecified threads; Max - 99";
+    " unlimited/unspecified threads count; Max - 99";
             // 
             // tb_MaxDownloadThreads
             // 

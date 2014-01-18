@@ -134,37 +134,38 @@ namespace MyzukaRuGrabberCore
                 ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]//table[@style and @class]/tr");
             if (node2 == null) { return ParsedItemType.Unknown; }
             
-            String node2_text = StringTools.SubstringHelpers.GetSubstringToToken
+            String node2_text_1st_part = StringTools.SubstringHelpers.GetSubstringToToken
                 (node2.InnerText, "Описание:", true, StringTools.Direction.FromStartToEnd, StringComparison.OrdinalIgnoreCase);
             
-            if (node2_text.Contains("Альбом:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text_1st_part.Contains("Альбом:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 song_symptom++;
             }
-            if (node2_text.Contains("Размер:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text_1st_part.Contains("Размер:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 song_symptom++;
             }
-            if (node2_text.Contains("Длительность:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text_1st_part.Contains("Длительность:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 song_symptom++;
             }
             
-            if (node2_text.Contains("Кол-во песен:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text_1st_part.Contains("Кол-во песен:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 album_symptom++;
             }
-            if (node2_text.Contains("Дата релиза:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text_1st_part.Contains("Дата релиза:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 album_symptom++;
             }
-            if (node2_text.Contains("Описание:", StringComparison.OrdinalIgnoreCase) == true)
+            if (node2_text_1st_part.Contains("Описание:", StringComparison.OrdinalIgnoreCase) == true)
             {
                 album_symptom++;
             }
-            HtmlNode album_subnode = node2.SelectSingleNode("//td[2]/b/a[@id='A1' and @href='/GetVipAccount']");
-            if (album_subnode != null && 
-                album_subnode.InnerText.Contains("Скачать альбом", StringComparison.OrdinalIgnoreCase) == true)
+            String node2_text_2nd_part = StringTools.SubstringHelpers.GetSubstringToToken
+                (node2.InnerText, "Описание:", true, StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
+            if (StringTools.ContainsHelpers.ContainsAllOf
+                (node2_text_2nd_part, StringComparison.OrdinalIgnoreCase, "скачать альбом") == true)
             {
                 album_symptom++;
             }
@@ -264,7 +265,7 @@ namespace MyzukaRuGrabberCore
 
             String err_mes;
             HtmlNode song_header_node = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/div/table[@style and @class]/tr/td[2][@class='infoSong']");
+                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/table[@style and @class]/tr/td[2][@class='infoSong']");
             if(song_header_node==null) 
             {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода с метаинформацией по песне");}
 
@@ -335,6 +336,7 @@ namespace MyzukaRuGrabberCore
             String temp = Input.MultiReplace(' ', new char[]{'\r', '\n', '\t'}).Trim();
             temp = KlotosLib.HtmlTools.IntelliRemoveHTMLTags(temp);
             temp = StringTools.SubstringHelpers.ShrinkSpaces(temp).Trim();
+            temp = HttpUtility.HtmlDecode(temp);
             return temp;
         }
 
@@ -439,7 +441,7 @@ namespace MyzukaRuGrabberCore
                     "/root/td[3]").InnerHtml;
                 artist = ExtractFromHTML(artist);
                 
-                HtmlNode raw_title_node = inner_doc.DocumentNode.SelectSingleNode("/root/td[4][@class]/div");
+                HtmlNode raw_title_node = inner_doc.DocumentNode.SelectSingleNode("/root/td[5][@class]/div");
                 if(raw_title_node==null)
                 { throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с названием песни, которая имеет номер "+number); }
                 String raw_title_text = raw_title_node.InnerText.CleanString();
@@ -448,13 +450,13 @@ namespace MyzukaRuGrabberCore
                 Boolean is_available = !raw_title_text.Contains("Файл утерян", StringComparison.InvariantCultureIgnoreCase);
 
                 String duration = inner_doc.DocumentNode.SelectSingleNode(
-                    "/root/td[5]").InnerHtml.CleanString().Trim();
-
-                String size = inner_doc.DocumentNode.SelectSingleNode(
                     "/root/td[6]").InnerHtml.CleanString().Trim();
 
-                String bitrate = inner_doc.DocumentNode.SelectSingleNode(
+                String size = inner_doc.DocumentNode.SelectSingleNode(
                     "/root/td[7]").InnerHtml.CleanString().Trim();
+
+                String bitrate = inner_doc.DocumentNode.SelectSingleNode(
+                    "/root/td[8]").InnerHtml.CleanString().Trim();
                 
                 HtmlNode raw_URI_node = inner_doc.DocumentNode.SelectSingleNode(
                     "/root/td[@class='downloadSong']/a[@href and @title]");
@@ -491,7 +493,7 @@ namespace MyzukaRuGrabberCore
             String caption = CoreInternal.TryGrabCaption(HTMLPage);
 
             HtmlNode body_node = HTMLPage.DocumentNode.SelectSingleNode(
-                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/div/table[@style and @class]/tr/td[2][@class='infoSong']");
+                "//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/table[@style and @class]/tr/td[2][@class='infoSong']");
             if (body_node == null) {throw new InvalidOperationException("Невозможно извлечь блок HTML-кода с метаинформацией по песне");}
             String body = body_node.InnerHtml;
 
@@ -543,7 +545,7 @@ namespace MyzukaRuGrabberCore
             ).InnerText.CleanString().Trim());
             
             HtmlNode link_node = body_node.SelectSingleNode
-                ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/div/table[@style and @class]/tr/td[2][@class='infoSong']/meta[@itemprop='url' and @content]");
+                ("//div[@class='centerblock gr']/div[starts-with(@class, 'in2')]/div/table[@style and @class]/tr/td[2][@class='infoSong']/meta[@itemprop='url' and @content]");
             if(link_node==null) {throw new InvalidOperationException("Невозможно извлечь из страницы песни блок HTML-кода с URL на данную страницу");}
 
             String raw_link_URI = link_node.GetAttributeValue("content", "");

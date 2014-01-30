@@ -10,7 +10,7 @@ namespace MyzukaRuGrabberCore.DataModels
     /// Представляет все данные, полученные из распарсенной страницы одной песни. Неизменяемый класс.
     /// </summary>
     [Serializable()]
-    public sealed class ParsedSong : ACommonData
+    public sealed class ParsedSong : ACommonData, IEquatable<ParsedSong>
     {
         /// <summary>
         /// Заполняет экземпляр всеми необходимыми данными
@@ -28,7 +28,7 @@ namespace MyzukaRuGrabberCore.DataModels
             this._coverFile = CoverFile;
             this._coverImage = CoverImage;
         }
-
+        
         private readonly OneSongHeader _header;
         /// <summary>
         /// Метаинформация по песне
@@ -78,6 +78,46 @@ namespace MyzukaRuGrabberCore.DataModels
         /// URI на обложку песни, дублирует соответствующее свойство из хидера
         /// </summary>
         public override Uri CoverURI { get { return this._header.SongImageURI; } }
+        #endregion
+        
+        #region Overridings
+        /// <summary>
+        /// Сравнивает текущий экземпляр с указанным
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public Boolean Equals(ParsedSong other)
+        {
+            if (ReferenceEquals(null, other)) {return false;}
+            if (ReferenceEquals(this, other)) {return true;}
+            Boolean result = 
+                this._header.Equals(other._header) && 
+                this._albumLink == other._albumLink &&
+                this._downloadLink == other._downloadLink && 
+                this._coverFile.Equals(other._coverFile) &&
+                this._coverImage.Size == other._coverImage.Size;
+            return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) {return false;}
+            if (ReferenceEquals(this, obj)) {return true;}
+            return obj is ParsedSong && Equals((ParsedSong) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (_header != null ? _header.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (_albumLink != null ? _albumLink.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (_downloadLink != null ? _downloadLink.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (_coverFile != null ? _coverFile.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (_coverImage != null ? _coverImage.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
         #endregion
     }
 }

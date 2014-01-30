@@ -6,7 +6,7 @@ namespace MyzukaRuGrabberCore.DataModels
     /// Модель данных распарсенного хидера альбома, без песен. Неизменяемый класс.
     /// </summary>
     [Serializable()]
-    public sealed class AlbumHeader : ICommonHeader
+    public sealed class AlbumHeader : ICommonHeader, IEquatable<AlbumHeader>
     {
         /// <summary>
         /// Конструктор, заполняет экземпляр хидера альбома всеми необходимыми полными данными
@@ -122,5 +122,59 @@ namespace MyzukaRuGrabberCore.DataModels
         /// </summary>
         public Uri PageURI { get { return this._albumPageURI; } }
         #endregion;
+
+        #region Overridings
+        /// <summary>
+        /// Определяет равенство текущего экземпляра с указанным
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public Boolean Equals(AlbumHeader other)
+        {
+            if (ReferenceEquals(null, other)) {return false;}
+            if (ReferenceEquals(this, other)) {return true;}
+            Boolean result = 
+                this._albumPageURI == other._albumPageURI &&
+                this._albumImageURI.Authority.Equals(other._albumImageURI.Authority, StringComparison.OrdinalIgnoreCase) &&
+                this._songsCount == other._songsCount &&
+                string.Equals(this._description, other._description, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._updater, other._updater, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._uploader, other._uploader, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._format, other._format, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._type, other._type, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._releaseDate, other._releaseDate, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._artist, other._artist, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._genre, other._genre, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(this._title, other._title, StringComparison.OrdinalIgnoreCase);
+            return result;
+        }
+
+        public override Boolean Equals(Object obj)
+        {
+            if (ReferenceEquals(null, obj)) {return false;}
+            if (ReferenceEquals(this, obj)) {return true;}
+            return obj is AlbumHeader && this.Equals((AlbumHeader)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = _albumPageURI.GetHashCode();
+                hashCode = (hashCode * 397) ^ _albumImageURI.GetHashCode();
+                hashCode = (hashCode * 397) ^ _description.GetHashCode();
+                hashCode = (hashCode * 397) ^ _updater.GetHashCode();
+                hashCode = (hashCode * 397) ^ _uploader.GetHashCode();
+                hashCode = (hashCode * 397) ^ _format.GetHashCode();
+                hashCode = (hashCode * 397) ^ _songsCount.GetHashCode();
+                hashCode = (hashCode * 397) ^ _type.GetHashCode();
+                hashCode = (hashCode * 397) ^ _releaseDate.GetHashCode();
+                hashCode = (hashCode * 397) ^ _artist.GetHashCode();
+                hashCode = (hashCode * 397) ^ _genre.GetHashCode();
+                hashCode = (hashCode * 397) ^ _title.GetHashCode();
+                return hashCode;
+            }
+        }
+        #endregion
     }
 }

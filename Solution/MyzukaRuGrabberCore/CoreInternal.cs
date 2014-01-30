@@ -383,7 +383,7 @@ namespace MyzukaRuGrabberCore
             artist = StringTools.SubstringHelpers.ShrinkSpaces(artist);
 
             String release_date = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                (main_body_html, "Дата релиза:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input);
+                (main_body_html, "Дата релиза:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();
 
             String type = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
                 (main_body_html, "Тип:", "<br>", pos_input, StringComparison.OrdinalIgnoreCase, out pos_input).Trim();

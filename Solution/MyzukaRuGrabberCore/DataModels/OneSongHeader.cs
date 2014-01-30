@@ -185,7 +185,7 @@ namespace MyzukaRuGrabberCore.DataModels
 
         #region Equatable and hashcode
         /// <summary>
-        /// Определяет равенство текущего экземпляра с указанным
+        /// Определяет равенство текущего экземпляра хидера песни с указанным
         /// </summary>
         /// <param name="Other"></param>
         /// <returns></returns>
@@ -198,7 +198,7 @@ namespace MyzukaRuGrabberCore.DataModels
                              this.Format == Other.Format &&
                              this.Genre == Other.Genre && this.Name == Other.Name && this.Number == Other.Number &&
                              this.Size == Other.Size &&
-                             this.SongImageURI == Other.SongImageURI &&
+                             this.SongImageURI.Authority.Equals(Other.SongImageURI.Authority, StringComparison.OrdinalIgnoreCase) &&
                              this.SongPageURI == Other.SongPageURI;
             return result;
         }

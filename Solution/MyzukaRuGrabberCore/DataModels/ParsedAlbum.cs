@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using KlotosLib;
 
 namespace MyzukaRuGrabberCore.DataModels
 {
@@ -8,7 +9,7 @@ namespace MyzukaRuGrabberCore.DataModels
     /// Представляет все данные, полученные из распарсенной страницы альбома. Неизменяемый класс.
     /// </summary>
     [Serializable()]
-    public sealed class ParsedAlbum : ACommonData
+    public sealed class ParsedAlbum : ACommonData, IEquatable<ParsedAlbum>
     {
         /// <summary>
         /// Конструктор, заполняет экземпляр модели распарсенного альбома всеми необходимыми полными данными
@@ -24,7 +25,7 @@ namespace MyzukaRuGrabberCore.DataModels
             this._coverFile = CoverFile;
             this._coverImage = CoverImage;
         }
-
+        
         private readonly AlbumHeader _header;
         /// <summary>
         /// Метаинформация по альбому
@@ -65,7 +66,38 @@ namespace MyzukaRuGrabberCore.DataModels
         public override Uri ItemLink { get { return this._header.AlbumPageURI; } }
 
         public override Uri CoverURI { get { return this._header.AlbumImageURI; } }
+        #endregion
 
+        #region Overridings
+        public Boolean Equals(ParsedAlbum other)
+        {
+            if (ReferenceEquals(null, other)) {return false;}
+            if (ReferenceEquals(this, other)) {return true;}
+            Boolean result = 
+                this._header.Equals(other._header) &&
+                this._songs.EqualsExact(other._songs) &&
+                this._coverFile.Equals(other._coverFile);
+            return result;
+        }
+
+        public override Boolean Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) {return false;}
+            if (ReferenceEquals(this, obj)) {return true;}
+            return obj is ParsedAlbum && Equals((ParsedAlbum)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (_header != null ? _header.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_songs != null ? _songs.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_coverFile != null ? _coverFile.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_coverImage != null ? _coverImage.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
         #endregion
     }
 }

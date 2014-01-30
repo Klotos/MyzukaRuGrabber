@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyzukaRuGrabberGUI", "Myzuk
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyzukaRuGrabberCore", "MyzukaRuGrabberCore\MyzukaRuGrabberCore.csproj", "{1483A5B9-C8E3-40BE-BF03-519ACF54A852}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyzukaRuGrabberCore.UnitTests", "MyzukaRuGrabberCore.UnitTests\MyzukaRuGrabberCore.UnitTests.csproj", "{D2AD356B-46FC-4890-982B-B753F8401980}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{1483A5B9-C8E3-40BE-BF03-519ACF54A852}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1483A5B9-C8E3-40BE-BF03-519ACF54A852}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1483A5B9-C8E3-40BE-BF03-519ACF54A852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2AD356B-46FC-4890-982B-B753F8401980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2AD356B-46FC-4890-982B-B753F8401980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2AD356B-46FC-4890-982B-B753F8401980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2AD356B-46FC-4890-982B-B753F8401980}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

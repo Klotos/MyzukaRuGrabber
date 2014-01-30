@@ -234,6 +234,13 @@
             <param name="AlbumImageURI"></param>
             <param name="AlbumPageURI"></param>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.AlbumHeader.Equals(MyzukaRuGrabberCore.DataModels.AlbumHeader)">
+            <summary>
+            Определяет равенство текущего экземпляра с указанным
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Title">
             <summary>
             Название альбома
@@ -526,6 +533,13 @@
             Закрывает байтовый поток в памяти, представляющий данный файл
             </summary>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.DownloadedFile.Equals(MyzukaRuGrabberCore.DataModels.DownloadedFile)">
+            <summary>
+            Сравнивает текущий экземпляр с указанным
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.Filename">
             <summary>
             Название файла, полученное с сервера
@@ -612,6 +626,13 @@
             <param name="CoverFile"></param>
             <param name="CoverImage"></param>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.ParsedSong.Equals(MyzukaRuGrabberCore.DataModels.ParsedSong)">
+            <summary>
+            Сравнивает текущий экземпляр с указанным
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.ParsedSong.Header">
             <summary>
             Метаинформация по песне
@@ -686,7 +707,7 @@
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Equals(MyzukaRuGrabberCore.DataModels.OneSongHeader)">
             <summary>
-            Определяет равенство текущего экземпляра с указанным
+            Определяет равенство текущего экземпляра хидера песни с указанным
             </summary>
             <param name="Other"></param>
             <returns></returns>

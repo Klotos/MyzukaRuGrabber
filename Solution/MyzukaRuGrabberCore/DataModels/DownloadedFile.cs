@@ -24,7 +24,7 @@ namespace MyzukaRuGrabberCore.DataModels
         
         private readonly String _filename;
         /// <summary>
-        /// Название файла, полученное с сервера
+        /// Название файла, полученное с сервера. Может быть пустой строкой.
         /// </summary>
         public String Filename { get { return this._filename; } }
 

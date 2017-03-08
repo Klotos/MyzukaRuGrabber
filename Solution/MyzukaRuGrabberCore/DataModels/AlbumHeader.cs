@@ -9,6 +9,14 @@ namespace MyzukaRuGrabberCore.DataModels
     public sealed class AlbumHeader : ICommonHeader, IEquatable<AlbumHeader>
     {
         /// <summary>
+        /// Конструктор, создающий пустой экземпляр
+        /// </summary>
+        public AlbumHeader()
+        {
+            
+        }
+
+        /// <summary>
         /// Конструктор, заполняет экземпляр хидера альбома всеми необходимыми полными данными
         /// </summary>
         /// <param name="Title"></param>
@@ -42,85 +50,213 @@ namespace MyzukaRuGrabberCore.DataModels
         }
 
         #region Fields and getters
-        private readonly String _title;
+        private String _title;
+
         /// <summary>
         /// Название альбома
         /// </summary>
-        public String Title { get { return this._title; } }
+        public String Title
+        {
+            get { return this._title; }
+            set { this._title = value; }
+        }
 
-        private readonly String _genre;
+        private String _genre;
+
         /// <summary>
         /// Название жанра альбома
         /// </summary>
-        public String Genre { get { return this._genre; } }
+        public String Genre
+        {
+            get { return this._genre; }
+            set { this._genre = value; }
+        }
 
-        private readonly String _artist;
+        private String _artist;
+
         /// <summary>
         /// Название исполнителя альбома
         /// </summary>
-        public String Artist { get { return this._artist; } }
+        public String Artist
+        {
+            get { return this._artist; }
+            set { this._artist = value; }
+        }
 
-        private readonly String _releaseDate;
+        private String _label;
+
+        /// <summary>
+        /// Название лейбла
+        /// </summary>
+        public String Label
+        {
+            get { return this._label; }
+            set { this._label = value; }
+        }
+
+        private String _releaseDate;
+
         /// <summary>
         /// Дата выпуска
         /// </summary>
-        public String ReleaseDate { get { return this._releaseDate; } }
+        public String ReleaseDate
+        {
+            get { return this._releaseDate; }
+            set { this._releaseDate = value; }
+        }
 
-        private readonly String _type;
+        private String _type;
+
         /// <summary>
         /// Тип альбома
         /// </summary>
-        public String Type { get { return this._type; } }
+        public String Type
+        {
+            get { return this._type; }
+            set { this._type = value; }
+        }
 
-        private readonly Nullable<Byte> _songsCount;
+        private Nullable<Byte> _songsCount;
+
         /// <summary>
         /// Количество песен
         /// </summary>
-        public Nullable<Byte> SongsCount { get { return this._songsCount; } }
+        public Nullable<Byte> SongsCount
+        {
+            get { return this._songsCount; }
+            set { this._songsCount = value; }
+        }
 
-        private readonly String _format;
+        private String _format;
+
         /// <summary>
         /// Формат альбома
         /// </summary>
-        public String Format { get { return this._format; } }
+        public String Format
+        {
+            get { return this._format; }
+            set { this._format = value; }
+        }
 
-        private readonly String _uploader;
+        private String _uploader;
+
         /// <summary>
         /// Изначальный загрузчик альбома
         /// </summary>
-        public String Uploader { get { return this._uploader; } }
+        public String Uploader
+        {
+            get { return this._uploader; }
+            set { this._uploader = value; }
+        }
 
-        private readonly String _updater;
+        private String _updater;
+
         /// <summary>
         /// Последний, кто обновлял альбом
         /// </summary>
-        public String Updater { get { return this._updater; } }
+        public String Updater
+        {
+            get { return this._updater; }
+            set { this._updater = value; }
+        }
 
-        private readonly String _description;
+        private String _description;
+
         /// <summary>
         /// Пользовательское описание
         /// </summary>
-        public String Description { get { return this._description; } }
+        public String Description
+        {
+            get { return this._description; }
+            set { this._description = value; }
+        }
 
-        private readonly Uri _albumImageURI;
+        private String _uploadDate;
+
+        /// <summary>
+        /// Дата загрузки
+        /// </summary>
+        public String UploadDate
+        {
+            get { return this._uploadDate; }
+            set { this._uploadDate = value; }
+        }
+
+        private Uri _albumImageURI;
+
         /// <summary>
         /// URI на изображение (обложку) текущего альбома
         /// </summary>
-        public Uri AlbumImageURI { get { return this._albumImageURI; } }
+        public Uri AlbumImageURI
+        {
+            get { return this._albumImageURI; }
+            set { this._albumImageURI = value; }
+        }
         /// <summary>
         /// URI на изображение (обложку) текущего альбома
         /// </summary>
         public Uri CoverImageURI { get { return this._albumImageURI; } }
 
-        private readonly Uri _albumPageURI;
+        private Uri _albumPageURI;
+
         /// <summary>
         /// URI на HTML-страницу текущего альбома
         /// </summary>
-        public Uri AlbumPageURI { get { return this._albumPageURI; } }
+        public Uri AlbumPageURI
+        {
+            get { return this._albumPageURI; }
+            set { this._albumPageURI = value; }
+        }
         /// <summary>
         /// URI на HTML-страницу текущего альбома
         /// </summary>
         public Uri PageURI { get { return this._albumPageURI; } }
+
+        /// <summary>
+        /// Добавляет в экземпляр указанное значение по указаннгому ключу
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void Accept(String key, String value)
+        {
+            if (key.Equals("Жанр:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._genre = value;
+            }
+            else if (key.Equals("Исполнитель:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._artist = value;
+            }
+            else if (key.Equals("Дата релиза:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._releaseDate = value;
+            }
+            else if (key.Equals("Лейбл:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._label = value;
+            }
+            else if (key.Equals("Тип:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._type = value;
+            }
+            else if (key.Equals("Загрузил:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._uploader = value;
+            }
+            else if (key.Equals("Обновил:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._updater = value;
+            }
+            else if (key.Equals("Добавлено:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._uploadDate = value;
+            }
+            else
+            {
+                throw new NotSupportedException(String.Format("Ключ '{0}' неизвестен, поэтому его значение '{1}' не может быть обработано", key, value));
+            }
+        }
+
         #endregion;
 
         #region Overridings

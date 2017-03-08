@@ -1567,6 +1567,18 @@
             <param name="CultureProvider">Формат языка и региональных параметров, с применением которого будет парситься строка. Если NULL, будет применён инвариантный формат.</param>
             <returns></returns>
         </member>
+        <member name="T:KlotosLib.StringTools.StringModifiers">
+            <summary>
+            Содержит статические методы, изменяющие строки с той или иной целью
+            </summary>
+        </member>
+        <member name="M:KlotosLib.StringTools.StringModifiers.FirstLetterToUpper(System.String)">
+            <summary>
+            Изменяет первый символ строки на заглавный
+            </summary>
+            <param name="Input">Входная строка.</param>
+            <returns></returns>
+        </member>
         <member name="T:KlotosLib.ImageTools">
             <summary>
             Содержит инструменты по работе с графическими изображениями
@@ -2418,7 +2430,7 @@
         <member name="M:KlotosLib.NumericTools.GetFraction(System.Single,System.Byte)">
             <summary>
             Возвращает дробную часть числа с плавающей запятой одинарной точности без десятичного разделителя в виде строки. 
-            В зависимости от значения параметра дробная часть возвращается полностью или с указанным количеством цифр, начиная со страших разрядов.
+            В зависимости от значения параметра дробная часть возвращается полностью или с указанным количеством цифр, начиная со старших разрядов.
             </summary>
             <param name="Number"></param>
             <param name="FractionDigits">Количество цифр в дробной части, начиная со страших разрядов, которое требуется возвратить. 
@@ -2428,7 +2440,7 @@
         <member name="M:KlotosLib.NumericTools.GetFraction(System.Double,System.Byte)">
             <summary>
             Возвращает дробную часть числа с плавающей запятой двойной точности без десятичного разделителя в виде строки. 
-            В зависимости от значения параметра дробная часть возвращается полностью или с указанным количеством цифр, начиная со страших разрядов.
+            В зависимости от значения параметра дробная часть возвращается полностью или с указанным количеством цифр, начиная со старших разрядов.
             </summary>
             <param name="Number"></param>
             <param name="FractionDigits">Количество цифр в дробной части, начиная со страших разрядов, которое требуется возвратить. 
@@ -2438,7 +2450,7 @@
         <member name="M:KlotosLib.NumericTools.GetFraction(System.Decimal,System.Byte)">
             <summary>
             Возвращает дробную часть числа с фиксированной запятой без десятичного разделителя в виде строки. 
-            В зависимости от значения параметра дробная часть возвращается полностью или с указанным количеством цифр, начиная со страших разрядов.
+            В зависимости от значения параметра дробная часть возвращается полностью или с указанным количеством цифр, начиная со старших разрядов.
             </summary>
             <param name="Number"></param>
             <param name="FractionDigits">Количество цифр в дробной части, начиная со страших разрядов, которое требуется возвратить. 
@@ -2543,6 +2555,14 @@
             <param name="Threshold">Пороговое значение для сравнения. Если отрицательное - будет взят модуль.</param>
             <param name="First">Первое сравниваемое число</param>
             <param name="Second">Второе сравниваемое число</param>
+            <returns></returns>
+        </member>
+        <member name="M:KlotosLib.NumericTools.Clusterize(System.Double,System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Выполняет кластеризацию указанного набора чисел (в одном измерении) с указанным пороговым значением. Самостоятельно определяет количество кластеров.
+            </summary>
+            <param name="Threshold">Пороговое значение</param>
+            <param name="Data">Набор чисел. Если NULL или пустой, будет выброшено исключение.</param>
             <returns></returns>
         </member>
         <member name="T:KlotosLib.HtmlTools">

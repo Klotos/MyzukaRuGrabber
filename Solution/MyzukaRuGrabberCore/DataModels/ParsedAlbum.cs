@@ -9,7 +9,7 @@ namespace MyzukaRuGrabberCore.DataModels
     /// Представляет все данные, полученные из распарсенной страницы альбома. Неизменяемый класс.
     /// </summary>
     [Serializable()]
-    public sealed class ParsedAlbum : ACommonData, IEquatable<ParsedAlbum>
+    public sealed class ParsedAlbum : CommonDataBase, IEquatable<ParsedAlbum>
     {
         /// <summary>
         /// Конструктор, заполняет экземпляр модели распарсенного альбома всеми необходимыми полными данными

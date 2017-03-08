@@ -76,7 +76,8 @@
     <AssemblyOriginatorKeyFile>MyzukaRuGrabberCoreSN.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack">
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="KlotosLib">
@@ -94,11 +95,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoreInternal.cs" />
-    <Compile Include="DataModels\ACommonData.cs" />
+    <Compile Include="DataModels\CommonDataBase.cs" />
     <Compile Include="DataModels\AlbumHeader.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="DataModels\DownloadedFile.cs" />
     <Compile Include="DataModels\ICommonHeader.cs" />
+    <Compile Include="DataModels\OverridableSongMetadata.cs" />
     <Compile Include="DataModels\ParsedAlbum.cs" />
     <Compile Include="DataModels\ParsedItemType.cs" />
     <Compile Include="DataModels\ParsedSong.cs" />

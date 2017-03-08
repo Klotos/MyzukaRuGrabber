@@ -43,9 +43,11 @@
             this.tb_RO_Uploader = new System.Windows.Forms.TextBox();
             this.lbl_D_Artist = new System.Windows.Forms.Label();
             this.tb_RO_Artist = new System.Windows.Forms.TextBox();
-            this.tb_RO_Title = new System.Windows.Forms.TextBox();
+            this.tb_Title = new System.Windows.Forms.TextBox();
             this.lbl_D_Albun = new System.Windows.Forms.Label();
             this.gb_Album_Header = new System.Windows.Forms.GroupBox();
+            this.lblLabel = new System.Windows.Forms.Label();
+            this.tb_RO_Label_Album = new System.Windows.Forms.TextBox();
             this.tb_RO_Description_Album = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tb_RO_Count_Album = new System.Windows.Forms.TextBox();
@@ -55,15 +57,20 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tb_RO_Date_Album = new System.Windows.Forms.TextBox();
+            this.gb_SongHeader = new System.Windows.Forms.GroupBox();
+            this.btn_GoToAlbumPage = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tb_RO_AlbumURI = new System.Windows.Forms.TextBox();
             this.dgv_List = new System.Windows.Forms.DataGridView();
+            this.col_Download = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.col_Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.col_Artist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.col_Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.col_Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.col_Size = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.col_Bitrate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Download = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.gb_FooterButtons = new System.Windows.Forms.GroupBox();
+            this.btn_Open = new System.Windows.Forms.Button();
             this.btn_DownloadSelected = new System.Windows.Forms.Button();
             this.btn_SelectAll = new System.Windows.Forms.Button();
             this.btn_DeselectAll = new System.Windows.Forms.Button();
@@ -72,10 +79,6 @@
             this.btn_Exit = new System.Windows.Forms.Button();
             this.lb_Log = new System.Windows.Forms.ListBox();
             this.rtb_DownloadFailed = new System.Windows.Forms.RichTextBox();
-            this.gb_SongHeader = new System.Windows.Forms.GroupBox();
-            this.btn_GoToAlbumPage = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tb_RO_AlbumURI = new System.Windows.Forms.TextBox();
             this.pb_ProcStatusImage = new System.Windows.Forms.PictureBox();
             this.lbl_ProcStatusText = new System.Windows.Forms.Label();
             this.btn_StopProcess = new System.Windows.Forms.Button();
@@ -88,9 +91,9 @@
             this.btn_Back = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).BeginInit();
             this.gb_Album_Header.SuspendLayout();
+            this.gb_SongHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_List)).BeginInit();
             this.gb_FooterButtons.SuspendLayout();
-            this.gb_SongHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_ProcStatusImage)).BeginInit();
             this.gb_MainHeader.SuspendLayout();
             this.SuspendLayout();
@@ -225,15 +228,14 @@
             this.tb_RO_Artist.Size = new System.Drawing.Size(269, 20);
             this.tb_RO_Artist.TabIndex = 45;
             // 
-            // tb_RO_Title
+            // tb_Title
             // 
-            this.tb_RO_Title.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tb_RO_Title.ForeColor = System.Drawing.SystemColors.Info;
-            this.tb_RO_Title.Location = new System.Drawing.Point(69, 14);
-            this.tb_RO_Title.Name = "tb_RO_Title";
-            this.tb_RO_Title.ReadOnly = true;
-            this.tb_RO_Title.Size = new System.Drawing.Size(453, 26);
-            this.tb_RO_Title.TabIndex = 37;
+            this.tb_Title.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_Title.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.tb_Title.Location = new System.Drawing.Point(69, 14);
+            this.tb_Title.Name = "tb_Title";
+            this.tb_Title.Size = new System.Drawing.Size(453, 26);
+            this.tb_Title.TabIndex = 37;
             // 
             // lbl_D_Albun
             // 
@@ -247,6 +249,8 @@
             // 
             // gb_Album_Header
             // 
+            this.gb_Album_Header.Controls.Add(this.lblLabel);
+            this.gb_Album_Header.Controls.Add(this.tb_RO_Label_Album);
             this.gb_Album_Header.Controls.Add(this.tb_RO_Description_Album);
             this.gb_Album_Header.Controls.Add(this.label1);
             this.gb_Album_Header.Controls.Add(this.tb_RO_Count_Album);
@@ -256,12 +260,30 @@
             this.gb_Album_Header.Controls.Add(this.label5);
             this.gb_Album_Header.Controls.Add(this.label4);
             this.gb_Album_Header.Controls.Add(this.tb_RO_Date_Album);
-            this.gb_Album_Header.Location = new System.Drawing.Point(232, 173);
+            this.gb_Album_Header.Location = new System.Drawing.Point(232, 174);
             this.gb_Album_Header.Name = "gb_Album_Header";
             this.gb_Album_Header.Size = new System.Drawing.Size(540, 145);
             this.gb_Album_Header.TabIndex = 47;
             this.gb_Album_Header.TabStop = false;
             this.gb_Album_Header.Visible = false;
+            // 
+            // lblLabel
+            // 
+            this.lblLabel.AutoSize = true;
+            this.lblLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblLabel.Location = new System.Drawing.Point(11, 122);
+            this.lblLabel.Name = "lblLabel";
+            this.lblLabel.Size = new System.Drawing.Size(42, 16);
+            this.lblLabel.TabIndex = 26;
+            this.lblLabel.Text = "Label";
+            // 
+            // tb_RO_Label_Album
+            // 
+            this.tb_RO_Label_Album.Location = new System.Drawing.Point(73, 122);
+            this.tb_RO_Label_Album.Name = "tb_RO_Label_Album";
+            this.tb_RO_Label_Album.ReadOnly = true;
+            this.tb_RO_Label_Album.Size = new System.Drawing.Size(109, 20);
+            this.tb_RO_Label_Album.TabIndex = 27;
             // 
             // tb_RO_Description_Album
             // 
@@ -344,6 +366,47 @@
             this.tb_RO_Date_Album.Size = new System.Drawing.Size(109, 20);
             this.tb_RO_Date_Album.TabIndex = 12;
             // 
+            // gb_SongHeader
+            // 
+            this.gb_SongHeader.Controls.Add(this.btn_GoToAlbumPage);
+            this.gb_SongHeader.Controls.Add(this.label2);
+            this.gb_SongHeader.Controls.Add(this.tb_RO_AlbumURI);
+            this.gb_SongHeader.Location = new System.Drawing.Point(232, 171);
+            this.gb_SongHeader.Name = "gb_SongHeader";
+            this.gb_SongHeader.Size = new System.Drawing.Size(540, 101);
+            this.gb_SongHeader.TabIndex = 54;
+            this.gb_SongHeader.TabStop = false;
+            this.gb_SongHeader.Visible = false;
+            // 
+            // btn_GoToAlbumPage
+            // 
+            this.btn_GoToAlbumPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_GoToAlbumPage.Location = new System.Drawing.Point(160, 48);
+            this.btn_GoToAlbumPage.Name = "btn_GoToAlbumPage";
+            this.btn_GoToAlbumPage.Size = new System.Drawing.Size(180, 39);
+            this.btn_GoToAlbumPage.TabIndex = 28;
+            this.btn_GoToAlbumPage.Text = "Go to the Album page";
+            this.btn_GoToAlbumPage.UseVisualStyleBackColor = true;
+            this.btn_GoToAlbumPage.Click += new System.EventHandler(this.btn_GoToAlbumPage_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(6, 23);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(72, 16);
+            this.label2.TabIndex = 26;
+            this.label2.Text = "Album URI";
+            // 
+            // tb_RO_AlbumURI
+            // 
+            this.tb_RO_AlbumURI.Location = new System.Drawing.Point(84, 22);
+            this.tb_RO_AlbumURI.Name = "tb_RO_AlbumURI";
+            this.tb_RO_AlbumURI.ReadOnly = true;
+            this.tb_RO_AlbumURI.Size = new System.Drawing.Size(439, 20);
+            this.tb_RO_AlbumURI.TabIndex = 27;
+            // 
             // dgv_List
             // 
             this.dgv_List.AllowUserToAddRows = false;
@@ -351,83 +414,93 @@
             this.dgv_List.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgv_List.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_List.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.col_Download,
             this.col_Number,
             this.col_Artist,
             this.col_Title,
             this.col_Length,
             this.col_Size,
-            this.col_Bitrate,
-            this.col_Download});
+            this.col_Bitrate});
             this.dgv_List.Location = new System.Drawing.Point(9, 421);
             this.dgv_List.Name = "dgv_List";
             this.dgv_List.Size = new System.Drawing.Size(763, 177);
             this.dgv_List.TabIndex = 48;
             // 
+            // col_Download
+            // 
+            this.col_Download.HeaderText = "Download";
+            this.col_Download.Name = "col_Download";
+            this.col_Download.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.col_Download.ToolTipText = "Select all tracks, which should be downloaded";
+            this.col_Download.Width = 61;
+            // 
             // col_Number
             // 
-            this.col_Number.Frozen = true;
             this.col_Number.HeaderText = "No";
             this.col_Number.Name = "col_Number";
+            this.col_Number.ReadOnly = true;
             this.col_Number.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.col_Number.ToolTipText = "Number of the track in the album";
             this.col_Number.Width = 46;
             // 
             // col_Artist
             // 
-            this.col_Artist.Frozen = true;
             this.col_Artist.HeaderText = "Artist";
             this.col_Artist.Name = "col_Artist";
             this.col_Artist.Width = 55;
             // 
             // col_Title
             // 
-            this.col_Title.Frozen = true;
             this.col_Title.HeaderText = "Title";
             this.col_Title.Name = "col_Title";
             this.col_Title.Width = 52;
             // 
             // col_Length
             // 
-            this.col_Length.Frozen = true;
             this.col_Length.HeaderText = "Length";
             this.col_Length.Name = "col_Length";
+            this.col_Length.ReadOnly = true;
             this.col_Length.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.col_Length.Width = 65;
             // 
             // col_Size
             // 
-            this.col_Size.Frozen = true;
             this.col_Size.HeaderText = "Size";
             this.col_Size.Name = "col_Size";
+            this.col_Size.ReadOnly = true;
             this.col_Size.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.col_Size.Width = 52;
             // 
             // col_Bitrate
             // 
-            this.col_Bitrate.Frozen = true;
             this.col_Bitrate.HeaderText = "Bitrate";
             this.col_Bitrate.Name = "col_Bitrate";
+            this.col_Bitrate.ReadOnly = true;
             this.col_Bitrate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.col_Bitrate.Width = 62;
             // 
-            // col_Download
-            // 
-            this.col_Download.Frozen = true;
-            this.col_Download.HeaderText = "Download";
-            this.col_Download.Name = "col_Download";
-            this.col_Download.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.col_Download.Width = 61;
-            // 
             // gb_FooterButtons
             // 
+            this.gb_FooterButtons.Controls.Add(this.btn_Open);
             this.gb_FooterButtons.Controls.Add(this.btn_DownloadSelected);
             this.gb_FooterButtons.Controls.Add(this.btn_SelectAll);
             this.gb_FooterButtons.Controls.Add(this.btn_DeselectAll);
             this.gb_FooterButtons.Controls.Add(this.btn_InverseSelected);
             this.gb_FooterButtons.Location = new System.Drawing.Point(9, 684);
             this.gb_FooterButtons.Name = "gb_FooterButtons";
-            this.gb_FooterButtons.Size = new System.Drawing.Size(478, 45);
+            this.gb_FooterButtons.Size = new System.Drawing.Size(507, 45);
             this.gb_FooterButtons.TabIndex = 49;
             this.gb_FooterButtons.TabStop = false;
+            // 
+            // btn_Open
+            // 
+            this.btn_Open.Location = new System.Drawing.Point(180, 14);
+            this.btn_Open.Name = "btn_Open";
+            this.btn_Open.Size = new System.Drawing.Size(49, 23);
+            this.btn_Open.TabIndex = 29;
+            this.btn_Open.Text = "Open";
+            this.btn_Open.UseVisualStyleBackColor = true;
+            this.btn_Open.Click += new System.EventHandler(this.btn_Open_Click);
             // 
             // btn_DownloadSelected
             // 
@@ -443,7 +516,7 @@
             // 
             // btn_SelectAll
             // 
-            this.btn_SelectAll.Location = new System.Drawing.Point(194, 14);
+            this.btn_SelectAll.Location = new System.Drawing.Point(235, 14);
             this.btn_SelectAll.Name = "btn_SelectAll";
             this.btn_SelectAll.Size = new System.Drawing.Size(75, 23);
             this.btn_SelectAll.TabIndex = 26;
@@ -453,7 +526,7 @@
             // 
             // btn_DeselectAll
             // 
-            this.btn_DeselectAll.Location = new System.Drawing.Point(275, 14);
+            this.btn_DeselectAll.Location = new System.Drawing.Point(314, 14);
             this.btn_DeselectAll.Name = "btn_DeselectAll";
             this.btn_DeselectAll.Size = new System.Drawing.Size(75, 23);
             this.btn_DeselectAll.TabIndex = 27;
@@ -463,9 +536,9 @@
             // 
             // btn_InverseSelected
             // 
-            this.btn_InverseSelected.Location = new System.Drawing.Point(356, 14);
+            this.btn_InverseSelected.Location = new System.Drawing.Point(395, 14);
             this.btn_InverseSelected.Name = "btn_InverseSelected";
-            this.btn_InverseSelected.Size = new System.Drawing.Size(110, 23);
+            this.btn_InverseSelected.Size = new System.Drawing.Size(106, 23);
             this.btn_InverseSelected.TabIndex = 28;
             this.btn_InverseSelected.Text = "Inverse selected";
             this.btn_InverseSelected.UseVisualStyleBackColor = true;
@@ -510,47 +583,6 @@
             this.rtb_DownloadFailed.TabIndex = 53;
             this.rtb_DownloadFailed.Text = "";
             // 
-            // gb_SongHeader
-            // 
-            this.gb_SongHeader.Controls.Add(this.btn_GoToAlbumPage);
-            this.gb_SongHeader.Controls.Add(this.label2);
-            this.gb_SongHeader.Controls.Add(this.tb_RO_AlbumURI);
-            this.gb_SongHeader.Location = new System.Drawing.Point(232, 173);
-            this.gb_SongHeader.Name = "gb_SongHeader";
-            this.gb_SongHeader.Size = new System.Drawing.Size(540, 101);
-            this.gb_SongHeader.TabIndex = 54;
-            this.gb_SongHeader.TabStop = false;
-            this.gb_SongHeader.Visible = false;
-            // 
-            // btn_GoToAlbumPage
-            // 
-            this.btn_GoToAlbumPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_GoToAlbumPage.Location = new System.Drawing.Point(160, 48);
-            this.btn_GoToAlbumPage.Name = "btn_GoToAlbumPage";
-            this.btn_GoToAlbumPage.Size = new System.Drawing.Size(180, 39);
-            this.btn_GoToAlbumPage.TabIndex = 28;
-            this.btn_GoToAlbumPage.Text = "Go to the Album page";
-            this.btn_GoToAlbumPage.UseVisualStyleBackColor = true;
-            this.btn_GoToAlbumPage.Click += new System.EventHandler(this.btn_GoToAlbumPage_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(6, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 16);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "Album URI";
-            // 
-            // tb_RO_AlbumURI
-            // 
-            this.tb_RO_AlbumURI.Location = new System.Drawing.Point(84, 22);
-            this.tb_RO_AlbumURI.Name = "tb_RO_AlbumURI";
-            this.tb_RO_AlbumURI.ReadOnly = true;
-            this.tb_RO_AlbumURI.Size = new System.Drawing.Size(439, 20);
-            this.tb_RO_AlbumURI.TabIndex = 27;
-            // 
             // pb_ProcStatusImage
             // 
             this.pb_ProcStatusImage.Location = new System.Drawing.Point(9, 339);
@@ -584,7 +616,7 @@
             // gb_MainHeader
             // 
             this.gb_MainHeader.Controls.Add(this.lbl_D_Albun);
-            this.gb_MainHeader.Controls.Add(this.tb_RO_Title);
+            this.gb_MainHeader.Controls.Add(this.tb_Title);
             this.gb_MainHeader.Controls.Add(this.tb_RO_Artist);
             this.gb_MainHeader.Controls.Add(this.lbl_D_Artist);
             this.gb_MainHeader.Controls.Add(this.tb_RO_Uploader);
@@ -609,7 +641,7 @@
             // 
             // btn_About
             // 
-            this.btn_About.Location = new System.Drawing.Point(507, 698);
+            this.btn_About.Location = new System.Drawing.Point(522, 698);
             this.btn_About.Name = "btn_About";
             this.btn_About.Size = new System.Drawing.Size(75, 23);
             this.btn_About.TabIndex = 60;
@@ -656,7 +688,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 730);
+            this.ClientSize = new System.Drawing.Size(784, 731);
             this.Controls.Add(this.btn_Back);
             this.Controls.Add(this.lbl_ProcessedCount);
             this.Controls.Add(this.lbl_SelectedCount);
@@ -690,10 +722,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pb_ItemImage)).EndInit();
             this.gb_Album_Header.ResumeLayout(false);
             this.gb_Album_Header.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_List)).EndInit();
-            this.gb_FooterButtons.ResumeLayout(false);
             this.gb_SongHeader.ResumeLayout(false);
             this.gb_SongHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_List)).EndInit();
+            this.gb_FooterButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pb_ProcStatusImage)).EndInit();
             this.gb_MainHeader.ResumeLayout(false);
             this.gb_MainHeader.PerformLayout();
@@ -718,7 +750,7 @@
         private System.Windows.Forms.TextBox tb_RO_Uploader;
         private System.Windows.Forms.Label lbl_D_Artist;
         private System.Windows.Forms.TextBox tb_RO_Artist;
-        private System.Windows.Forms.TextBox tb_RO_Title;
+        private System.Windows.Forms.TextBox tb_Title;
         private System.Windows.Forms.Label lbl_D_Albun;
         private System.Windows.Forms.GroupBox gb_Album_Header;
         private System.Windows.Forms.RichTextBox tb_RO_Description_Album;
@@ -731,13 +763,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tb_RO_Date_Album;
         private System.Windows.Forms.DataGridView dgv_List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Number;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Artist;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Title;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Length;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Size;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Bitrate;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn col_Download;
         private System.Windows.Forms.GroupBox gb_FooterButtons;
         private System.Windows.Forms.Button btn_DownloadSelected;
         private System.Windows.Forms.Button btn_SelectAll;
@@ -761,6 +786,16 @@
         private System.Windows.Forms.Label lbl_SelectedCount;
         private System.Windows.Forms.Label lbl_ProcessedCount;
         private System.Windows.Forms.Button btn_Back;
+        private System.Windows.Forms.Label lblLabel;
+        private System.Windows.Forms.TextBox tb_RO_Label_Album;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn col_Download;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_Number;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_Artist;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_Title;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_Length;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_Size;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_Bitrate;
+        private System.Windows.Forms.Button btn_Open;
     }
 }
 

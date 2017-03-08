@@ -93,9 +93,6 @@
     <AssemblyOriginatorKeyFile>Resources\MyzukaRuGrabberGuiSN.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>lib\HtmlAgilityPack.dll</HintPath>
-    </Reference>
     <Reference Include="KlotosLib">
       <HintPath>lib\KlotosLib.dll</HintPath>
     </Reference>

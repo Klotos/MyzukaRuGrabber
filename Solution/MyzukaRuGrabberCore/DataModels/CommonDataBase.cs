@@ -9,7 +9,7 @@ namespace MyzukaRuGrabberCore.DataModels
     /// Инкапсулирует общие данные для распарсенных альбома и песни
     /// </summary>
     [Serializable()]
-    public abstract class ACommonData : IDisposable
+    public abstract class CommonDataBase : IDisposable
     {
         /// <summary>
         /// Общее, составное название альбома либо песни
@@ -64,15 +64,22 @@ namespace MyzukaRuGrabberCore.DataModels
         public String GenerateExternalCoverFilename()
         {
             String filename_without_ext = this.Title + " cover";
-            String ext = this.CoverFile.Filename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
             String output_filename;
-            if (ext.HasAlphaNumericChars() == false)
+            if (KlotosLib.FilePathTools.IsValidFilename(this.CoverFile.Filename))
             {
-                output_filename = filename_without_ext + ".jpg";
+                String ext = this.CoverFile.Filename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
+                if (ext.HasAlphaNumericChars() == false)
+                {
+                    output_filename = filename_without_ext + ".jpeg";
+                }
+                else
+                {
+                    output_filename = filename_without_ext + "." + ext;
+                }
             }
             else
             {
-                output_filename = filename_without_ext + "." + ext;
+                output_filename = filename_without_ext + ".jpeg";
             }
             return output_filename;
         }

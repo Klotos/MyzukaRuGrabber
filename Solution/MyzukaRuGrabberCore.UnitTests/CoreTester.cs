@@ -16,7 +16,7 @@ namespace MyzukaRuGrabberCore.UnitTests
         public void TryGrabAndParsePage_Album()
         {
             AlbumHeader expected_album_header = new AlbumHeader(
-                "The Chronicles Of Riddick - OST / Хроники Риддика - Саундтрек [Score] (2004)", 
+                "The Chronicles Of Riddick - OST / Хроники Риддика - Саундтрек (Score) (2004)", 
                 "OST", 
                 "Graeme Revell",
                 "2004",
@@ -24,14 +24,16 @@ namespace MyzukaRuGrabberCore.UnitTests
                 22,
                 "mp3",
                 "Fluffy",
-                "Lannna",
-                "",
-                new Uri("http://fp42.myzuka.ru/Download.aspx?lid=727400&mid=5258695&date=20140130203947&sum=20dd0e5d919bd6def71c53aed0b47cdd&name=&ic=False&cr=False&ex=.jpg&il=False"),
-                new Uri("http://myzuka.ru/Album/12059/Graeme-Revell-The-Chronicles-Of-Riddick-Ost-Хроники-Риддика-Саундтрек-Score-2004")
+                "EarthMan",
+                (String)null,
+                new Uri("https://cs5.myzuka.fm/img/71/10705993/28306323.jpg"),
+                new Uri("https://myzuka.fm/Album/12059/Graeme-Revell-The-Chronicles-Of-Riddick-Ost-Hroniki-Riddika-Saundtrek-Score-2004")
             );
+            expected_album_header.Label = "Нет данных";
+            expected_album_header.UploadDate = "19.03.2008";
 
-            ACommonData result1 = Core.TryGrabAndParsePage(
-                new Uri("http://myzuka.ru/Album/12059/Graeme-Revell-The-Chronicles-Of-Riddick-Ost-Хроники-Риддика-Саундтрек-Score-2004"), 
+            CommonDataBase result1 = Core.TryGrabAndParsePage(
+                new Uri("https://myzuka.fm/Album/12059/Graeme-Revell-The-Chronicles-Of-Riddick-Ost-Hroniki-Riddika-Saundtrek-Score-2004"), 
                 "Mozilla/5.0 (Windows; I; Windows NT 5.1; ru; rv:1.9.2.13) Gecko/20100101 Firefox/4.0", 
                 true, 
                 false,
@@ -46,7 +48,7 @@ namespace MyzukaRuGrabberCore.UnitTests
             Assert.IsTrue(
                 conv_result1.Songs.TrueForAll(
                     osh => osh.Artist.Equals("Graeme Revell", StringComparison.OrdinalIgnoreCase) && osh.Album.Equals
-                        ("The Chronicles Of Riddick - OST / Хроники Риддика - Саундтрек [Score] (2004)", 
+                        ("The Chronicles Of Riddick - OST / Хроники Риддика - Саундтрек (Score) (2004)", 
                         StringComparison.OrdinalIgnoreCase)));
         }
 
@@ -58,20 +60,20 @@ namespace MyzukaRuGrabberCore.UnitTests
                 "Graeme Revell - Vaako Conspiracy", 
                 "Vaako Conspiracy", 
                 "Graeme Revell",
-                "The Chronicles Of Riddick - OST / Хроники Риддика - Саундтрек [Score]",
+                "The Chronicles Of Riddick - OST / Хроники Риддика - Саундтрек (Score)",
                 "OST",
-                "03:19",
-                "5,31 Мб",
-                "223 Кб/с",
+                "03:20",
+                "7,78 Мб",
+                "320 Кб/с",
                 "mp3",
                 "Fluffy",
-                new Uri("http://fp42.myzuka.ru/Download.aspx?lid=727400&mid=5258695&date=20140130224847&sum=0afff71bffd5ff030dad549c1973575f&name=&ic=False&cr=False&ex=.jpg&il=False"),
-                new Uri("http://myzuka.ru/Song/164181/Graeme-Revell-Vaako-Conspiracy"),
+                new Uri("https://cs5.myzuka.fm/img/71/10705993/28306323.jpg"),
+                new Uri("https://myzuka.fm/Song/164181/Graeme-Revell-Vaako-Conspiracy"),
                 true
             );
-
-            ACommonData result1 = Core.TryGrabAndParsePage(
-                new Uri("http://myzuka.ru/Song/164181/Graeme-Revell-Vaako-Conspiracy"),
+            expected_song_header.Rating = 1527;
+            CommonDataBase result1 = Core.TryGrabAndParsePage(
+                new Uri("https://myzuka.fm/Song/164181/Graeme-Revell-Vaako-Conspiracy"),
                 "Mozilla/5.0 (Windows; I; Windows NT 5.1; ru; rv:1.9.2.13) Gecko/20100101 Firefox/4.0",
                 true,
                 false,
@@ -82,7 +84,7 @@ namespace MyzukaRuGrabberCore.UnitTests
 
             ParsedSong conv_result1 = (ParsedSong)result1;
             Assert.IsTrue(conv_result1.Header.Equals(expected_song_header));
-            Assert.IsTrue(conv_result1.AlbumLink == new Uri("http://myzuka.ru/Album/12059/Graeme-Revell-The-Chronicles-Of-Riddick-Ost-Хроники-Риддика-Саундтрек-Score-2004"));
+            Assert.IsTrue(conv_result1.AlbumLink == new Uri("https://myzuka.fm/Album/12059/Graeme-Revell-The-Chronicles-Of-Riddick-Ost-Hroniki-Riddika-Saundtrek-Score-2004"));
         }
     }
 }

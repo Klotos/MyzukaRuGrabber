@@ -35,8 +35,8 @@ namespace MyzukaRuGrabberGUI
         {
             if (Default == true)
             {
-                this._useDistinctFolder = false;
-                this._useServerFilenames = true;
+                this._useDistinctFolder = true;
+                this._useServerFilenames = false;
                 this._maxDownloadThreads = (Byte)Environment.ProcessorCount;
                 this._savedFilesPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 this._userAgent = _DEFAULT_USERAGENT;
@@ -77,7 +77,7 @@ namespace MyzukaRuGrabberGUI
         /// </summary>
         /// <param name="AlbumName"></param>
         /// <returns></returns>
-        internal static String PrepareSavePath(String AlbumName)
+        internal static System.IO.DirectoryInfo PrepareSavePath(String AlbumName)
         {
             String save_path;
             if (ProgramSettings.Instance.UseDistinctFolder == true)
@@ -94,9 +94,12 @@ namespace MyzukaRuGrabberGUI
             }
             if (Directory.Exists(save_path) == false)
             {
-                Directory.CreateDirectory(save_path);
+                return Directory.CreateDirectory(save_path);
             }
-            return save_path;
+            else
+            {
+                return new DirectoryInfo(save_path);
+            }
         }
 
         internal static Dictionary<String, String> TransactionalApply(Boolean UseDistinctFolder, Boolean UseServerFilenames,

@@ -14,10 +14,12 @@ using KlotosLib;
 namespace MyzukaRuGrabberCore
 {
     /// <summary>
-    /// Инкапсулирует все операции по парсингу страниц сайта myzuka.ru
+    /// Инкапсулирует все операции по парсингу страниц сайта myzuka.fm
     /// </summary>
     public static class Core
     {
+        private const String _DOMAIN_NAME = "myzuka.fm";
+
         /// <summary>
         /// Парсит и преобразовывает указанную строку, представляющую URI, 
         /// и возвращает результат операции через выводной параметр
@@ -34,9 +36,9 @@ namespace MyzukaRuGrabberCore
                 return null;
             }
             Input = Input.CleanString().Trim();
-            if (Input.StartsWith("http://", StringComparison.OrdinalIgnoreCase) == false)
+            if (Input.StartsWith("http://", StringComparison.OrdinalIgnoreCase) == false && Input.StartsWith("https://", StringComparison.OrdinalIgnoreCase) == false)
             {
-                Input = "http://" + Input;
+                Input = "https://" + Input;
             }
             Uri input_URI;
             Boolean result = Uri.TryCreate(Input, UriKind.Absolute, out input_URI);
@@ -45,14 +47,15 @@ namespace MyzukaRuGrabberCore
                 ErrorMessage = "Input string is invalid URI";
                 return null;
             }
-            if (input_URI.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase)==false)
+            if (input_URI.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) == false && 
+                input_URI.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) == false)
             {
-                ErrorMessage = "Only HTTP scheme is valid, but not " + input_URI.Scheme;
+                ErrorMessage = "Only HTTP and HTTPS schemas are valid, but not " + input_URI.Scheme;
                 return null;
             }
-            if (input_URI.Authority.Equals("myzuka.ru", StringComparison.OrdinalIgnoreCase)==false)
+            if (input_URI.Authority.Equals(_DOMAIN_NAME, StringComparison.OrdinalIgnoreCase) == false)
             {
-                ErrorMessage = "Only myzuka.ru domain is supported, but not " + input_URI.Authority;
+                ErrorMessage = "Only "+_DOMAIN_NAME+" domain is supported, but not " + input_URI.Authority;
                 return null;
             }
             if (input_URI.Segments.Length < 4)
@@ -84,7 +87,7 @@ namespace MyzukaRuGrabberCore
         /// <param name="InvokeEvents">Определяет, необходимо ли вызывать события в процессе выполнения</param>
         /// <param name="CancToken"></param>
         /// <returns>Модель, соответсующая альбому или песни, или же NULL в случае провала парсинга</returns>
-        public static ACommonData TryGrabAndParsePage
+        public static CommonDataBase TryGrabAndParsePage
             (Uri PageURI, String UserAgent, Boolean DownloadCover, Boolean InvokeEvents, CancellationToken CancToken)
         {
             Task<HtmlAgilityPack.HtmlDocument> temp_task = Task.Run<HtmlAgilityPack.HtmlDocument>
@@ -117,7 +120,7 @@ namespace MyzukaRuGrabberCore
             HtmlAgilityPack.HtmlDocument HTML_doc = temp_task.Result;
             if (InvokeEvents == true)
             {
-                Core.PageWasDownloaded.Invoke(HTML_doc);
+                Core.PageWasDownloaded.Invoke(HTML_doc.Encoding, HTML_doc.CheckSum);
             }
 
             ParsedItemType album_or_song = CoreInternal.DetectItemType(HTML_doc);
@@ -195,7 +198,7 @@ namespace MyzukaRuGrabberCore
             }
             CancToken.ThrowIfCancellationRequested();
 
-            ACommonData output;
+            CommonDataBase output;
             if (album_or_song == ParsedItemType.Album)
             {
                 AlbumHeader ah = (AlbumHeader) header;
@@ -267,10 +270,10 @@ namespace MyzukaRuGrabberCore
         /// <param name="InvokeEvents">Определяет, необходимо ли вызывать события в процессе выполнения</param>
         /// <param name="CancToken">Токен отмены</param>
         /// <returns>Модель, соответсующая альбому или песни, или же NULL в случае провала парсинга</returns>
-        public static async Task<ACommonData> TryGrabAndParsePageAsync
+        public static async Task<CommonDataBase> TryGrabAndParsePageAsync
             (Uri PageURI, String UserAgent, Boolean DownloadCover, Boolean InvokeEvents, CancellationToken CancToken)
         {
-            Task<ACommonData> t = Task.Factory.StartNew<ACommonData>(
+            Task<CommonDataBase> t = Task.Factory.StartNew<CommonDataBase>(
                         () => Core.TryGrabAndParsePage(PageURI, UserAgent, DownloadCover, InvokeEvents, CancToken),
                         CancToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             return await t;
@@ -279,9 +282,9 @@ namespace MyzukaRuGrabberCore
         #region Events
         /// <summary>
         /// Возникает при завершении успешного скачивания страницы и преобразования её в валидный HTML-документ; 
-        /// возвращает этот HTML-документ.
+        /// возвращает кодировку скачанного HTML-документи и его контрольную сумму.
         /// </summary>
-        public static event Action<HtmlDocument> PageWasDownloaded;
+        public static event Action<System.Text.Encoding, Int32> PageWasDownloaded;
 
         /// <summary>
         /// Возникает при определении принадлежности страницы; возвращает идентифицированный тип страницы
@@ -303,7 +306,7 @@ namespace MyzukaRuGrabberCore
         /// Возникает при успешном завершении всех работ, непосредственно перед возвращением результата из метода. 
         /// В единственном параметре возвращается собственно результат.
         /// </summary>
-        public static event Action<ACommonData> WorkIsDone;
+        public static event Action<CommonDataBase> WorkIsDone;
 
         /// <summary>
         /// Возникает при выбрасывании исключения во время работы метода; возвращает появившееся исключение.
@@ -668,10 +671,16 @@ namespace MyzukaRuGrabberCore
             if (ReceivedFile == null) { throw new ArgumentNullException("ReceivedFile", "ReceivedFile не может быть NULL"); }
             if (FolderPath == null) { throw new ArgumentNullException("FolderPath", "FolderPath не может быть NULL"); }
 
-            String filename = FilePathTools.IsValidFilename(NewFilename) == true
-                ? NewFilename
-                : ReceivedFile.Filename;
-            String full_filename = Path.Combine(FolderPath, filename);
+            String finalFilename;
+            if (FilePathTools.IsValidFilename(NewFilename) == true)
+            {
+                finalFilename = NewFilename;
+            }
+            else if (FilePathTools.TryCleanFilename(NewFilename, out finalFilename) == false)
+            {
+                finalFilename = ReceivedFile.Filename;
+            }
+            String full_filename = Path.Combine(FolderPath, finalFilename);
 
             try
             {

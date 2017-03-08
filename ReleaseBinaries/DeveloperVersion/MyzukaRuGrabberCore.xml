@@ -18,7 +18,7 @@
             Определяет, является ли указанная страница представлением альбома (true) или одной песни (false). 
             Если распознавание невозможно, возвращает NULL.
             </summary>
-            <param name="HTMLPage"></param>
+            <param name="htmlPage"></param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.TryGrabImageUri(HtmlAgilityPack.HtmlDocument)">
@@ -46,22 +46,21 @@
             <summary>
             Извлекает из страницы песни и возвращает URI на скачку файла песни
             </summary>
-            <param name="HTMLPage"></param>
+            <param name="htmlPage"></param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractAlbumURIFromSongPage(HtmlAgilityPack.HtmlDocument)">
             <summary>
             Извлекает из страницы песни и возвращает URI на страницу альбома, к которому относится данная песня
             </summary>
-            <param name="HTMLPage"></param>
+            <param name="htmlPage"></param>
             <returns></returns>
         </member>
-        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryFixReturnURI(System.String,System.String@)">
+        <member name="M:MyzukaRuGrabberCore.CoreInternal.TryFixReturnURI(System.String)">
             <summary>
             Пытается очистить от шелухи и возвратить URI
             </summary>
-            <param name="Input"></param>
-            <param name="ErrorMessage"></param>
+            <param name="input"></param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.ExtractFromHTML(System.String)">
@@ -83,7 +82,7 @@
             <summary>
             Извлекает и возвращает всю информацию по одной песне из страницы песни
             </summary>
-            <param name="HTMLPage"></param>
+            <param name="htmlPage"></param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.CoreInternal.TryDownloadFile(System.Uri,System.Uri,System.String,System.String@)">
@@ -115,63 +114,63 @@
             <param name="ReceivedFile"></param>
             <returns></returns>
         </member>
-        <member name="T:MyzukaRuGrabberCore.DataModels.ACommonData">
+        <member name="T:MyzukaRuGrabberCore.DataModels.CommonDataBase">
             <summary>
             Инкапсулирует общие данные для распарсенных альбома и песни
             </summary>
         </member>
-        <member name="M:MyzukaRuGrabberCore.DataModels.ACommonData.GenerateExternalCoverFilename">
+        <member name="M:MyzukaRuGrabberCore.DataModels.CommonDataBase.GenerateExternalCoverFilename">
             <summary>
             Генерирует имя файла, содержащего обложку изображения, на основании метаданных
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MyzukaRuGrabberCore.DataModels.ACommonData.Dispose">
+        <member name="M:MyzukaRuGrabberCore.DataModels.CommonDataBase.Dispose">
             <summary>
             Освобождает ресурсы, занятые обложкой
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Title">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.Title">
             <summary>
             Общее, составное название альбома либо песни
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Artist">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.Artist">
             <summary>
             Исполнитель альбома или песни
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Album">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.Album">
             <summary>
             Название альбома
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Genre">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.Genre">
             <summary>
             Жанр альбома или песни
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.ItemLink">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.ItemLink">
             <summary>
             Ссылка на страницу данного альбома или песни
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.Uploader">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.Uploader">
             <summary>
             Пользователь, загрузивший на сайт данный альбом или песню
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.CoverURI">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.CoverURI">
             <summary>
             Ссылка на изображение обложки альбома или песни
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.CoverFile">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.CoverFile">
             <summary>
             Скачанное изображение обложки альбома или песни, или же NULL, если скачивание не требуется или не удалось
             </summary>
         </member>
-        <member name="P:MyzukaRuGrabberCore.DataModels.ACommonData.CoverImage">
+        <member name="P:MyzukaRuGrabberCore.DataModels.CommonDataBase.CoverImage">
             <summary>
             Преобразованное в точечный рисунок изображение обложки альбома или песни, 
             или же NULL, если скачивание не требуется или не удалось, или же не удалось преобразовать
@@ -217,6 +216,11 @@
             URI изображения, представляющего обложку данного альбома или песни
             </summary>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.AlbumHeader.#ctor">
+            <summary>
+            Конструктор, создающий пустой экземпляр
+            </summary>
+        </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.AlbumHeader.#ctor(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Byte},System.String,System.String,System.String,System.String,System.Uri,System.Uri)">
             <summary>
             Конструктор, заполняет экземпляр хидера альбома всеми необходимыми полными данными
@@ -233,6 +237,13 @@
             <param name="Description"></param>
             <param name="AlbumImageURI"></param>
             <param name="AlbumPageURI"></param>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.AlbumHeader.Accept(System.String,System.String)">
+            <summary>
+            Добавляет в экземпляр указанное значение по указаннгому ключу
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.AlbumHeader.Equals(MyzukaRuGrabberCore.DataModels.AlbumHeader)">
             <summary>
@@ -254,6 +265,11 @@
         <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Artist">
             <summary>
             Название исполнителя альбома
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.Label">
+            <summary>
+            Название лейбла
             </summary>
         </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.ReleaseDate">
@@ -291,6 +307,11 @@
             Пользовательское описание
             </summary>
         </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.UploadDate">
+            <summary>
+            Дата загрузки
+            </summary>
+        </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.AlbumHeader.AlbumImageURI">
             <summary>
             URI на изображение (обложку) текущего альбома
@@ -313,7 +334,7 @@
         </member>
         <member name="T:MyzukaRuGrabberCore.Core">
             <summary>
-            Инкапсулирует все операции по парсингу страниц сайта myzuka.ru
+            Инкапсулирует все операции по парсингу страниц сайта myzuka.fm
             </summary>
         </member>
         <member name="M:MyzukaRuGrabberCore.Core.TryParseURI(System.String,System.String@)">
@@ -485,7 +506,7 @@
         <member name="E:MyzukaRuGrabberCore.Core.PageWasDownloaded">
             <summary>
             Возникает при завершении успешного скачивания страницы и преобразования её в валидный HTML-документ; 
-            возвращает этот HTML-документ.
+            возвращает кодировку скачанного HTML-документи и его контрольную сумму.
             </summary>
         </member>
         <member name="E:MyzukaRuGrabberCore.Core.ItemWasDetected">
@@ -542,7 +563,7 @@
         </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.Filename">
             <summary>
-            Название файла, полученное с сервера
+            Название файла, полученное с сервера. Может быть пустой строкой.
             </summary>
         </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.Contentlength">
@@ -553,6 +574,27 @@
         <member name="P:MyzukaRuGrabberCore.DataModels.DownloadedFile.FileBody">
             <summary>
             Тело файла
+            </summary>
+        </member>
+        <member name="T:MyzukaRuGrabberCore.DataModels.OverridableSongMetadata">
+            <summary>
+            Представляет те метаданные по одной песне, которые пользователь может переопределить, 
+            т.е. заменить ими оригинальные данные при помощи, к примеру, графического интерфейса
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OverridableSongMetadata.ArtistName">
+            <summary>
+            Название исполнителя
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OverridableSongMetadata.SongName">
+            <summary>
+            Название песни
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OverridableSongMetadata.AlbumName">
+            <summary>
+            Название альбома
             </summary>
         </member>
         <member name="T:MyzukaRuGrabberCore.DataModels.ParsedAlbum">
@@ -670,6 +712,11 @@
             Модель данных одной распарсенной песни. Неизменяемый класс.
             </summary>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.#ctor">
+            <summary>
+            Конструктор, создающий пустой экземпляр
+            </summary>
+        </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.#ctor(System.Byte,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Uri,System.Uri,System.Boolean)">
             <summary>
             Конструктор, заполняющий экземпляр всеми необходимыми данными
@@ -689,27 +736,44 @@
             <param name="SongPageUri">URI на страницу, представляющую (содержащую) данную песню</param>
             <param name="IsAvailableForDownload">Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице</param>
         </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Accept(System.String,System.String)">
+            <summary>
+            Добавляет в экземпляр указанное значение по указаннгому ключу
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String)">
             <summary>
             Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни
             </summary>
-            <param name="OrigFilename">Оригинальное название песни, полученное из скачанного файла; 
+            <param name="origFilename">Оригинальное название песни, полученное из скачанного файла; 
             из него извлекается расширение имени файла.</param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String,System.String)">
             <summary>
-            Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни и по указанному шаблону
+            Генерирует имя аудио-файла, содержащего песню, по указанному шаблону на основании метаданных песни
             </summary>
-            <param name="OrigFilename"></param>
-            <param name="FilenameTemplate"></param>
+            <param name="origFilename"></param>
+            <param name="filenameTemplate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String,System.String,MyzukaRuGrabberCore.DataModels.OverridableSongMetadata)">
+            <summary>
+            Генерирует имя аудио-файла, содержащего песню, по указанному шаблону на основании метаданных песни 
+            и принимая во внимание переопределённые пользователем метаданные
+            </summary>
+            <param name="origFilename"></param>
+            <param name="filenameTemplate"></param>
+            <param name="overridings"></param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Equals(MyzukaRuGrabberCore.DataModels.OneSongHeader)">
             <summary>
             Определяет равенство текущего экземпляра хидера песни с указанным
             </summary>
-            <param name="Other"></param>
+            <param name="other"></param>
             <returns></returns>
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Equals(System.Object)">
@@ -803,6 +867,11 @@
         <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.IsAvailableForDownload">
             <summary>
             Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.Rating">
+            <summary>
+            Рейтинг песни по версии сайта myzuka.fm
             </summary>
         </member>
         <member name="T:MyzukaRuGrabberCore.ReactiveDownloader">

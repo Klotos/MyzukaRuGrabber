@@ -12,6 +12,14 @@ namespace MyzukaRuGrabberCore.DataModels
     public sealed class OneSongHeader : ICommonHeader, IEquatable<OneSongHeader>
     {
         /// <summary>
+        /// Конструктор, создающий пустой экземпляр
+        /// </summary>
+        public OneSongHeader()
+        {
+            
+        }
+
+        /// <summary>
         /// Конструктор, заполняющий экземпляр всеми необходимыми данными
         /// </summary>
         /// <param name="Number"></param>
@@ -50,110 +58,232 @@ namespace MyzukaRuGrabberCore.DataModels
             this._isAvailableForDownload = IsAvailableForDownload;
         }
 
-        private readonly Byte _number;
+        private Byte _number;
+
         /// <summary>
         /// Номер песни
         /// </summary>
-        public Byte Number { get { return this._number; } }
+        public Byte Number
+        {
+            get { return this._number; }
+            set { this._number = value; }
+        }
 
-        private readonly String _title;
+        private String _title;
+
         /// <summary>
         /// Название песни
         /// </summary>
-        public String Title { get { return this._title; } }
+        public String Title
+        {
+            get { return this._title; }
+            set { this._title = value; }
+        }
 
-        private readonly String _name;
+        private String _name;
+
         /// <summary>
         /// Название песни без исполнителя
         /// </summary>
-        public String Name { get { return this._name; } }
+        public String Name
+        {
+            get { return this._name; }
+            set { this._name = value; }
+        }
 
-        private readonly String _artist;
+        private String _artist;
+
         /// <summary>
         /// Имя исполнителя песни
         /// </summary>
-        public String Artist { get { return this._artist; } }
+        public String Artist
+        {
+            get { return this._artist; }
+            set { this._artist = value; }
+        }
 
-        private readonly String _album;
+        private String _album;
+
         /// <summary>
         /// Альбом, к которому относится песня
         /// </summary>
-        public String Album { get { return this._album; } }
+        public String Album
+        {
+            get { return this._album; }
+            set { this._album = value; }
+        }
 
-        private readonly String _genre;
+        private String _genre;
+
         /// <summary>
         /// Название жанра песни
         /// </summary>
-        public String Genre { get { return this._genre; } }
+        public String Genre
+        {
+            get { return this._genre; }
+            set { this._genre = value; }
+        }
 
-        private readonly String _duration;
+        private String _duration;
+
         /// <summary>
         /// Длительность песни
         /// </summary>
-        public String Duration { get { return this._duration; } }
+        public String Duration
+        {
+            get { return this._duration; }
+            set { this._duration = value; }
+        }
 
-        private readonly String _size;
+        private String _size;
+
         /// <summary>
         /// Байтовый размер песни
         /// </summary>
-        public String Size { get { return this._size; } }
+        public String Size
+        {
+            get { return this._size; }
+            set { this._size = value; }
+        }
 
-        private readonly String _bitrate;
+        private String _bitrate;
+
         /// <summary>
         /// Битрейт песни
         /// </summary>
-        public String Bitrate { get { return this._bitrate; } }
+        public String Bitrate
+        {
+            get { return this._bitrate; }
+            set { this._bitrate = value; }
+        }
 
-        private readonly String _format;
+        private String _format;
+
         /// <summary>
         /// Формат песни
         /// </summary>
-        public String Format { get { return this._format; } }
+        public String Format
+        {
+            get { return this._format; }
+            set { this._format = value; }
+        }
 
-        private readonly String _uploader;
+        private String _uploader;
+
         /// <summary>
         /// Загрузчик песни
         /// </summary>
-        public String Uploader { get { return this._uploader; } }
+        public String Uploader
+        {
+            get { return this._uploader; }
+            set { this._uploader = value; }
+        }
 
-        private readonly Uri _songImageURI;
+        private Uri _songImageURI;
+
         /// <summary>
         /// URI на изображение (обложку) текущей песни
         /// </summary>
-        public Uri SongImageURI { get { return this._songImageURI; } }
+        public Uri SongImageURI
+        {
+            get { return this._songImageURI; }
+            set { this._songImageURI = value; }
+        }
         /// <summary>
         /// URI на изображение (обложку) текущей песни
         /// </summary>
         public Uri CoverImageURI { get { return this._songImageURI; } }
 
-        private readonly Uri _songPageURI;
+        private Uri _songPageURI;
+
         /// <summary>
         /// URI на страницу, представляющую (содержащую) данную песню
         /// </summary>
-        public Uri SongPageURI { get { return this._songPageURI; } }
+        public Uri SongPageURI
+        {
+            get { return this._songPageURI; }
+            set { this._songPageURI = value; }
+        }
         /// <summary>
         /// URI на страницу, представляющую (содержащую) данную песню
         /// </summary>
         public Uri PageURI { get { return this._songPageURI; } }
 
-        private readonly Boolean _isAvailableForDownload;
+        private Boolean _isAvailableForDownload;
+
         /// <summary>
         /// Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице
         /// </summary>
-        public Boolean IsAvailableForDownload {get { return this._isAvailableForDownload; }}
+        public Boolean IsAvailableForDownload
+        {
+            get { return this._isAvailableForDownload; }
+            set { this._isAvailableForDownload = value; }
+        }
+
+        private UInt16 _rating;
+
+        /// <summary>
+        /// Рейтинг песни по версии сайта myzuka.fm
+        /// </summary>
+        public UInt16 Rating
+        {
+            get { return this._rating; }
+            set { this._rating = value; }
+        }
+
+        /// <summary>
+        /// Добавляет в экземпляр указанное значение по указаннгому ключу
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void Accept(String key, String value)
+        {
+            if (key.Equals("Жанр:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._genre = value;
+            }
+            else if (key.Equals("Исполнитель:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._artist = value;
+            }
+            else if (key.Equals("Альбом:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._album = value;
+            }
+            else if (key.Equals("Длительность:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._duration = value;
+            }
+            else if (key.Equals("Размер:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._size = value;
+            }
+            else if (key.Equals("Рейтинг:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._rating = UInt16.Parse(value, NumberStyles.Integer);
+            }
+            else if (key.Equals("Загрузил:", StringComparison.OrdinalIgnoreCase))
+            {
+                this._uploader = value;
+            }
+            else
+            {
+                throw new NotSupportedException(String.Format("Ключ '{0}' неизвестен, поэтому его значение '{1}' не может быть обработано", key, value));
+            }
+        }
 
         /// <summary>
         /// Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни
         /// </summary>
-        /// <param name="OrigFilename">Оригинальное название песни, полученное из скачанного файла; 
+        /// <param name="origFilename">Оригинальное название песни, полученное из скачанного файла; 
         /// из него извлекается расширение имени файла.</param>
         /// <returns></returns>
-        public String GenerateSongFilename(String OrigFilename)
+        public String GenerateSongFilename(String origFilename)
         {
             String output;
             String filename_without_ext = this.Number.ToString(CultureInfo.InvariantCulture) + ". " +
                 this.Artist + " - " + this.Name + " [" + this.Album + "]";
-            String ext = OrigFilename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+            String ext = origFilename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
             if (ext.HasAlphaNumericChars() == false)
             {
                 output = filename_without_ext + ".mp3";
@@ -166,15 +296,15 @@ namespace MyzukaRuGrabberCore.DataModels
         }
 
         /// <summary>
-        /// Генерирует имя аудио-файла, содержащего песню, на основании метаданных песни и по указанному шаблону
+        /// Генерирует имя аудио-файла, содержащего песню, по указанному шаблону на основании метаданных песни
         /// </summary>
-        /// <param name="OrigFilename"></param>
-        /// <param name="FilenameTemplate"></param>
+        /// <param name="origFilename"></param>
+        /// <param name="filenameTemplate"></param>
         /// <returns></returns>
-        public String GenerateSongFilename(String OrigFilename, String FilenameTemplate)
+        public String GenerateSongFilename(String origFilename, String filenameTemplate)
         {
-            String ext = OrigFilename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-            String output = FilenameTemplate
+            String ext = origFilename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+            String output = filenameTemplate
                 .Replace("%number%", this.Number.ToString(CultureInfo.InvariantCulture))
                 .Replace("%title%", this.Name)
                 .Replace("%artist%", this.Artist)
@@ -183,23 +313,57 @@ namespace MyzukaRuGrabberCore.DataModels
             return output;
         }
 
+        /// <summary>
+        /// Генерирует имя аудио-файла, содержащего песню, по указанному шаблону на основании метаданных песни 
+        /// и принимая во внимание переопределённые пользователем метаданные
+        /// </summary>
+        /// <param name="origFilename"></param>
+        /// <param name="filenameTemplate"></param>
+        /// <param name="overridings"></param>
+        /// <returns></returns>
+        public String GenerateSongFilename(String origFilename, String filenameTemplate, OverridableSongMetadata overridings)
+        {
+            String ext = origFilename.Split(new char[1] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+            ext = (ext.HasAlphaNumericChars() == true) ? "." + ext : ".mp3";
+            String output;
+            if (overridings != null)
+            {
+                output = filenameTemplate
+                .Replace("%number%", this.Number.ToString(CultureInfo.InvariantCulture))
+                .Replace("%title%", overridings.SongName)
+                .Replace("%artist%", overridings.ArtistName)
+                .Replace("%album%", overridings.AlbumName)
+                + ext;
+            }
+            else
+            {
+                output = filenameTemplate
+                .Replace("%number%", this.Number.ToString(CultureInfo.InvariantCulture))
+                .Replace("%title%", this.Name)
+                .Replace("%artist%", this.Artist)
+                .Replace("%album%", this.Album)
+                + ext;
+            }
+            return output;
+        }
+
         #region Equatable and hashcode
         /// <summary>
         /// Определяет равенство текущего экземпляра хидера песни с указанным
         /// </summary>
-        /// <param name="Other"></param>
+        /// <param name="other"></param>
         /// <returns></returns>
-        public Boolean Equals(OneSongHeader Other)
+        public Boolean Equals(OneSongHeader other)
         {
-            if(Other.IsNull()==true) { return false; }
-            if(Object.ReferenceEquals(this, Other)==true) {return true; }
-            Boolean result = this.Album == Other.Album && this.Artist == Other.Artist && this.Bitrate == Other.Bitrate &&
-                             this.Duration == Other.Duration &&
-                             this.Format == Other.Format &&
-                             this.Genre == Other.Genre && this.Name == Other.Name && this.Number == Other.Number &&
-                             this.Size == Other.Size &&
-                             this.SongImageURI.Authority.Equals(Other.SongImageURI.Authority, StringComparison.OrdinalIgnoreCase) &&
-                             this.SongPageURI == Other.SongPageURI;
+            if (Object.ReferenceEquals(null, other)) { return false; }
+            if (Object.ReferenceEquals(this, other)) { return true; }
+            Boolean result = this.Album == other.Album && this.Artist == other.Artist && this.Bitrate == other.Bitrate &&
+                             this.Duration == other.Duration &&
+                             this.Format == other.Format &&
+                             this.Genre == other.Genre && this.Name == other.Name && this.Number == other.Number &&
+                             this.Size == other.Size &&
+                             this.SongImageURI.Authority.Equals(other.SongImageURI.Authority, StringComparison.OrdinalIgnoreCase) &&
+                             this.SongPageURI == other.SongPageURI;
             return result;
         }
 

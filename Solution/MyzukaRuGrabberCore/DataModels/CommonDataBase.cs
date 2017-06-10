@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using KlotosLib;
+using KlotosLib.StringTools;
 
 namespace MyzukaRuGrabberCore.DataModels
 {

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using MyzukaRuGrabberCore.DataModels;
 using KlotosLib;
+using KlotosLib.StringTools;
 
 namespace MyzukaRuGrabberCore
 {
@@ -18,7 +19,7 @@ namespace MyzukaRuGrabberCore
     /// </summary>
     public static class Core
     {
-        private const String _DOMAIN_NAME = "myzuka.fm";
+        private const String _DOMAIN_NAME = "myzuka";
 
         /// <summary>
         /// Парсит и преобразовывает указанную строку, представляющую URI, 
@@ -53,9 +54,9 @@ namespace MyzukaRuGrabberCore
                 ErrorMessage = "Only HTTP and HTTPS schemas are valid, but not " + input_URI.Scheme;
                 return null;
             }
-            if (input_URI.Authority.Equals(_DOMAIN_NAME, StringComparison.OrdinalIgnoreCase) == false)
+            if (input_URI.Authority.StartsWith(_DOMAIN_NAME, StringComparison.OrdinalIgnoreCase) == false)
             {
-                ErrorMessage = "Only "+_DOMAIN_NAME+" domain is supported, but not " + input_URI.Authority;
+                ErrorMessage = "Only '"+_DOMAIN_NAME+".*' domain is supported, but not " + input_URI.Authority;
                 return null;
             }
             if (input_URI.Segments.Length < 4)

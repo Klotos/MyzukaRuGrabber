@@ -64,7 +64,7 @@ namespace MyzukaRuGrabberGUI
                 let name = ass.GetName().Name
                 let b2 = Tools.GetBuildDateTime(ass).ToString("yyyy-MM-dd HH.mm.ss") + " EET"
                 let gac = (ass.GlobalAssemblyCache == true ? " from GAC, " : " from file, ")
-                where name.IsIn(StringComparison.Ordinal, "HtmlAgilityPack", "KlotosLib") ||
+                where KlotosLib.StringTools.StringExtensionMethods.IsIn(name, StringComparison.Ordinal, "HtmlAgilityPack", "KlotosLib") ||
                     name.StartsWith("MyzukaRuGrabber", StringComparison.OrdinalIgnoreCase)
                 orderby name ascending
                 select ass.GetName().Name + gac + "Compiled with .NET " + ass.ImageRuntimeVersion + "\r\nVersion: " + ver.ToString() + ". Build date: " + b2;

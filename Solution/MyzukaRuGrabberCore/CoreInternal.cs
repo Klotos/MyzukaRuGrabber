@@ -12,6 +12,7 @@ using System.Web;
 using HtmlAgilityPack;
 using MyzukaRuGrabberCore.DataModels;
 using KlotosLib;
+using KlotosLib.StringTools;
 
 namespace MyzukaRuGrabberCore
 {
@@ -314,7 +315,7 @@ namespace MyzukaRuGrabberCore
                 return new Tuple<Uri, string>(null, errorMessage);
             }
             const String protocol = "https://";
-            const String main_domain = "myzuka.fm";
+            const String main_domain = "myzuka.me";
 
             input = HttpUtility.HtmlDecode(input);
 
@@ -357,8 +358,8 @@ namespace MyzukaRuGrabberCore
             if(Input.HasAlphaNumericChars()==false) 
             {throw new ArgumentException("Входная строка не содержит цифробуквенных символов", "Input");}
             String temp = Input.MultiReplace(' ', new char[]{'\r', '\n', '\t'}).Trim();
-            temp = KlotosLib.HtmlTools.IntelliRemoveHTMLTags(temp);
-            temp = StringTools.SubstringHelpers.ShrinkSpaces(temp).Trim();
+            temp = KlotosLib.HTML.HtmlTools.IntelliRemoveHTMLTags(temp);
+            temp = KlotosLib.StringTools.SubstringHelpers.ShrinkSpaces(temp).Trim();
             temp = HttpUtility.HtmlDecode(temp);
             return temp;
         }
@@ -528,7 +529,9 @@ namespace MyzukaRuGrabberCore
                 HtmlNode valCell = oneRow.ChildNodes.Last(c => c.Name.Equals("td", StringComparison.OrdinalIgnoreCase));
                 if (!Object.ReferenceEquals(defCell, valCell))
                 {
-                    outputHeader.Accept(defCell.InnerText.Trim(), KlotosLib.StringTools.SubstringHelpers.ShrinkSpaces(valCell.InnerText.Trim().CleanString()));
+                    outputHeader.Accept(defCell.InnerText.Trim(), 
+                        KlotosLib.StringTools.SubstringHelpers.ShrinkSpaces(valCell.InnerText.Trim().CleanString()), 
+                        valCell.InnerHtml.Trim());
                 }
                 else if (Object.ReferenceEquals(defCell, valCell) && defCell.GetAttributeValue("colspan", "") == "2")
                 {
@@ -660,11 +663,11 @@ namespace MyzukaRuGrabberCore
                                 "Значение HTTP-хидера Content-Disposition некорректно и является : " + content_disposition;
                             return null;
                         }
-                        String original_filename_without_ext = StringTools.SubstringHelpers.GetSubstringToToken(content_disposition,
-                            "filename=", false, StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
+                        String original_filename_without_ext = KlotosLib.StringTools.SubstringHelpers.GetSubstringToToken(content_disposition,
+                            "filename=", false, KlotosLib.StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase).Value;
                         Int32 out_pos;
-                        String ext = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                            (response.ResponseUri.ToString(), "ex=", "&", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
+                        String ext = KlotosLib.StringTools.SubstringHelpers.GetInnerStringBetweenTokens
+                            (response.ResponseUri.ToString(), "ex=", "&", 0, 0, false, Direction.FromStartToEnd, StringComparison.OrdinalIgnoreCase).Value;
                         String original_filename_full = ext.HasAlphaNumericChars() == false
                             || original_filename_without_ext.EndsWith(ext, StringComparison.OrdinalIgnoreCase) == true
                             ? original_filename_without_ext
@@ -741,11 +744,12 @@ namespace MyzukaRuGrabberCore
                     {
                         return null;
                     }
-                    String original_filename_without_ext = StringTools.SubstringHelpers.GetSubstringToToken(content_disposition,
-                        "filename=", false, StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase);
-                    Int32 out_pos;
-                    String ext = StringTools.SubstringHelpers.GetInnerStringBetweenTokens
-                        (response.ResponseUri.ToString(), "ex=", "&", 0, StringComparison.OrdinalIgnoreCase, out out_pos);
+                    String original_filename_without_ext = KlotosLib.StringTools.SubstringHelpers.GetSubstringToToken(content_disposition,
+                        "filename=", false, KlotosLib.StringTools.Direction.FromEndToStart, StringComparison.OrdinalIgnoreCase).Value;
+                    Substring extracted_ext = KlotosLib.StringTools.SubstringHelpers.GetInnerStringBetweenTokens
+                        (response.ResponseUri.ToString(), "ex=", "&", 0, 0, false, Direction.FromStartToEnd,
+                            StringComparison.OrdinalIgnoreCase);
+                    String ext = extracted_ext == null ? null :extracted_ext.Value;
                     String original_filename_full = ext.HasAlphaNumericChars() == false
                         || original_filename_without_ext.EndsWith(ext, StringComparison.OrdinalIgnoreCase) == true
                         ? original_filename_without_ext

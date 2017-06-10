@@ -93,8 +93,9 @@
     <AssemblyOriginatorKeyFile>Resources\MyzukaRuGrabberGuiSN.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KlotosLib">
-      <HintPath>lib\KlotosLib.dll</HintPath>
+    <Reference Include="KlotosLib, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ff2d10653bf9ffba, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MyzukaRuGrabberCore\lib\KlotosLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

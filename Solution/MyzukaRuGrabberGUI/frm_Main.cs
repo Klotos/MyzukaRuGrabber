@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using MyzukaRuGrabberCore;
 using MyzukaRuGrabberCore.DataModels;
 using KlotosLib;
+using KlotosLib.StringTools;
 
 namespace MyzukaRuGrabberGUI
 {
@@ -634,7 +635,7 @@ namespace MyzukaRuGrabberGUI
                     this.btn_SaveImage.Enabled = true;
                     this.lbl_ImageInfo.Text = String.Format("{0} | {1} | {2} x {3} px",
                         ImageTools.GetImageFormat(Data.CoverImage),
-                        KlotosLib.ByteQuantity.FromBytes(Data.CoverFile.Contentlength).ToStringWithBinaryPrefix(2, true),
+                        KlotosLib.ByteQuantity.FromBytes(Data.CoverFile.Contentlength).ToStringWithBinaryPrefix(2, ByteQuantity.DecimalSeparatorSign.Point),
                         Data.CoverImage.Size.Width,
                         Data.CoverImage.Size.Height
                     );
@@ -741,7 +742,7 @@ namespace MyzukaRuGrabberGUI
                             return;
                         }
                         this.AddToLog(String.Format("Файл песни {0} размером {1} скачан", file.Filename, 
-                            ByteQuantity.FromBytes(file.Contentlength).ToStringWithBinaryPrefix(3, false)));
+                            ByteQuantity.FromBytes(file.Contentlength).ToStringWithBinaryPrefix(3, ByteQuantity.DecimalSeparatorSign.Comma)));
                         String songCompleteFilename;
                         if (ProgramSettings.Instance.UseServerFilenames == true)
                         {
@@ -840,7 +841,14 @@ namespace MyzukaRuGrabberGUI
             {
                 openFolderPath = ProgramSettings.PrepareSavePath(this._parsedItem.Album).FullName;
             }
-            System.Diagnostics.Process.Start(openFolderPath);
+            DirectoryInfo dir = new DirectoryInfo(openFolderPath);
+            bool exists = dir.Exists;
+            while (exists == false)
+            {
+                dir = dir.Parent;
+                exists = dir.Exists;
+            }
+            System.Diagnostics.Process.Start(dir.FullName);
         }
 
         private void DownloadAndSaveSelectedSongs(List<OneSongHeader> songsForDownload, String downloadFolderPath)

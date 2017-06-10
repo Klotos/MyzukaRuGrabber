@@ -736,12 +736,13 @@
             <param name="SongPageUri">URI на страницу, представляющую (содержащую) данную песню</param>
             <param name="IsAvailableForDownload">Определяет, доступен ли файл песни для скачивания, основываясь на текстовом сообщении на странице</param>
         </member>
-        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Accept(System.String,System.String)">
+        <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.Accept(System.String,System.String,System.String)">
             <summary>
             Добавляет в экземпляр указанное значение по указаннгому ключу
             </summary>
             <param name="key"></param>
             <param name="value"></param>
+            <param name="htmlValue"></param>
         </member>
         <member name="M:MyzukaRuGrabberCore.DataModels.OneSongHeader.GenerateSongFilename(System.String)">
             <summary>
@@ -862,6 +863,11 @@
         <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.PageURI">
             <summary>
             URI на страницу, представляющую (содержащую) данную песню
+            </summary>
+        </member>
+        <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.LyricsPageUri">
+            <summary>
+            URI на страницу, представляющую (содержащую) текст данной песни, если он есть, или NULL, если текста песни нет
             </summary>
         </member>
         <member name="P:MyzukaRuGrabberCore.DataModels.OneSongHeader.IsAvailableForDownload">

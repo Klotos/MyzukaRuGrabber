@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using KlotosLib;
+using KlotosLib.StringTools;
 
 namespace MyzukaRuGrabberCore.DataModels
 {
@@ -209,6 +210,17 @@ namespace MyzukaRuGrabberCore.DataModels
         /// </summary>
         public Uri PageURI { get { return this._songPageURI; } }
 
+        private Uri _lyricsPageUri;
+
+        /// <summary>
+        /// URI на страницу, представляющую (содержащую) текст данной песни, если он есть, или NULL, если текста песни нет
+        /// </summary>
+        public Uri LyricsPageUri
+        {
+            get { return this._lyricsPageUri; }
+            set { this._lyricsPageUri = value; }
+        }
+
         private Boolean _isAvailableForDownload;
 
         /// <summary>
@@ -220,12 +232,12 @@ namespace MyzukaRuGrabberCore.DataModels
             set { this._isAvailableForDownload = value; }
         }
 
-        private UInt16 _rating;
+        private UInt32 _rating;
 
         /// <summary>
         /// Рейтинг песни по версии сайта myzuka.fm
         /// </summary>
-        public UInt16 Rating
+        public UInt32 Rating
         {
             get { return this._rating; }
             set { this._rating = value; }
@@ -236,7 +248,8 @@ namespace MyzukaRuGrabberCore.DataModels
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void Accept(String key, String value)
+        /// <param name="htmlValue"></param>
+        public void Accept(String key, String value, String htmlValue)
         {
             if (key.Equals("Жанр:", StringComparison.OrdinalIgnoreCase))
             {
@@ -260,11 +273,16 @@ namespace MyzukaRuGrabberCore.DataModels
             }
             else if (key.Equals("Рейтинг:", StringComparison.OrdinalIgnoreCase))
             {
-                this._rating = UInt16.Parse(value, NumberStyles.Integer);
+                this._rating = UInt32.Parse(value, NumberStyles.Integer);
             }
             else if (key.Equals("Загрузил:", StringComparison.OrdinalIgnoreCase))
             {
                 this._uploader = value;
+            }
+            else if (key.Equals("Текст песни:", StringComparison.OrdinalIgnoreCase))
+            {
+                string relativeUrl = KlotosLib.StringTools.SubstringHelpers.GetInnerStringBetweenTokens(htmlValue, "\"", "\"", 0, 0, false, Direction.FromStartToEnd, StringComparison.Ordinal).Value;
+                this._lyricsPageUri = new Uri(relativeUrl, UriKind.Relative);
             }
             else
             {

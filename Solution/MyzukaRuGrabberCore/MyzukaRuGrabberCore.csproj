@@ -80,7 +80,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="KlotosLib">
+    <Reference Include="KlotosLib, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ff2d10653bf9ffba, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\KlotosLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
